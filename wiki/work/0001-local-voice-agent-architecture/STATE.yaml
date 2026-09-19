@@ -1,0 +1,52 @@
+id: "0001-local-voice-agent-architecture"
+title: "Offline Flutter voice agent research and technical specification"
+route: full
+phase: document
+round: 1
+verdict: PASS
+owner_agent: root
+created: "2026-09-19"
+updated: "2026-09-19"
+blockers:
+  - id: research-F-001
+    from: validation/research-review-01.md
+    severity: BLOCKER
+    status: closed
+    summary: "Moonshine model-license scope needs source correction."
+  - id: environment-dart
+    severity: IMPORTANT
+    status: open
+    summary: "Required Dart checks cannot launch because SDK cache is not writable; cached Dart is below pubspec constraint."
+followups: []
+decisions:
+  - round: 1
+    verdict: PASS
+    action: annotate-only
+    reason: "Independent specification review passes all eight documentation criteria with no findings. Report metadata corrected mechanically; verdict unchanged."
+  - action: annotate-only
+    reason: "Do not mark work item done: required repository Dart checks remain environment-blocked, although the requested research and PRD have passed document validation."
+  - round: 2
+    verdict: PASS
+    action: annotate-only
+    reason: "Fresh research validator independently reopened Moonshine README/LICENSE and confirmed corrected scope; no recurrence or new finding."
+  - round: 1
+    verdict: FAIL
+    action: revise-research
+    reason: "Research F-001 accepted: incorrect Moonshine license characterization. Assigned primary-source recheck and correction to original researcher; no runtime change is involved."
+  - round: 1
+    verdict: PASS
+    action: annotate-only
+    reason: "Plan review has no findings."
+  - action: scope
+    reason: "User requests research and specification only. Implementation phases produce documentation, not a working SDK. All proposed interfaces and performance targets must be labeled."
+escalations: []
+
+validation_results:
+  plan_review_01: PASS
+  research_review_01: FAIL
+  research_review_02: PASS
+
+research_correction: "Original researcher reopened upstream README/LICENSE; coordinator inspected corrected passages and reran wiki lint. Fresh research confirmation round 02 passed with no findings."
+
+delivery_status: documentation-reviewed
+repository_verification: environment-blocked
