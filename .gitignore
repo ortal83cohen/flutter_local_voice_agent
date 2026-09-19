@@ -1,0 +1,35 @@
+# Personal, machine-local agent configuration
+CLAUDE.local.md
+.claude/settings.local.json
+.cursor/settings.local.json
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets/
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# Editors and OS
+.DS_Store
+Thumbs.db
+.idea/
+*.swp
+
+# Add the product's build and dependency directories here once
+# bootstrap-product has chosen a stack.
+
+# Flutter and Dart generated files
+/build/
+/.dart_tool/
+/pubspec.lock
+/example/build/
+/example/.dart_tool/
+/example/pubspec.lock

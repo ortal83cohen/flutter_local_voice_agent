@@ -1,0 +1,41 @@
+# Repository-only source and verification material
+/tools/
+/wiki/
+/analysis_options.yaml
+
+# Agent, CI, and editor configuration
+/.agents/
+/.claude/
+/.cursor/
+/.github/
+/AGENTS.md
+/CLAUDE.md
+/CLAUDE.local.md
+/.codex/
+/.gitignore
+/.idea/
+/.vscode/
+*.swp
+
+# Environment, credentials, and local secrets
+.env
+.env.*
+*.pem
+*.key
+secrets/
+
+# Generated Flutter and Dart files
+/build/
+/.dart_tool/
+/pubspec.lock
+/example/build/
+/example/.dart_tool/
+/example/pubspec.lock
+
+# Other generated caches and local files
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.DS_Store
+Thumbs.db

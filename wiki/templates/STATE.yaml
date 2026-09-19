@@ -1,0 +1,37 @@
+# Work item state. The only mutable file in a work item folder.
+# Copy this into wiki/work/NNNN-slug/STATE.yaml and keep it current.
+
+id: "NNNN-kebab-slug"
+title: "One line describing the change"
+route: full            # full | quick
+phase: research        # research | plan | validate | implement | verify | document | done
+round: 0               # validation rounds completed in the current phase (one per phase, unless the phase is revisited)
+verdict: null          # null | PASS | CONDITIONAL | FAIL
+owner_agent: null      # name of the agent currently holding the work item
+created: "YYYY-MM-DD"
+updated: "YYYY-MM-DD"
+
+blockers: []
+# - id: F-001
+#   from: validation/plan-review-01.md
+#   severity: BLOCKER
+#   status: open        # open | closed
+#   summary: "One line"
+
+followups: []
+# - summary: "One line"
+#   severity: IMPORTANT
+#   owner: "unassigned"
+
+decisions: []
+# Record here every time a validation verdict changed the plan, and every time
+# it was decided that a finding did not change the plan. Both are decisions.
+# - round: 1
+#   verdict: FAIL
+#   action: revise-plan   # revise-plan | revise-research | revise-implementation | annotate-only | escalate
+#   reason: "One line"
+
+escalations: []
+# - date: "YYYY-MM-DD"
+#   reason: oscillating-loop   # oscillating-loop | high-impact-decision | scope-change
+#   question: "The specific question put to the human"
