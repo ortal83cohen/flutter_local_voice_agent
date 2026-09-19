@@ -33,14 +33,14 @@ jobs:
           channel: stable
           flutter-version: 3.47.0
       - name: Run package checks
-        run: bash tools/check.sh
+        run: bash tool/check.sh
       - name: Load occupied pub.dev versions
         run: |
           python3 -c 'import json,urllib.request; json.dump(json.load(urllib.request.urlopen("https://pub.dev/api/packages/flutter_local_voice_agent", timeout=60)), open("occupied-pubdev-versions.json", "w"))'
-          echo "OCCUPIED_VERSIONS=$(python3 tools/occupied_pubdev_versions.py occupied-pubdev-versions.json)" >> "$GITHUB_ENV"
+          echo "OCCUPIED_VERSIONS=$(python3 tool/occupied_pubdev_versions.py occupied-pubdev-versions.json)" >> "$GITHUB_ENV"
       - name: Bump patch version
         id: bump
-        run: echo "version=$(sh tools/bump_patch_version.sh)" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(sh tool/bump_patch_version.sh)" >> "$GITHUB_OUTPUT"
       - name: Reject existing tag
         run: |
           git fetch --tags --force

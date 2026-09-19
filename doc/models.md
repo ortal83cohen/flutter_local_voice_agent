@@ -38,7 +38,7 @@ and the actual license file you collected. Include every required role above;
 do not point ASR and TTS tokens at the same file. Then run:
 
 ```sh
-python3 tools/create_model_manifest.py /absolute/local/pack --inventory /absolute/inventory.json
+python3 tool/create_model_manifest.py /absolute/local/pack --inventory /absolute/inventory.json
 ```
 
 The tool refuses to overwrite a manifest. It computes `bytes` and `sha256` for

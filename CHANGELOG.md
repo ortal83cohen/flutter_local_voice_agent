@@ -11,4 +11,6 @@
 - Add a local-model example, reproducible native provisioning and test tools.
 - Keep physical-device, acoustic, thermal, voice quality and redistribution gates
   explicit. This is not a production-qualified or published release.
+- Add optional bounded local llama.cpp integration and regression coverage for
+  typed lifecycle failures, manifest roles and UTF-8 cancellation handling.
 - Add GitHub Actions checks, patch-release tagging, and OIDC publication workflow.

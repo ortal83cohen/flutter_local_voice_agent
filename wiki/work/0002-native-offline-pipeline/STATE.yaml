@@ -3,13 +3,28 @@ title: "Native offline pipeline implementation and qualification"
 route: full
 phase: implement
 round: 1
-verdict: pending
+verdict: FAIL
 owner_agent: root
 created: "2026-09-19"
 updated: "2026-09-19"
-blockers: []
-followups: []
+blockers:
+  - "F3 / AC-004: VITS allocates an entire sentence before callback; hard synthesis allocation bound not established."
+  - "AC-005 / AC-008: physical mobile offline, audio, lifecycle and performance qualification unavailable."
+  - "AC-007: package dry-run exits 65 with three warnings; consumer release packaging remains unqualified."
+followups:
+  - "Resume from 05-handoff.md; user requested orderly pause after in-flight work."
+  - "Resolve F3 with measured evidence; do not silently relax frozen criteria."
+  - "Qualify mobile runtime, release builds, clean consumer install, licenses and optional LLM resource/quality limits."
+  - "Investigate ASan host startup stall; UBSan does not cover upstream prebuilt internals."
 decisions:
+  - action: implementation-review-F1-F2
+    reason: "Repair role allowlist, typed lifecycle failures, retryable disposal and background failures; coordinator final suite 27 passes, strict analysis clean."
+  - action: implementation-review-F3
+    reason: "Retain open blocker and FAIL; 10-second admitted PCM is not an upstream synthesis allocation cap."
+  - action: implementation-review-F4-F5
+    reason: "Repair UTF-8 suffix validation and rejected reply handling; real GGUF smoke exercises CPU decode abort, UTF-8 regression passes."
+  - action: orderly-handoff
+    reason: "Finish in-flight fixes and debug Android/iOS optional LLM builds, both exit 0. No new implementation phase or publication; artifacts capture remaining gates."
   - action: fix-research-F-001
     reason: "Supplement records returned TTS audio destruction and upstream allocation limit gap; require worker RAII cleanup."
   - action: fix-research-F-002
@@ -25,5 +40,7 @@ decisions:
 escalations: []
 
 validation_results:
+  implementation_review_01: FAIL
+  coordinator_regression: "27 Dart tests pass; analysis clean; native UBSan and actual GGUF evidence recorded in 04-verification.md"
   plan_review_01: CONDITIONAL
   research_review_01: CONDITIONAL

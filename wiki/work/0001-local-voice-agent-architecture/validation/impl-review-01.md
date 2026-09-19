@@ -14,7 +14,7 @@ All commands below ran from the repository root on 2026-09-19. No runtime source
 
 ### Wiki lint
 
-Command: `python3 tools/lint_wiki.py`
+Command: `python3 tool/lint_wiki.py`
 
 ```text
 lint_wiki: clean (0 warning(s)).
@@ -156,7 +156,7 @@ First implementation-review round. There is no prior implementation verdict to r
 
 Mechanical report-format correction only: removed work-item frontmatter and renamed the two existing headings to the repository-required names. Verdict, evidence and findings remain unchanged; no second review was performed.
 
-Command: `python3 tools/lint_wiki.py`
+Command: `python3 tool/lint_wiki.py`
 
 ```text
 lint_wiki: clean (0 warning(s)).

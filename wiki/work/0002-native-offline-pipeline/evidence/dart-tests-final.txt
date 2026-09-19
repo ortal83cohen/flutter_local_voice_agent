@@ -10,24 +10,30 @@ Downloading packages...
 Got dependencies in `./example`.
 00:00 +0: loading /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/review_regression_test.dart
 00:00 +0: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/review_regression_test.dart: rejects a correctly hashed unsupported manifest role
-00:00 +1: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_store_test.dart: validates real local files with roles, hashes and licenses
-00:00 +2: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_store_test.dart: rejects traversal before native setup
-00:00 +3: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_store_test.dart: rejects a corrupt file hash
-00:00 +4: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_store_test.dart: rejects missing manifest
-00:00 +5: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_store_test.dart: rejects missing required model file
-00:00 +6: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_store_test.dart: rejects wrong profile and runtime
-00:00 +7: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_store_test.dart: rejects a symlink escape
-00:01 +8: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_install_test.dart: installs a validated bundle atomically with unchanged hashes
-00:01 +9: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_install_test.dart: does not create an active or stage directory for a corrupt source
-00:01 +10: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: final transcript invokes logic and sends current-generation reply
-00:01 +11: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: final transcript invokes logic and sends current-generation reply
-00:01 +12: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: final transcript invokes logic and sends current-generation reply
-00:01 +13: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: final transcript invokes logic and sends current-generation reply
-00:01 +14: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: final transcript invokes logic and sends current-generation reply
-00:01 +15: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: full duplex is rejected before platform create
-00:01 +16: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: concurrent start and dispose share native operations
-00:01 +17: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: suspension ignores a late logic reply
-00:01 +18: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: interrupt keeps polling and admits the next current final
-00:02 +19: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: late poll response after dispose is ignored
-00:02 +20: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: paused bounded delivery replaces backlog with terminal capacity fault
-00:02 +21: All tests passed!
+00:00 +1: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/lifecycle_failure_test.dart: start exposes typed platform failure and permits cleanup
+00:00 +2: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/lifecycle_failure_test.dart: stop exposes typed platform failure and permits cleanup
+00:00 +3: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/lifecycle_failure_test.dart: interrupt exposes typed platform failure and permits cleanup
+00:00 +4: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/lifecycle_failure_test.dart: dispose exposes typed platform failure and permits cleanup
+00:00 +5: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/lifecycle_failure_test.dart: automatic stop failure is delivered without an unhandled future
+00:01 +6: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/lifecycle_failure_test.dart: logic error handles a failed background interrupt
+00:01 +7: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_store_test.dart: validates real local files with roles, hashes and licenses
+00:02 +8: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_store_test.dart: rejects traversal before native setup
+00:02 +9: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_store_test.dart: rejects a corrupt file hash
+00:02 +10: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_install_test.dart: installs a validated bundle atomically with unchanged hashes
+00:02 +11: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_install_test.dart: installs a validated bundle atomically with unchanged hashes
+00:02 +12: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_install_test.dart: installs a validated bundle atomically with unchanged hashes
+00:02 +13: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_install_test.dart: installs a validated bundle atomically with unchanged hashes
+00:02 +14: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_install_test.dart: installs a validated bundle atomically with unchanged hashes
+00:02 +15: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_install_test.dart: does not create an active or stage directory for a corrupt source
+00:02 +16: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_install_test.dart: rejects a manifest with a missing required role
+00:02 +17: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_install_test.dart: accepts multiple listed license records
+00:02 +18: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_install_test.dart: rejects over-limit manifest before inspecting listed paths
+00:02 +19: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_install_test.dart: repeated installs retain earlier active bundles
+00:03 +20: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: final transcript invokes logic and sends current-generation reply
+00:03 +21: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: full duplex is rejected before platform create
+00:03 +22: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: concurrent start and dispose share native operations
+00:03 +23: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: suspension ignores a late logic reply
+00:03 +24: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: interrupt keeps polling and admits the next current final
+00:03 +25: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: late poll response after dispose is ignored
+00:03 +26: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: paused bounded delivery replaces backlog with terminal capacity fault
+00:03 +27: All tests passed!

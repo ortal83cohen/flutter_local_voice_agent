@@ -26,7 +26,7 @@ The direct cached Dart reports version 3.10.3, while the checked-in pubspec requ
 
 ## Documentation lint
 
-Command: `python3 tools/lint_wiki.py`
+Command: `python3 tool/lint_wiki.py`
 
 ```text
 lint_wiki: clean (0 warning(s)).
@@ -73,7 +73,7 @@ Exit code: 0. Remote links were source-checked selectively by researchers and va
 
 ## Final integrated document check
 
-After indexing the implementation review and delivery record, reran `python3 tools/lint_wiki.py`, the local index/link check, and `git diff --check`.
+After indexing the implementation review and delivery record, reran `python3 tool/lint_wiki.py`, the local index/link check, and `git diff --check`.
 
 ```text
 lint_wiki: clean (0 warning(s)).

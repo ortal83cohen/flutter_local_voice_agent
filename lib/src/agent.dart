@@ -389,7 +389,7 @@ final class LocalVoiceAgent {
           fatal: false,
         ),
       );
-      unawaited(_native.interrupt());
+      unawaited(_backgroundInterrupt());
       return;
     }
     Future<String> reply;
@@ -434,7 +434,7 @@ final class LocalVoiceAgent {
               ),
       );
       _advanceGeneration();
-      unawaited(_native.interrupt());
+      unawaited(_backgroundInterrupt());
     }
   }
 
@@ -455,6 +455,18 @@ final class LocalVoiceAgent {
     _started = false;
     _invalidate();
     unawaited(_backgroundStop());
+  }
+
+  Future<void> _backgroundInterrupt() async {
+    try {
+      await _native.interrupt();
+    } on PlatformException catch (error) {
+      _fatal(_platformFailure(error));
+    } catch (error) {
+      _fatal(
+        AgentFailure(AgentErrorCode.inferenceFailed, '$error', fatal: true),
+      );
+    }
   }
 
   Future<void> _backgroundStop() async {

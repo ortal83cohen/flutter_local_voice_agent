@@ -1,7 +1,7 @@
 <!-- Copy to wiki/work/NNNN-slug/01-plan.md.
 
      PROSE ONLY. This file must contain zero fenced code blocks, zero snippets and zero
-     pseudo-code. tools/lint_wiki.py fails the build if it finds any. Name the file, the
+     pseudo-code. tool/lint_wiki.py fails the build if it finds any. Name the file, the
      function and the change in words; do not write the change out.
 
      Delete the guidance comments as you fill each section. -->

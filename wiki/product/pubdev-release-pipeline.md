@@ -4,7 +4,7 @@ title: Pub.dev release pipeline
 status: active
 owner: unassigned
 last_verified: 2026-09-19
-applies_to: [".github/workflows/**", "tools/**", "pubspec.yaml", "CHANGELOG.md"]
+applies_to: [".github/workflows/**", "tool/**", "pubspec.yaml", "CHANGELOG.md"]
 summary: GitHub checks, main-branch release tagging, and OIDC publication contract for pub.dev.
 ---
 
@@ -14,4 +14,4 @@ The repository uses three GitHub Actions workflows. `checks.yml` runs the local 
 
 Before the first release, an operator must create the repository secret `RELEASE_GITHUB_TOKEN` with narrowly scoped contents write permission and ensure branch protection allows it to update `main`. The pub.dev package settings must enable GitHub Actions publishing for repository `ortal83cohen/flutter_local_voice_agent` with tag pattern `v{{version}}`. These hosted settings are external gates and are not proved by local checks.
 
-The required local boundary is `bash tools/check.sh`. It includes wiki lint, dependency resolution, formatting, analysis, package and example tests, deterministic native tests, package dry-run validation, and release-helper fixture tests. Real model smoke tests and physical-device qualification remain separate gates because they require local assets and hardware.
+The required local boundary is `bash tool/check.sh`. It includes wiki lint, dependency resolution, formatting, analysis, package and example tests, deterministic native tests, package dry-run validation, and release-helper fixture tests. Real model smoke tests and physical-device qualification remain separate gates because they require local assets and hardware.

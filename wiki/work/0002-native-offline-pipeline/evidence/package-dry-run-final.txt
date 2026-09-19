@@ -4,7 +4,7 @@ Downloading packages...
   test_api 0.7.12 (0.7.14 available)
 Got dependencies!
 2 packages have newer versions incompatible with dependency constraints.
-Try `flutter pub outdated` for more information.
+Try `dart pub outdated` for more information.
 Publishing flutter_local_voice_agent 0.1.0 to https://pub.dev:
 ├── CHANGELOG.md (<1 KB)
 ├── LICENSE (1 KB)
@@ -144,7 +144,7 @@ Publishing flutter_local_voice_agent 0.1.0 to https://pub.dev:
 ├── lib
 │   ├── flutter_local_voice_agent.dart (<1 KB)
 │   └── src
-│       ├── agent.dart (14 KB)
+│       ├── agent.dart (15 KB)
 │       ├── bounded_stream.dart (2 KB)
 │       ├── contracts.dart (1 KB)
 │       ├── model_store.dart (7 KB)
@@ -155,9 +155,10 @@ Publishing flutter_local_voice_agent 0.1.0 to https://pub.dev:
 │   │   └── flva.h (1 KB)
 │   ├── llm
 │   │   ├── CMakeLists.txt (1 KB)
-│   │   ├── llm_adapter.cpp (8 KB)
+│   │   ├── llm_adapter.cpp (9 KB)
 │   │   ├── llm_adapter.h (<1 KB)
-│   │   └── smoke.cpp (1 KB)
+│   │   ├── smoke.cpp (2 KB)
+│   │   └── utf8_test.cpp (<1 KB)
 │   ├── src
 │   │   ├── flva.cpp (23 KB)
 │   │   ├── resampler.h (3 KB)
@@ -169,15 +170,20 @@ Publishing flutter_local_voice_agent 0.1.0 to https://pub.dev:
 │   └── sherpa-onnx-LICENSE (11 KB)
 └── tools
     ├── build_llm_ios.py (3 KB)
+    ├── bump_patch_version.sh (1 KB)
+    ├── check.sh (1 KB)
     ├── create_model_manifest.py (1 KB)
+    ├── occupied_pubdev_versions.py (<1 KB)
     ├── provision_llama.py (1 KB)
     ├── provision_runtime.py (2 KB)
-    └── test_native.py (2 KB)
+    ├── test_bump_patch_version.sh (<1 KB)
+    ├── test_native.py (2 KB)
+    └── test_occupied_pubdev_versions.sh (<1 KB)
 
-Total compressed archive size: 94 KB.
+Total compressed archive size: 97 KB.
 Validating package...
-Package validation found the following 4 potential issues:
-* 8 checked-in files are ignored by a `.gitignore`.
+Package validation found the following 3 potential issues:
+* 6 checked-in files are ignored by a `.gitignore`.
   Previous versions of Pub would include those in the published package.
   
   Consider adjusting your `.gitignore` files to not ignore those files, and if you do not wish to
@@ -191,12 +197,10 @@ Package validation found the following 4 potential issues:
   .idea/misc.xml
   .idea/modules.xml
   .idea/vcs.xml
-  lib/library_name.dart
-  lib/src/library.dart
   
   
 
-* 72 checked-in files are modified in git.
+* 1 checked-in file is modified in git.
   
   Usually you want to publish from a clean git state.
   
@@ -204,22 +208,10 @@ Package validation found the following 4 potential issues:
   
   Modified files:
   
-  README.md
-  android/build.gradle
-  android/src/main/AndroidManifest.xml
-  android/src/main/cpp/CMakeLists.txt
-  android/src/main/cpp/bridge.cpp
-  android/src/main/kotlin/dev/localvoice/flutter_local_voice_agent/FlutterLocalVoiceAgentPlugin.kt
-  example/android/app/build.gradle.kts
-  example/android/app/src/debug/AndroidManifest.xml
-  example/android/app/src/main/AndroidManifest.xml
-  example/android/app/src/main/kotlin/dev/localvoice/flutter_local_voice_agent_example/MainActivity.kt
-  ...
+  lib/src/agent.dart
   
   Run `git status` for more information.
   
-
-* It's strongly recommended to include a "homepage" or "repository" field in your pubspec.yaml
 
 * Rename the top-level "tools" directory to "tool".
   The Pub layout convention is to use singular directory names.
@@ -227,5 +219,4 @@ Package validation found the following 4 potential issues:
   See https://dart.dev/tool/pub/package-layout.
 The server may enforce additional checks.
 
-Package has 4 warnings.
-Failed to update packages.
+Package has 3 warnings.

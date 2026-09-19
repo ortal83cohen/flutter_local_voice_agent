@@ -1,5 +1,5 @@
 # Repository-only source and verification material
-/tools/lint_wiki.py
+/tool/
 /wiki/
 /analysis_options.yaml
 
@@ -13,7 +13,7 @@
 /CLAUDE.local.md
 /.codex/
 /.gitignore
-/.idea/
+.idea/
 /.vscode/
 *.swp
 

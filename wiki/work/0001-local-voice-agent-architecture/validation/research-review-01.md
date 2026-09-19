@@ -18,7 +18,7 @@ Read the acceptance criteria, phase rubric, report template, and four research a
 Executed from the repository root:
 
 ```text
-$ python3 tools/lint_wiki.py
+$ python3 tool/lint_wiki.py
 lint_wiki: clean (0 warning(s)).
 ```
 

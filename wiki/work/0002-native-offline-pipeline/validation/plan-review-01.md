@@ -40,7 +40,7 @@ These are plan-coverage verdicts, not implementation verdicts.
 Command:
 
 ```text
-python3 tools/lint_wiki.py
+python3 tool/lint_wiki.py
 ```
 
 Output, exit code 0:

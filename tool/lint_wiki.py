@@ -6,8 +6,8 @@ across a long session. Instruction compliance attenuates as a session runs; a
 check that executes is worth more than a rule that is remembered.
 
 Usage:
-    python3 tools/lint_wiki.py            # check everything
-    python3 tools/lint_wiki.py --quiet    # only print failures
+    python3 tool/lint_wiki.py            # check everything
+    python3 tool/lint_wiki.py --quiet    # only print failures
 
 Exit codes:
     0  clean (warnings may still be printed)

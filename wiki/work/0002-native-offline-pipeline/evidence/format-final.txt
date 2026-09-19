@@ -1,0 +1,3 @@
+Formatted lib/src/agent.dart
+Formatted test/lifecycle_failure_test.dart
+Formatted 12 files (2 changed) in 0.04 seconds.

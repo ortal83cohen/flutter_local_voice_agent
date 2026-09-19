@@ -33,7 +33,7 @@ The following read-only commands were run from the repository on 2026-09-19. Out
 | `swift --version` | `Apple Swift version 6.2.4 (swiftlang-6.2.4.1.4 clang-1700.6.4.2)` targeting `arm64-apple-macosx26.0`. |
 | `pod --version` | `1.16.2`. |
 | `java -version` | `openjdk version "21.0.11" 2026-04-21`; `OpenJDK Runtime Environment JBR-21.0.11+10-1163.116`. |
-| `adb version` | `Android Debug Bridge version 1.0.41`, `Version 37.0.1-15733141`, installed at `/Users/ortalcohen/Library/Android/sdk/platform-tools/adb`. |
+| `adb version` | `Android Debug Bridge version 1.0.41`, `Version 37.0.1-15733141`, installed at `/Users/ortalcohen/Library/Android/sdk/platform-tool/adb`. |
 | Android-SDK directory inventory | Installed build tools include 30.0.3, 33.0.1, 34.0.0, 35.0.0, 36.0.0 and 36.1.0; platforms include 28, 31, 33, 34, 35, 36, 36.1 and 37.0; installed NDKs include 25.1.8937393, 26.3.11579264, 27.0.11718014, 27.0.12077973 and 28.2.13676358. |
 | `/Users/ortalcohen/fvm/versions/3.47.0` Git metadata | `3.47.0`; commit `4cf24164269a5ebf0c16a028a00727d0e77bbb05`; dated `2026-08-11`; engine stamp `5f77625673248ee5846fbcaf5d3e1a3878386fd7`. This matches the package lower Flutter bound in `pubspec.yaml` (`>=3.47.0`). |
 | `/Users/ortalcohen/fvm/versions/3.47.0/bin/flutter --version` | `Flutter 3.47.0 • channel [user-branch]`; framework revision `4cf2416426`; engine revision `59d54a2b2896a6bbf356c94b7fac7b9e235bdacd`; `Tools • Dart 3.13.0 • DevTools 2.60.0`. |

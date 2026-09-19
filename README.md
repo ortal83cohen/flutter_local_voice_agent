@@ -22,8 +22,8 @@ separate; see [capabilities](doc/capabilities.md).
 Provision native dependencies explicitly during development:
 
 ```sh
-python3 tools/provision_runtime.py android
-python3 tools/provision_runtime.py ios
+python3 tool/provision_runtime.py android
+python3 tool/provision_runtime.py ios
 flutter pub get
 ```
 
@@ -89,7 +89,7 @@ controls. See the model guide for Android/iOS provisioning paths.
 flutter test
 dart format lib example/lib
 dart analyze --fatal-infos --fatal-warnings
-python3 tools/lint_wiki.py
+python3 tool/lint_wiki.py
 ```
 
 [Optional LLM](doc/llm.md) documents the separate CPU build.

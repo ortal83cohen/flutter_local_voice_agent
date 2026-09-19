@@ -16,7 +16,7 @@ The documentation plan assigns all eight criteria to concrete deliverables and r
 Command independently executed from the repository root:
 
 ```text
-python3 tools/lint_wiki.py
+python3 tool/lint_wiki.py
 ```
 
 Pasted command output:

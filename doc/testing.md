@@ -7,7 +7,7 @@ flutter pub get
 flutter test
 dart format lib example/lib
 dart analyze --fatal-infos --fatal-warnings
-python3 tools/lint_wiki.py
+python3 tool/lint_wiki.py
 ```
 
 These tests use actual temporary files for manifest integrity and injected
@@ -17,7 +17,7 @@ or microphone tests. Flutter 3.47.0 / Dart 3.13.0 is the validation toolchain.
 ## Native
 
 ```sh
-python3 tools/test_native.py --ubsan
+python3 tool/test_native.py --ubsan
 ```
 
 This runs bounded-ring and stateful resampler tests. Add `--runtime` pointing to
@@ -37,8 +37,8 @@ internal memory behavior.
 ## Mobile builds
 
 ```sh
-python3 tools/provision_runtime.py android --archive /local/pinned-android.tar.bz2
-python3 tools/provision_runtime.py ios --archive /local/pinned-ios.tar.bz2
+python3 tool/provision_runtime.py android --archive /local/pinned-android.tar.bz2
+python3 tool/provision_runtime.py ios --archive /local/pinned-ios.tar.bz2
 cd example
 flutter build apk --debug --target-platform android-arm64
 flutter build ios --simulator --debug --no-codesign

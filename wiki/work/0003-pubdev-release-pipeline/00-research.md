@@ -18,9 +18,9 @@ The repository needs a three-workflow pipeline matching the proven `flutter_webm
 
 ### Existing local verification
 
-- Claim: The repository already provides `tools/lint_wiki.py` and `tools/test_native.py`; the native test tool runs deterministic ring-buffer and resampler tests without requiring model assets.
+- Claim: The repository already provides `tool/lint_wiki.py` and `tool/test_native.py`; the native test tool runs deterministic ring-buffer and resampler tests without requiring model assets.
 - Evidence: The tool compiles and executes the deterministic tests before its optional real-engine branch.
-- Source: `tools/test_native.py`
+- Source: `tool/test_native.py`
 
 ### Reference release design
 

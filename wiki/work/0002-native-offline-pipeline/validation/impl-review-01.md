@@ -78,7 +78,7 @@ exit=0
 ### Native tests
 
 ```sh
-python3 tools/test_native.py --ubsan --runtime /private/tmp/flva-qualification/runtime/sherpa-onnx-v1.12.14-osx-universal2-shared/lib --assets /private/tmp/flva-qualification/models/silero_vad.onnx /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/encoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/decoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/joiner-epoch-99-avg-1-chunk-16-left-128.int8.onnx /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/tokens.txt /private/tmp/flva-qualification/models/vits-ljs.onnx /private/tmp/flva-qualification/models/tokens.txt /private/tmp/flva-qualification/models/lexicon.txt /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/test_wavs/0.wav
+python3 tool/test_native.py --ubsan --runtime /private/tmp/flva-qualification/runtime/sherpa-onnx-v1.12.14-osx-universal2-shared/lib --assets /private/tmp/flva-qualification/models/silero_vad.onnx /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/encoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/decoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/joiner-epoch-99-avg-1-chunk-16-left-128.int8.onnx /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/tokens.txt /private/tmp/flva-qualification/models/vits-ljs.onnx /private/tmp/flva-qualification/models/tokens.txt /private/tmp/flva-qualification/models/lexicon.txt /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/test_wavs/0.wav
 ```
 
 Output excerpt (all compile/run subprocesses exited 0):
@@ -116,7 +116,7 @@ PASS real_engine_failures
 Upstream VITS also printed repeated `Unknown token: ̃` and `Unknown token: (` lexicon warnings. No ASan or upstream-instrumented result is claimed.
 
 ```text
-$ python3 tools/test_native.py
+$ python3 tool/test_native.py
 [compile/run command lines omitted]
 PASS ring wrap/overflow/underflow/concurrency
 high-frequency rms=0.000070
@@ -196,7 +196,7 @@ after_trim_bytes=3 expected_valid_prefix_bytes=2
 ### Wiki and package checks
 
 ```text
-$ python3 tools/lint_wiki.py
+$ python3 tool/lint_wiki.py
 lint_wiki: clean (0 warning(s)).
 exit=0
 $ /Users/ortalcohen/fvm/versions/3.47.0/bin/dart pub publish --dry-run

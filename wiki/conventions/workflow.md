@@ -54,7 +54,7 @@ One agent writes the plan. Never parallelise this phase — the plan is where sh
 
 The plan is prose. It states, in order: the goal, the approach, the reasoning for the approach over the alternatives considered, the sequence of steps, what each step touches, the risks, and what is explicitly out of scope.
 
-**No code blocks. No snippets. No pseudo-code.** A plan that contains code has stopped being a plan. This is enforced by `tools/lint_wiki.py`.
+**No code blocks. No snippets. No pseudo-code.** A plan that contains code has stopped being a plan. This is enforced by `tool/lint_wiki.py`.
 
 Alongside the plan, write `02-criteria.md`: numbered acceptance criteria, `AC-001` upward, each independently checkable. Criteria freeze when Phase 4 starts.
 
@@ -101,7 +101,7 @@ Each criterion needs at least one negative test — a case that should fail and 
 
 Verdict handling is identical to Phase 3: one round, and the main agent decides what happens next. A `FAIL` naming a plan defect goes back to Phase 2, not to more code.
 
-Gate: implementation review is `PASS`, full check suite output pasted, `tools/lint_wiki.py` clean.
+Gate: implementation review is `PASS`, full check suite output pasted, `tool/lint_wiki.py` clean.
 
 ## Phase 6 — Document
 
@@ -111,7 +111,7 @@ Update the product knowledge under `wiki/product/`, add an ADR if a decision was
 
 Documentation lands in the same commit as the code. A follow-up commit is a documentation debt, and documentation debt compounds silently.
 
-Gate: `tools/lint_wiki.py` clean, every wiki document reachable from the index in one hop.
+Gate: `tool/lint_wiki.py` clean, every wiki document reachable from the index in one hop.
 
 ## Human gates
 

@@ -39,7 +39,7 @@ Tick every line. A line that cannot be ticked is either a task or an escalation,
 - [ ] An ADR exists for every decision that was genuinely a choice between viable options.
 - [ ] `last_verified` refreshed on every wiki document whose content was re-checked — and only on those.
 - [ ] Every new wiki document has a line in `wiki/INDEX.md`.
-- [ ] `python3 tools/lint_wiki.py` exits clean.
+- [ ] `python3 tool/lint_wiki.py` exits clean.
 
 **Record**
 

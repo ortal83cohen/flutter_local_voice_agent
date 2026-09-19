@@ -2,10 +2,10 @@
 
 The speech-only build excludes llama.cpp. An optional native adapter uses
 llama.cpp commit `987498f4592a76897863cf53711dce38380c082b` (tag b10976), CPU only.
-The source archive hash is fixed in `tools/provision_llama.py`.
+The source archive hash is fixed in `tool/provision_llama.py`.
 
 ```sh
-python3 tools/provision_llama.py /absolute/build-inputs/llama.cpp
+python3 tool/provision_llama.py /absolute/build-inputs/llama.cpp
 ```
 
 This is an explicit build-time download; `--archive` accepts a verified local
@@ -27,7 +27,7 @@ mode. A speech-only build explicitly rejects this configuration.
 
 ## iOS
 
-Build an optional static XCFramework with `tools/build_llm_ios.py` using the
+Build an optional static XCFramework with `tool/build_llm_ios.py` using the
 pinned local source, then place it at `ios/Frameworks/flva-llm.xcframework`.
 Run `FLVA_ENABLE_LOCAL_LLM=1 pod install` in the host iOS project. The flag must
 also be supplied whenever CocoaPods regenerates that project. Source and binary
