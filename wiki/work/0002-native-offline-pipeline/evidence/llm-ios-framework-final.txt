@@ -1,0 +1,293 @@
++ /Users/ortalcohen/Library/Android/sdk/cmake/3.22.1/bin/cmake -S /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/native/llm -B /private/tmp/flva-llm-final-ios/iphoneos -G Ninja -DCMAKE_MAKE_PROGRAM=/Users/ortalcohen/Library/Android/sdk/cmake/3.22.1/bin/ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_OSX_SYSROOT=iphoneos -DCMAKE_SYSTEM_NAME=iOS -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0 -DLLAMA_CPP_SOURCE_DIR=/private/tmp/flva-llm-source -DFLVA_ENABLE_LOCAL_LLM=ON -DFLVA_BUILD_LLM_SMOKE=OFF -DBUILD_SHARED_LIBS=OFF -DGGML_METAL=OFF -DGGML_ACCELERATE=OFF -DGGML_BLAS=OFF -DGGML_OPENMP=OFF -DGGML_CPU_ALL_VARIANTS=OFF -DGGML_BACKEND_DL=OFF
+-- The C compiler identification is AppleClang 17.0.0.17000604
+-- The CXX compiler identification is AppleClang 17.0.0.17000604
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /Applications/Xcode 2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /Applications/Xcode 2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- llama.cpp version: 0.4.1-dev
+CMAKE_BUILD_TYPE=Release
+-- Found Git: /opt/homebrew/bin/git (found version "2.49.0") 
+fatal: not a git repository (or any of the parent directories): .git
+fatal: not a git repository (or any of the parent directories): .git
+-- The ASM compiler identification is Clang with GNU-like command-line
+-- Found assembler: /Applications/Xcode 2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc
+-- Setting GGML_NATIVE_DEFAULT to OFF
+-- Looking for pthread.h
+-- Looking for pthread.h - found
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- Warning: ccache not found - consider installing it for faster compilation or disable this warning with GGML_CCACHE=OFF
+-- CMAKE_SYSTEM_PROCESSOR: 
+-- GGML_SYSTEM_ARCH: ARM
+-- Including CPU backend
+-- ARM detected
+-- Performing Test GGML_COMPILER_SUPPORTS_FP16_FORMAT_I3E
+-- Performing Test GGML_COMPILER_SUPPORTS_FP16_FORMAT_I3E - Failed
+-- Checking for ARM features using flags:
+-- Performing Test HAVE_DOTPROD
+-- Performing Test HAVE_DOTPROD - Failed
+-- Performing Test HAVE_SVE
+-- Performing Test HAVE_SVE - Failed
+-- Performing Test HAVE_MATMUL_INT8
+-- Performing Test HAVE_MATMUL_INT8 - Failed
+-- Performing Test HAVE_FMA
+-- Performing Test HAVE_FMA - Success
+-- Performing Test HAVE_FP16_VECTOR_ARITHMETIC
+-- Performing Test HAVE_FP16_VECTOR_ARITHMETIC - Failed
+-- Performing Test HAVE_SME
+-- Performing Test HAVE_SME - Failed
+-- Adding CPU backend variant ggml-cpu:  
+-- ggml version: 0.24.0
+-- ggml commit:  unknown
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /tmp/flva-llm-final-ios/iphoneos
++ /Users/ortalcohen/Library/Android/sdk/cmake/3.22.1/bin/cmake --build /private/tmp/flva-llm-final-ios/iphoneos --parallel 2
+[1/80] Building C object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml.c.o
+[2/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml.cpp.o
+[3/80] Building C object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-alloc.c.o
+[4/80] Building CXX object CMakeFiles/flva_llm_adapter.dir/llm_adapter.cpp.o
+[5/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-backend.cpp.o
+[6/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-backend-meta.cpp.o
+[7/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-threading.cpp.o
+[8/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-opt.cpp.o
+[9/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/gguf.cpp.o
+[10/80] Building C object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-quants.c.o
+[11/80] Linking CXX static library llama.cpp/ggml/src/libggml-base.a
+[12/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml.dir/ggml-backend-dl.cpp.o
+[13/80] Building C object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.c.o
+[14/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml.dir/ggml-backend-reg.cpp.o
+[15/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.cpp.o
+[16/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/iqp.cpp.o
+[17/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/hbm.cpp.o
+[18/80] Building C object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/quants.c.o
+[19/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/repack.cpp.o
+[20/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/traits.cpp.o
+[21/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/amx.cpp.o
+[22/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/mmq.cpp.o
+[23/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/binary-ops.cpp.o
+[24/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/unary-ops.cpp.o
+[25/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/vec.cpp.o
+[26/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/llamafile/sgemm.cpp.o
+[27/80] Building C object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/arm/quants.c.o
+[28/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/arm/repack.cpp.o
+[29/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_9_cxx.cxx.o
+[30/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ops.cpp.o
+[31/80] Linking CXX static library llama.cpp/ggml/src/libggml-cpu.a
+[32/80] Linking CXX static library llama.cpp/ggml/src/libggml.a
+[33/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_8_cxx.cxx.o
+[34/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_7_cxx.cxx.o
+[35/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_6_cxx.cxx.o
+[36/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_5_cxx.cxx.o
+[37/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_4_cxx.cxx.o
+[38/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_2_cxx.cxx.o
+[39/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_3_cxx.cxx.o
+[40/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_0_cxx.cxx.o
+[41/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_1_cxx.cxx.o
+[42/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama.cpp.o
+[43/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-adapter.cpp.o
+[44/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-arch.cpp.o
+[45/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-batch.cpp.o
+[46/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-chat.cpp.o
+[47/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-cparams.cpp.o
+[48/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-context.cpp.o
+[49/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-grammar.cpp.o
+[50/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-hparams.cpp.o
+[51/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-graph.cpp.o
+[52/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-io.cpp.o
+[53/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-impl.cpp.o
+[54/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-iswa.cpp.o
+[55/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-dsa.cpp.o
+[56/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-dsa-iswa.cpp.o
+[57/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache.cpp.o
+[58/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-msa.cpp.o
+[59/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-memory.cpp.o
+[60/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-dsv4.cpp.o
+[61/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-memory-hybrid.cpp.o
+[62/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-memory-hybrid-iswa.cpp.o
+[63/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-memory-hybrid-idx.cpp.o
+[64/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-memory-recurrent.cpp.o
+[65/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-mmap.cpp.o
+[66/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-model-saver.cpp.o
+[67/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-model-loader.cpp.o
+[68/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-model.cpp.o
+[69/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-quant.cpp.o
+[70/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-sampler.cpp.o
+[71/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-vocab.cpp.o
+[72/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/unicode-data.cpp.o
+[73/80] Building CXX object llama.cpp/vendor/hash/CMakeFiles/vendor-hash.dir/hash.cpp.o
+[74/80] Building C object llama.cpp/vendor/hash/CMakeFiles/vendor-hash.dir/xxhash/xxhash.c.o
+[75/80] Building CXX object llama.cpp/vendor/hash/CMakeFiles/vendor-hash.dir/sha1/sha1.c.o
+[76/80] Building C object llama.cpp/vendor/hash/CMakeFiles/vendor-hash.dir/sha256/sha256.c.o
+[77/80] Linking CXX static library llama.cpp/vendor/hash/libvendor-hash.a
+[78/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/unicode.cpp.o
+[79/80] Linking CXX static library llama.cpp/src/libllama.a
+[80/80] Linking CXX static library libflva_llm_adapter.a
++ libtool -static -o /private/tmp/flva-llm-final-ios/archives/iphoneos/libflva_llm.a /private/tmp/flva-llm-final-ios/iphoneos/libflva_llm_adapter.a /private/tmp/flva-llm-final-ios/iphoneos/llama.cpp/ggml/src/libggml-base.a /private/tmp/flva-llm-final-ios/iphoneos/llama.cpp/ggml/src/libggml-cpu.a /private/tmp/flva-llm-final-ios/iphoneos/llama.cpp/ggml/src/libggml.a /private/tmp/flva-llm-final-ios/iphoneos/llama.cpp/src/libllama.a /private/tmp/flva-llm-final-ios/iphoneos/llama.cpp/vendor/hash/libvendor-hash.a
++ /Users/ortalcohen/Library/Android/sdk/cmake/3.22.1/bin/cmake -S /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/native/llm -B /private/tmp/flva-llm-final-ios/iphonesimulator -G Ninja -DCMAKE_MAKE_PROGRAM=/Users/ortalcohen/Library/Android/sdk/cmake/3.22.1/bin/ninja -DCMAKE_BUILD_TYPE=Release -DCMAKE_OSX_ARCHITECTURES=arm64 -DCMAKE_OSX_SYSROOT=iphonesimulator -DCMAKE_SYSTEM_NAME=iOS -DCMAKE_OSX_DEPLOYMENT_TARGET=13.0 -DLLAMA_CPP_SOURCE_DIR=/private/tmp/flva-llm-source -DFLVA_ENABLE_LOCAL_LLM=ON -DFLVA_BUILD_LLM_SMOKE=OFF -DBUILD_SHARED_LIBS=OFF -DGGML_METAL=OFF -DGGML_ACCELERATE=OFF -DGGML_BLAS=OFF -DGGML_OPENMP=OFF -DGGML_CPU_ALL_VARIANTS=OFF -DGGML_BACKEND_DL=OFF
+-- The C compiler identification is AppleClang 17.0.0.17000604
+-- The CXX compiler identification is AppleClang 17.0.0.17000604
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /Applications/Xcode 2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /Applications/Xcode 2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- llama.cpp version: 0.4.1-dev
+CMAKE_BUILD_TYPE=Release
+-- Found Git: /opt/homebrew/bin/git (found version "2.49.0") 
+fatal: not a git repository (or any of the parent directories): .git
+fatal: not a git repository (or any of the parent directories): .git
+-- The ASM compiler identification is Clang with GNU-like command-line
+-- Found assembler: /Applications/Xcode 2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/cc
+-- Setting GGML_NATIVE_DEFAULT to OFF
+-- Looking for pthread.h
+-- Looking for pthread.h - found
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- Warning: ccache not found - consider installing it for faster compilation or disable this warning with GGML_CCACHE=OFF
+-- CMAKE_SYSTEM_PROCESSOR: 
+-- GGML_SYSTEM_ARCH: ARM
+-- Including CPU backend
+-- ARM detected
+-- Performing Test GGML_COMPILER_SUPPORTS_FP16_FORMAT_I3E
+-- Performing Test GGML_COMPILER_SUPPORTS_FP16_FORMAT_I3E - Failed
+-- Checking for ARM features using flags:
+-- Performing Test HAVE_DOTPROD
+-- Performing Test HAVE_DOTPROD - Success
+-- Performing Test HAVE_SVE
+-- Performing Test HAVE_SVE - Failed
+-- Performing Test HAVE_MATMUL_INT8
+-- Performing Test HAVE_MATMUL_INT8 - Failed
+-- Performing Test HAVE_FMA
+-- Performing Test HAVE_FMA - Success
+-- Performing Test HAVE_FP16_VECTOR_ARITHMETIC
+-- Performing Test HAVE_FP16_VECTOR_ARITHMETIC - Success
+-- Performing Test HAVE_SME
+-- Performing Test HAVE_SME - Failed
+-- Adding CPU backend variant ggml-cpu:  
+-- ggml version: 0.24.0
+-- ggml commit:  unknown
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /tmp/flva-llm-final-ios/iphonesimulator
++ /Users/ortalcohen/Library/Android/sdk/cmake/3.22.1/bin/cmake --build /private/tmp/flva-llm-final-ios/iphonesimulator --parallel 2
+[1/80] Building C object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/arm/quants.c.o
+[2/80] Building C object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml.c.o
+[3/80] Building CXX object CMakeFiles/flva_llm_adapter.dir/llm_adapter.cpp.o
+[4/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml.cpp.o
+[5/80] Building C object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-alloc.c.o
+[6/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-backend.cpp.o
+[7/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-backend-meta.cpp.o
+[8/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-threading.cpp.o
+[9/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-opt.cpp.o
+[10/80] Building C object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-quants.c.o
+[11/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/gguf.cpp.o
+[12/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml.dir/ggml-backend-dl.cpp.o
+[13/80] Linking CXX static library llama.cpp/ggml/src/libggml-base.a
+[14/80] Building C object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.c.o
+[15/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml.dir/ggml-backend-reg.cpp.o
+[16/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.cpp.o
+[17/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/iqp.cpp.o
+[18/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/hbm.cpp.o
+[19/80] Building C object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/quants.c.o
+[20/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/repack.cpp.o
+[21/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/traits.cpp.o
+[22/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/amx.cpp.o
+[23/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/mmq.cpp.o
+[24/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/binary-ops.cpp.o
+[25/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/vec.cpp.o
+[26/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/unary-ops.cpp.o
+[27/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/llamafile/sgemm.cpp.o
+[28/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/arm/repack.cpp.o
+[29/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_9_cxx.cxx.o
+[30/80] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ops.cpp.o
+[31/80] Linking CXX static library llama.cpp/ggml/src/libggml-cpu.a
+[32/80] Linking CXX static library llama.cpp/ggml/src/libggml.a
+[33/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_8_cxx.cxx.o
+[34/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_7_cxx.cxx.o
+[35/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_6_cxx.cxx.o
+[36/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_4_cxx.cxx.o
+[37/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_5_cxx.cxx.o
+[38/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_2_cxx.cxx.o
+[39/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_3_cxx.cxx.o
+[40/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_0_cxx.cxx.o
+[41/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_1_cxx.cxx.o
+[42/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama.cpp.o
+[43/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-adapter.cpp.o
+[44/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-arch.cpp.o
+[45/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-batch.cpp.o
+[46/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-chat.cpp.o
+[47/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-cparams.cpp.o
+[48/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-context.cpp.o
+[49/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-grammar.cpp.o
+[50/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-graph.cpp.o
+[51/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-hparams.cpp.o
+[52/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-io.cpp.o
+[53/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-impl.cpp.o
+[54/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-iswa.cpp.o
+[55/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-dsa.cpp.o
+[56/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-dsa-iswa.cpp.o
+[57/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache.cpp.o
+[58/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-msa.cpp.o
+[59/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-memory.cpp.o
+[60/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-dsv4.cpp.o
+[61/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-memory-hybrid.cpp.o
+[62/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-memory-hybrid-iswa.cpp.o
+[63/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-memory-hybrid-idx.cpp.o
+[64/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-mmap.cpp.o
+[65/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-memory-recurrent.cpp.o
+[66/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-model-saver.cpp.o
+[67/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-model-loader.cpp.o
+[68/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-model.cpp.o
+[69/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-quant.cpp.o
+[70/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-sampler.cpp.o
+[71/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-vocab.cpp.o
+[72/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/unicode-data.cpp.o
+[73/80] Building CXX object llama.cpp/vendor/hash/CMakeFiles/vendor-hash.dir/hash.cpp.o
+[74/80] Building C object llama.cpp/vendor/hash/CMakeFiles/vendor-hash.dir/xxhash/xxhash.c.o
+[75/80] Building CXX object llama.cpp/vendor/hash/CMakeFiles/vendor-hash.dir/sha1/sha1.c.o
+[76/80] Building C object llama.cpp/vendor/hash/CMakeFiles/vendor-hash.dir/sha256/sha256.c.o
+[77/80] Linking CXX static library llama.cpp/vendor/hash/libvendor-hash.a
+[78/80] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/unicode.cpp.o
+[79/80] Linking CXX static library llama.cpp/src/libllama.a
+[80/80] Linking CXX static library libflva_llm_adapter.a
++ libtool -static -o /private/tmp/flva-llm-final-ios/archives/iphonesimulator/libflva_llm.a /private/tmp/flva-llm-final-ios/iphonesimulator/libflva_llm_adapter.a /private/tmp/flva-llm-final-ios/iphonesimulator/llama.cpp/ggml/src/libggml-base.a /private/tmp/flva-llm-final-ios/iphonesimulator/llama.cpp/ggml/src/libggml-cpu.a /private/tmp/flva-llm-final-ios/iphonesimulator/llama.cpp/ggml/src/libggml.a /private/tmp/flva-llm-final-ios/iphonesimulator/llama.cpp/src/libllama.a /private/tmp/flva-llm-final-ios/iphonesimulator/llama.cpp/vendor/hash/libvendor-hash.a
++ xcodebuild -create-xcframework -library /private/tmp/flva-llm-final-ios/archives/iphoneos/libflva_llm.a -headers /private/tmp/flva-llm-final-ios/headers -library /private/tmp/flva-llm-final-ios/archives/iphonesimulator/libflva_llm.a -headers /private/tmp/flva-llm-final-ios/headers -output /private/tmp/flva-llm-final-ios/flva-llm.xcframework
+2026-09-19 23:12:36.306 xcodebuild[90443:18131835]  DVTFilePathFSEvents: Failed to start fs event stream.
+2026-09-19 23:12:36.655 xcodebuild[90443:18131831] [MT] DVTDeveloperPaths: Failed to get length of DARWIN_USER_CACHE_DIR from confstr(3), error = Error Domain=NSPOSIXErrorDomain Code=5 "Input/output error". Using NSCachesDirectory instead.
+2026-09-19 23:12:37.237 xcodebuild[90443:18131835] CoreSimulatorService connection became invalid.  Simulator services will no longer be available.
+2026-09-19 23:12:37.238 xcodebuild[90443:18131969] Logging connecton invalid: <OS_xpc_error: <dictionary: 0x1eff92080> { count = 1, transaction: 0, voucher = 0x0, contents =
+	"XPCErrorDescription" => <string: 0x1eff921c0> { string cache = 0x0, length = 18, contents = "Connection invalid" }
+}>
+2026-09-19 23:12:37.238 xcodebuild[90443:18131969] Error opening log file (/Users/ortalcohen/Library/Logs/CoreSimulator/CoreSimulator.com.apple.dt.xcodebuild.log): Operation not permitted
+[-[SimServiceContext sendRequest:]:1743] ERROR : Unable to deliver request ({
+    "developer_dir" = "/Applications/Xcode 2.app/Contents/Developer";
+    request = "set_developer_dir";
+}) because we are not connected to CoreSimulatorService.
+[-[SimServiceContext initWithDeveloperDir:connectionType:error:]:450] WARN  : Unable to discover any Simulator runtimes. Developer Directory is /Applications/Xcode 2.app/Contents/Developer.
+[-[SimDiskImageManager init]:175] ERROR : Could not kickstart simdiskimaged; SimDiskImageManager services will not be available: Error Domain=NSPOSIXErrorDomain Code=53 "Software caused connection abort" UserInfo={NSLocalizedDescription=Error returned in reply from CoreSimulatorService: Connection invalid}
+[-[SimDiskImageManager _onQueue_checkConnection:]:239] ERROR : simdiskimaged returned error (invalid), marking disconnected.
+[-[SimDiskImageManager _onQueue_checkConnection:]:239] ERROR : simdiskimaged returned error (invalid), marking disconnected.
+[-[SimServiceContext initWithDeveloperDir:connectionType:error:]_block_invoke:486] ERROR : Could not get list of trusted mount directories: Error Domain=com.apple.CoreSimulator.SimError Code=410 "The service used to manage runtime disk images (simdiskimaged) crashed or is not responding" UserInfo={NSLocalizedDescription=The service used to manage runtime disk images (simdiskimaged) crashed or is not responding}
+[-[SimServiceContext sendRequest:reply:error:]:1763] ERROR : Unable to deliver request ({
+    request = "notification_subscription";
+    "set_path" = "/Users/ortalcohen/Library/Developer/CoreSimulator/Devices";
+}) because we are not connected to CoreSimulatorService.
+2026-09-19 23:12:37.453 xcodebuild[90443:18131836] Error Domain=NSPOSIXErrorDomain Code=61 "Connection refused" UserInfo={NSLocalizedDescription=CoreSimulatorService connection became invalid.  Simulator services will no longer be available.}
+2026-09-19 23:12:37.460 xcodebuild[90443:18131836]  IDESimulatorAvailability: startObservingSimulatorUpdates() FAILED to register SimDeviceSet observer
+xcframework successfully written out to: /private/tmp/flva-llm-final-ios/flva-llm.xcframework
+XCFramework: /private/tmp/flva-llm-final-ios/flva-llm.xcframework

@@ -22,6 +22,7 @@ Pod::Spec.new do |s|
     'CLANG_CXX_LANGUAGE_STANDARD' => 'c++17',
     'HEADER_SEARCH_PATHS' => '$(inherited) "${PODS_TARGET_SRCROOT}/../native/include" "${PODS_TARGET_SRCROOT}/../native/src" "${PODS_TARGET_SRCROOT}/../native/llm"',
     'DEFINES_MODULE' => 'YES',
+    'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => ENV['FLVA_ENABLE_LOCAL_LLM'] == '1' ? 'i386 x86_64' : 'i386',
     'GCC_PREPROCESSOR_DEFINITIONS' => ENV['FLVA_ENABLE_LOCAL_LLM'] == '1' ? '$(inherited) FLVA_ENABLE_LLM=1' : '$(inherited)'
   }
 end

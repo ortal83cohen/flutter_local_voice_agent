@@ -15,7 +15,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   Flutter: 71a624a5bc0c04062bf19101d501e466baf2fb47
-  flutter_local_voice_agent: f388be6f4d89faf5389c17f6d8bbe3d4e610aa12
+  flutter_local_voice_agent: 8a1ebc0ce1446478990594b7ce1fa40a1fa3e7d1
 
 PODFILE CHECKSUM: 53a6aebc29ccee84c41f92f409fc20cd4ca011f1
 
