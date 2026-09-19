@@ -1,0 +1,39 @@
+cmake_minimum_required(VERSION 3.22)
+project(flva_llm_adapter LANGUAGES C CXX)
+
+set(LLAMA_CPP_SOURCE_DIR "" CACHE PATH
+    "Pinned llama.cpp source directory")
+option(FLVA_ENABLE_LOCAL_LLM "Build the optional local llama.cpp adapter" OFF)
+option(FLVA_BUILD_LLM_SMOKE "Build the local GGUF smoke executable" ON)
+
+if(NOT FLVA_ENABLE_LOCAL_LLM)
+  return()
+endif()
+
+if(NOT EXISTS "${LLAMA_CPP_SOURCE_DIR}/include/llama.h")
+  message(FATAL_ERROR "LLAMA_CPP_SOURCE_DIR must contain pinned llama.cpp headers")
+endif()
+
+set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+set(LLAMA_BUILD_COMMON OFF CACHE BOOL "" FORCE)
+set(LLAMA_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(LLAMA_BUILD_TOOLS OFF CACHE BOOL "" FORCE)
+set(LLAMA_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(LLAMA_BUILD_SERVER OFF CACHE BOOL "" FORCE)
+set(LLAMA_BUILD_APP OFF CACHE BOOL "" FORCE)
+set(LLAMA_BUILD_UI OFF CACHE BOOL "" FORCE)
+set(GGML_NATIVE OFF CACHE BOOL "" FORCE)
+set(GGML_METAL OFF CACHE BOOL "" FORCE)
+set(GGML_ACCELERATE OFF CACHE BOOL "" FORCE)
+set(GGML_BLAS OFF CACHE BOOL "" FORCE)
+add_subdirectory("${LLAMA_CPP_SOURCE_DIR}" llama.cpp)
+
+add_library(flva_llm_adapter STATIC llm_adapter.cpp)
+target_include_directories(flva_llm_adapter PUBLIC "${CMAKE_CURRENT_LIST_DIR}")
+target_link_libraries(flva_llm_adapter PUBLIC llama)
+target_compile_features(flva_llm_adapter PUBLIC cxx_std_17)
+
+if(FLVA_BUILD_LLM_SMOKE)
+  add_executable(flva_llm_smoke smoke.cpp)
+  target_link_libraries(flva_llm_smoke PRIVATE flva_llm_adapter)
+endif()

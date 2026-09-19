@@ -1,0 +1,10 @@
+Analyzing dependencies
+[!] Failed to load 'flutter_local_voice_agent' podspec: 
+[!] Invalid `flutter_local_voice_agent.podspec` file: undefined method 'vendored_frameworks' for an instance of Pod::Specification.
+
+ #  from /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/example/ios/.symlinks/plugins/flutter_local_voice_agent/ios/flutter_local_voice_agent.podspec:18
+ #  -------------------------------------------
+ #    if ENV['FLVA_ENABLE_LOCAL_LLM'] == '1'
+ >      s.vendored_frameworks += ['Frameworks/flva-llm.xcframework']
+ #    end
+ #  -------------------------------------------

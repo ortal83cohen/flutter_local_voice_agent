@@ -1,8 +1,7 @@
-name: library_name
-description: A reusable Flutter library skeleton.
-version: 0.1.6
-repository: https://github.com/{organization}/{repository}
-homepage: https://github.com/{organization}/{repository}
+name: flutter_local_voice_agent
+description: Offline native voice pipeline with locally supplied speech models, explicit lifecycle controls, and bounded audio transport.
+version: 0.1.0
+repository: https://github.com/ortal83cohen/flutter_local_voice_agent
 
 environment:
   sdk: ^3.13.0
@@ -11,7 +10,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  crypto: ^3.0.6
 
 dev_dependencies:
+  flutter_test:
+    sdk: flutter
   flutter_lints: ^6.0.0
 
+flutter:
+  plugin:
+    platforms:
+      android:
+        package: dev.localvoice.flutter_local_voice_agent
+        pluginClass: FlutterLocalVoiceAgentPlugin
+      ios:
+        pluginClass: FlutterLocalVoiceAgentPlugin

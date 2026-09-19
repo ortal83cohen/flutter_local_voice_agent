@@ -1,0 +1,29 @@
+group 'dev.localvoice.flutter_local_voice_agent'
+version '0.1.0'
+buildscript {
+    repositories { google(); mavenCentral() }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:9.1.0'
+    }
+}
+apply plugin: 'com.android.library'
+android {
+    namespace 'dev.localvoice.flutter_local_voice_agent'
+    compileSdk 35
+    ndkVersion '28.2.13676358'
+    defaultConfig {
+        minSdk 26
+        externalNativeBuild { cmake {
+            cppFlags '-std=c++17'
+            arguments "-DFLVA_ENABLE_LOCAL_LLM=${project.findProperty('flvaEnableLocalLlm') ?: 'OFF'}",
+                "-DLLAMA_CPP_SOURCE_DIR=${project.findProperty('flvaLlamaSource') ?: ''}"
+        } }
+        ndk { abiFilters 'arm64-v8a' }
+    }
+    externalNativeBuild { cmake { path 'src/main/cpp/CMakeLists.txt' } }
+    compileOptions { sourceCompatibility JavaVersion.VERSION_17; targetCompatibility JavaVersion.VERSION_17 }
+}
+repositories { google(); mavenCentral() }
+kotlin {
+    compilerOptions { jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17 }
+}

@@ -1,0 +1,55 @@
+$ clang++ -std=c++17 -g -pthread -I/Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/native/include -I/Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/native/src /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/native/tests/spsc_ring_test.cpp -o /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/build/native/ring
+exit=0
+$ /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/build/native/ring
+exit=0
+PASS ring wrap/overflow/underflow/concurrency
+$ clang++ -std=c++17 -g -pthread -I/Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/native/include -I/Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/native/src /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/native/src/flva.cpp /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/native/tests/real_engine_smoke.cpp -L/private/tmp/flva-qualification/runtime/sherpa-onnx-v1.12.14-osx-universal2-shared/lib -lsherpa-onnx-c-api -Wl,-rpath,/private/tmp/flva-qualification/runtime/sherpa-onnx-v1.12.14-osx-universal2-shared/lib -o /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/build/native/real_engine_smoke
+exit=0
+$ /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/build/native/real_engine_smoke /private/tmp/flva-qualification/models/silero_vad.onnx /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/encoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/decoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/joiner-epoch-99-avg-1-chunk-16-left-128.int8.onnx /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/tokens.txt /private/tmp/flva-qualification/models/vits-ljs.onnx /private/tmp/flva-qualification/models/tokens.txt /private/tmp/flva-qualification/models/lexicon.txt /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/test_wavs/0.wav
+/Users/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/lexicon.cc:ConvertTokensToIds:91 Unknown token: ̃
+/Users/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/lexicon.cc:ConvertTokensToIds:91 Unknown token: ̃
+/Users/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/lexicon.cc:ConvertTokensToIds:91 Unknown token: ̃
+/Users/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/lexicon.cc:ConvertTokensToIds:91 Unknown token: ̃
+/Users/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/lexicon.cc:ConvertTokensToIds:91 Unknown token: ̃
+/Users/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/lexicon.cc:ConvertTokensToIds:91 Unknown token: ̃
+/Users/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/lexicon.cc:ConvertTokensToIds:91 Unknown token: (
+/Users/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/lexicon.cc:ConvertTokensToIds:91 Unknown token: ̃
+state  
+state  
+partial   AFTER EARLY NIGHTFALL THE YELLOW LAMPS WOULD LIGHT UP HERE AND THERE THE SQUALID QUARTER OF THE BROTHELS
+final   AFTER EARLY NIGHTFALL THE YELLOW LAMPS WOULD LIGHT UP HERE AND THERE THE SQUALID QUARTER OF THE BROTHELS
+reply  hello world
+state  
+state  
+exit=0
+PASS real_engine_smoke
+$ clang++ -std=c++17 -g -pthread -I/Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/native/include -I/Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/native/src /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/native/src/flva.cpp /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/native/tests/real_engine_failures.cpp -L/private/tmp/flva-qualification/runtime/sherpa-onnx-v1.12.14-osx-universal2-shared/lib -lsherpa-onnx-c-api -Wl,-rpath,/private/tmp/flva-qualification/runtime/sherpa-onnx-v1.12.14-osx-universal2-shared/lib -o /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/build/native/real_engine_failures
+exit=0
+$ /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/build/native/real_engine_failures /private/tmp/flva-qualification/models/silero_vad.onnx /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/encoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/decoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/joiner-epoch-99-avg-1-chunk-16-left-128.int8.onnx /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/tokens.txt /private/tmp/flva-qualification/models/vits-ljs.onnx /private/tmp/flva-qualification/models/tokens.txt /private/tmp/flva-qualification/models/lexicon.txt /private/tmp/flva-qualification/asr/sherpa-onnx-streaming-zipformer-en-2023-06-26/test_wavs/0.wav
+/Users/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/lexicon.cc:ConvertTokensToIds:91 Unknown token: ̃
+/Users/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/lexicon.cc:ConvertTokensToIds:91 Unknown token: ̃
+/Users/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/lexicon.cc:ConvertTokensToIds:91 Unknown token: ̃
+/Users/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/lexicon.cc:ConvertTokensToIds:91 Unknown token: ̃
+/Users/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/lexicon.cc:ConvertTokensToIds:91 Unknown token: ̃
+/Users/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/lexicon.cc:ConvertTokensToIds:91 Unknown token: ̃
+/Users/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/lexicon.cc:ConvertTokensToIds:91 Unknown token: (
+/Users/runner/work/sherpa-onnx/sherpa-onnx/sherpa-onnx/csrc/lexicon.cc:ConvertTokensToIds:91 Unknown token: ̃
+PASS missing path rejected
+PASS invalid input rate rejected
+PASS actual engine create
+PASS double start idempotent
+FAIL interrupt resumes capture while started
+PASS old generation reply refused
+PASS 241 scalar ASCII reply refused
+PASS truncated UTF-8 reply refused
+PASS first real final
+PASS first real reply admitted
+PASS first playback drained
+PASS second real final after reset
+PASS second real reply admitted
+PASS second playback drained
+PASS capture overflow surfaces error
+PASS cancelled generation renders silence
+PASS double stop and destroy after active worker
+PASSED 16 checks
+exit=1

@@ -1,0 +1,29 @@
+id: "0002-native-offline-pipeline"
+title: "Native offline pipeline implementation and qualification"
+route: full
+phase: implement
+round: 1
+verdict: pending
+owner_agent: root
+created: "2026-09-19"
+updated: "2026-09-19"
+blockers: []
+followups: []
+decisions:
+  - action: fix-research-F-001
+    reason: "Supplement records returned TTS audio destruction and upstream allocation limit gap; require worker RAII cleanup."
+  - action: fix-research-F-002
+    reason: "Clarify that installed shutdown simulators were enumerated but not built or run."
+  - action: fix-plan-P-01
+    reason: "Add frontmatter to all new wiki Markdown per explicit AGENTS requirement; naming convention exemption does not override it."
+  - action: qualification-boundary
+    reason: "VITS allocates complete sentences before callback; admitted PCM bounds do not establish an internal allocation cap. AC-004 remains an exit gate."
+  - action: scope
+    reason: "New implementation work; 0001 remains specification evidence only. No commit, publication or model redistribution authorized."
+  - action: design
+    reason: "Foreground half-duplex; native worker ownership; bounded PCM and events; generation gates; full duplex rejected until acoustic qualification."
+escalations: []
+
+validation_results:
+  plan_review_01: CONDITIONAL
+  research_review_01: CONDITIONAL

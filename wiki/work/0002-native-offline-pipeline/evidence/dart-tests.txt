@@ -1,0 +1,16 @@
+00:00 +0: loading /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_store_test.dart
+00:00 +0: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_store_test.dart: validates real local files with roles, hashes and licenses
+00:00 +1: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_store_test.dart: rejects traversal before native setup
+00:00 +2: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_store_test.dart: rejects a corrupt file hash
+00:00 +3: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_store_test.dart: rejects missing manifest
+00:00 +4: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_store_test.dart: rejects missing required model file
+00:00 +5: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_store_test.dart: rejects wrong profile and runtime
+00:00 +6: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/model_store_test.dart: rejects a symlink escape
+00:01 +7: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: final transcript invokes logic and sends current-generation reply
+00:01 +8: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: full duplex is rejected before platform create
+00:01 +9: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: concurrent start and dispose share native operations
+00:01 +10: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: suspension ignores a late logic reply
+00:01 +11: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: interrupt keeps polling and admits the next current final
+00:01 +12: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: late poll response after dispose is ignored
+00:01 +13: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/test/agent_test.dart: paused bounded delivery replaces backlog with terminal capacity fault
+00:01 +14: All tests passed!

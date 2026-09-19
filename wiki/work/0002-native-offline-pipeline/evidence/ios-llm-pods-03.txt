@@ -1,0 +1,6 @@
+Analyzing dependencies
+Downloading dependencies
+Installing flutter_local_voice_agent 0.1.0
+Generating Pods project
+[!] Unable to install vendored xcframework `flva-llm` for Pod `flutter_local_voice_agent` because it contains static libraries
+with differing binary names: libflva_llm_iphoneos and libflva_llm_iphonesimulator.

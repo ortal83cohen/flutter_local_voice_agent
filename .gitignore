@@ -33,3 +33,19 @@ Thumbs.db
 /example/build/
 /example/.dart_tool/
 /example/pubspec.lock
+
+# Locally provisioned native dependencies and generated platform files
+/android/src/main/jniLibs/
+/ios/Frameworks/
+/example/android/local.properties
+/example/android/.gradle/
+/example/android/.kotlin/
+/example/ios/Pods/
+/example/ios/.symlinks/
+/example/ios/Flutter/Generated.xcconfig
+/example/ios/Flutter/flutter_export_environment.sh
+/example/ios/Flutter/ephemeral/
+/example/ios/Runner/GeneratedPluginRegistrant.*
+/.flutter-plugins-dependencies
+/example/.flutter-plugins-dependencies
+/android/.cxx/

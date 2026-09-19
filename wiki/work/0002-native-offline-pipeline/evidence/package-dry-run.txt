@@ -1,0 +1,231 @@
+Resolving dependencies...
+Downloading packages...
+  material_color_utilities 0.13.0 (0.13.1 available)
+  test_api 0.7.12 (0.7.14 available)
+Got dependencies!
+2 packages have newer versions incompatible with dependency constraints.
+Try `flutter pub outdated` for more information.
+Publishing flutter_local_voice_agent 0.1.0 to https://pub.dev:
+├── CHANGELOG.md (<1 KB)
+├── LICENSE (1 KB)
+├── README.md (4 KB)
+├── android
+│   ├── build.gradle (1 KB)
+│   └── src
+│       └── main
+│           ├── AndroidManifest.xml (<1 KB)
+│           ├── cpp
+│           │   ├── CMakeLists.txt (1 KB)
+│           │   └── bridge.cpp (3 KB)
+│           └── kotlin
+│               └── dev
+│                   └── localvoice
+│                       └── flutter_local_voice_agent
+│                           └── FlutterLocalVoiceAgentPlugin.kt (12 KB)
+├── doc
+│   ├── capabilities.md (1 KB)
+│   ├── llm.md (2 KB)
+│   ├── models.md (3 KB)
+│   └── testing.md (4 KB)
+├── example
+│   ├── analysis_options.yaml (<1 KB)
+│   ├── android
+│   │   ├── app
+│   │   │   ├── build.gradle.kts (1 KB)
+│   │   │   └── src
+│   │   │       ├── debug
+│   │   │       │   └── AndroidManifest.xml (<1 KB)
+│   │   │       ├── main
+│   │   │       │   ├── AndroidManifest.xml (2 KB)
+│   │   │       │   ├── kotlin
+│   │   │       │   │   └── dev
+│   │   │       │   │       └── localvoice
+│   │   │       │   │           └── flutter_local_voice_agent_example
+│   │   │       │   │               └── MainActivity.kt (<1 KB)
+│   │   │       │   └── res
+│   │   │       │       ├── drawable
+│   │   │       │       │   └── launch_background.xml (<1 KB)
+│   │   │       │       ├── drawable-v21
+│   │   │       │       │   └── launch_background.xml (<1 KB)
+│   │   │       │       ├── mipmap-hdpi
+│   │   │       │       │   └── ic_launcher.png (<1 KB)
+│   │   │       │       ├── mipmap-mdpi
+│   │   │       │       │   └── ic_launcher.png (<1 KB)
+│   │   │       │       ├── mipmap-xhdpi
+│   │   │       │       │   └── ic_launcher.png (<1 KB)
+│   │   │       │       ├── mipmap-xxhdpi
+│   │   │       │       │   └── ic_launcher.png (1 KB)
+│   │   │       │       ├── mipmap-xxxhdpi
+│   │   │       │       │   └── ic_launcher.png (1 KB)
+│   │   │       │       ├── values
+│   │   │       │       │   └── styles.xml (<1 KB)
+│   │   │       │       └── values-night
+│   │   │       │           └── styles.xml (<1 KB)
+│   │   │       └── profile
+│   │   │           └── AndroidManifest.xml (<1 KB)
+│   │   ├── build.gradle.kts (<1 KB)
+│   │   ├── flutter_local_voice_agent_example_android.iml (1 KB)
+│   │   ├── gradle
+│   │   │   └── wrapper
+│   │   │       └── gradle-wrapper.properties (<1 KB)
+│   │   ├── gradle.properties (<1 KB)
+│   │   └── settings.gradle.kts (<1 KB)
+│   ├── ios
+│   │   ├── Flutter
+│   │   │   ├── AppFrameworkInfo.plist (<1 KB)
+│   │   │   ├── Debug.xcconfig (<1 KB)
+│   │   │   └── Release.xcconfig (<1 KB)
+│   │   ├── Podfile (1 KB)
+│   │   ├── Podfile.lock (<1 KB)
+│   │   ├── Runner
+│   │   │   ├── AppDelegate.swift (<1 KB)
+│   │   │   ├── Assets.xcassets
+│   │   │   │   ├── AppIcon.appiconset
+│   │   │   │   │   ├── Contents.json (2 KB)
+│   │   │   │   │   ├── Icon-App-1024x1024@1x.png (10 KB)
+│   │   │   │   │   ├── Icon-App-20x20@1x.png (<1 KB)
+│   │   │   │   │   ├── Icon-App-20x20@2x.png (<1 KB)
+│   │   │   │   │   ├── Icon-App-20x20@3x.png (<1 KB)
+│   │   │   │   │   ├── Icon-App-29x29@1x.png (<1 KB)
+│   │   │   │   │   ├── Icon-App-29x29@2x.png (<1 KB)
+│   │   │   │   │   ├── Icon-App-29x29@3x.png (<1 KB)
+│   │   │   │   │   ├── Icon-App-40x40@1x.png (<1 KB)
+│   │   │   │   │   ├── Icon-App-40x40@2x.png (<1 KB)
+│   │   │   │   │   ├── Icon-App-40x40@3x.png (<1 KB)
+│   │   │   │   │   ├── Icon-App-60x60@2x.png (<1 KB)
+│   │   │   │   │   ├── Icon-App-60x60@3x.png (1 KB)
+│   │   │   │   │   ├── Icon-App-76x76@1x.png (<1 KB)
+│   │   │   │   │   ├── Icon-App-76x76@2x.png (1 KB)
+│   │   │   │   │   └── Icon-App-83.5x83.5@2x.png (1 KB)
+│   │   │   │   └── LaunchImage.imageset
+│   │   │   │       ├── Contents.json (<1 KB)
+│   │   │   │       ├── LaunchImage.png (<1 KB)
+│   │   │   │       ├── LaunchImage@2x.png (<1 KB)
+│   │   │   │       ├── LaunchImage@3x.png (<1 KB)
+│   │   │   │       └── README.md (<1 KB)
+│   │   │   ├── Base.lproj
+│   │   │   │   ├── LaunchScreen.storyboard (2 KB)
+│   │   │   │   └── Main.storyboard (1 KB)
+│   │   │   ├── Info.plist (2 KB)
+│   │   │   ├── Runner-Bridging-Header.h (<1 KB)
+│   │   │   └── SceneDelegate.swift (<1 KB)
+│   │   ├── Runner.xcodeproj
+│   │   │   ├── project.pbxproj (32 KB)
+│   │   │   ├── project.xcworkspace
+│   │   │   │   ├── contents.xcworkspacedata (<1 KB)
+│   │   │   │   └── xcshareddata
+│   │   │   │       ├── IDEWorkspaceChecks.plist (<1 KB)
+│   │   │   │       ├── WorkspaceSettings.xcsettings (<1 KB)
+│   │   │   │       └── swiftpm
+│   │   │   │           └── configuration
+│   │   │   └── xcshareddata
+│   │   │       └── xcschemes
+│   │   │           └── Runner.xcscheme (4 KB)
+│   │   ├── Runner.xcworkspace
+│   │   │   ├── contents.xcworkspacedata (<1 KB)
+│   │   │   └── xcshareddata
+│   │   │       ├── IDEWorkspaceChecks.plist (<1 KB)
+│   │   │       ├── WorkspaceSettings.xcsettings (<1 KB)
+│   │   │       └── swiftpm
+│   │   │           └── configuration
+│   │   └── RunnerTests
+│   │       └── RunnerTests.swift (<1 KB)
+│   ├── lib
+│   │   └── main.dart (5 KB)
+│   ├── pubspec.yaml (<1 KB)
+│   └── web
+│       └── index.html (<1 KB)
+├── ios
+│   ├── Classes
+│   │   ├── FlutterLocalVoiceAgentPlugin.h (<1 KB)
+│   │   ├── FlutterLocalVoiceAgentPlugin.mm (10 KB)
+│   │   └── NativeCore.mm (<1 KB)
+│   └── flutter_local_voice_agent.podspec (1 KB)
+├── lib
+│   ├── flutter_local_voice_agent.dart (<1 KB)
+│   └── src
+│       ├── agent.dart (14 KB)
+│       ├── bounded_stream.dart (2 KB)
+│       ├── contracts.dart (1 KB)
+│       ├── model_store.dart (7 KB)
+│       └── models.dart (5 KB)
+├── native
+│   ├── include
+│   │   ├── c-api.h (70 KB)
+│   │   └── flva.h (1 KB)
+│   ├── llm
+│   │   ├── CMakeLists.txt (1 KB)
+│   │   ├── llm_adapter.cpp (8 KB)
+│   │   ├── llm_adapter.h (<1 KB)
+│   │   └── smoke.cpp (1 KB)
+│   ├── src
+│   │   ├── flva.cpp (23 KB)
+│   │   ├── resampler.h (3 KB)
+│   │   └── spsc_ring.h (1 KB)
+│   └── third_party
+├── pubspec.yaml (<1 KB)
+├── third_party
+│   ├── README.md (<1 KB)
+│   └── sherpa-onnx-LICENSE (11 KB)
+└── tools
+    ├── build_llm_ios.py (3 KB)
+    ├── create_model_manifest.py (1 KB)
+    ├── provision_llama.py (1 KB)
+    ├── provision_runtime.py (2 KB)
+    └── test_native.py (2 KB)
+
+Total compressed archive size: 94 KB.
+Validating package...
+Package validation found the following 4 potential issues:
+* 8 checked-in files are ignored by a `.gitignore`.
+  Previous versions of Pub would include those in the published package.
+  
+  Consider adjusting your `.gitignore` files to not ignore those files, and if you do not wish to
+  publish these files use `.pubignore`. See also dart.dev/go/pubignore
+  
+  Files that are checked in while gitignored:
+  
+  .idea/.gitignore
+  .idea/flutter_local_voice_agent.iml
+  .idea/markdown.xml
+  .idea/misc.xml
+  .idea/modules.xml
+  .idea/vcs.xml
+  lib/library_name.dart
+  lib/src/library.dart
+  
+  
+
+* 72 checked-in files are modified in git.
+  
+  Usually you want to publish from a clean git state.
+  
+  Consider committing these files or reverting the changes.
+  
+  Modified files:
+  
+  README.md
+  android/build.gradle
+  android/src/main/AndroidManifest.xml
+  android/src/main/cpp/CMakeLists.txt
+  android/src/main/cpp/bridge.cpp
+  android/src/main/kotlin/dev/localvoice/flutter_local_voice_agent/FlutterLocalVoiceAgentPlugin.kt
+  example/android/app/build.gradle.kts
+  example/android/app/src/debug/AndroidManifest.xml
+  example/android/app/src/main/AndroidManifest.xml
+  example/android/app/src/main/kotlin/dev/localvoice/flutter_local_voice_agent_example/MainActivity.kt
+  ...
+  
+  Run `git status` for more information.
+  
+
+* It's strongly recommended to include a "homepage" or "repository" field in your pubspec.yaml
+
+* Rename the top-level "tools" directory to "tool".
+  The Pub layout convention is to use singular directory names.
+  Plural names won't be correctly identified by Pub and other tools.
+  See https://dart.dev/tools/pub/package-layout.
+The server may enforce additional checks.
+
+Package has 4 warnings.
+Failed to update packages.

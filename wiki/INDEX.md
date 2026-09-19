@@ -61,3 +61,26 @@ to this index when they are created.
 | [Research review round 2](work/0001-local-voice-agent-architecture/validation/research-review-02.md) | Inspecting the independent source-confirmation verdict. |
 | [Specification review](work/0001-local-voice-agent-architecture/validation/impl-review-01.md) | Inspecting per-criterion evidence and the independent documentation verdict. |
 | [Delivery record](work/0001-local-voice-agent-architecture/05-delivery.md) | Understanding delivered scope, review outcomes and remaining verification gates. |
+
+## Native offline pipeline implementation
+
+| Document | Read it when |
+|---|---|
+| [00-research](work/0002-native-offline-pipeline/00-research.md) | Inspecting implementation plans, evidence or current gates. |
+| [01-plan](work/0002-native-offline-pipeline/01-plan.md) | Inspecting implementation plans, evidence or current gates. |
+| [02-criteria](work/0002-native-offline-pipeline/02-criteria.md) | Inspecting implementation plans, evidence or current gates. |
+| [03-tasks](work/0002-native-offline-pipeline/03-tasks.md) | Inspecting implementation plans, evidence or current gates. |
+| [STATE](work/0002-native-offline-pipeline/STATE.yaml) | Inspecting implementation plans, evidence or current gates. |
+| [llm](work/0002-native-offline-pipeline/research/llm.md) | Inspecting implementation plans, evidence or current gates. |
+| [mobile](work/0002-native-offline-pipeline/research/mobile.md) | Inspecting implementation plans, evidence or current gates. |
+| [speech](work/0002-native-offline-pipeline/research/speech.md) | Inspecting implementation plans, evidence or current gates. |
+| [provisioning](work/0002-native-offline-pipeline/research/provisioning.md) | Inspecting implementation evidence and open gates. |
+| [research-review-01](work/0002-native-offline-pipeline/validation/research-review-01.md) | Inspecting implementation evidence and open gates. |
+| [plan-review-01](work/0002-native-offline-pipeline/validation/plan-review-01.md) | Inspecting implementation evidence and open gates. |
+
+## Release pipeline
+
+| Document | Read it when |
+|---|---|
+| [Pub.dev release pipeline](product/pubdev-release-pipeline.md) | Configuring checks, release tagging, or GitHub OIDC publication. |
+| [Pipeline work item](work/0003-pubdev-release-pipeline/00-research.md) | Reviewing the research, criteria, tasks, and external release gates. |

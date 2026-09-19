@@ -1,0 +1,8 @@
+Building dev.localvoice.flutterLocalVoiceAgentExample for simulator (ios)...
+The following plugins do not support Swift Package Manager for ios:
+  - flutter_local_voice_agent
+This will become an error in a future version of Flutter. Please contact the plugin maintainers to request Swift Package Manager adoption.
+Plugin flutter_local_voice_agent does not have Swift Package Manager support for ios. Consider adding Swift Package Manager compatibility to your plugin. See https://docs.flutter.dev/packages-and-plugins/swift-package-manager/for-plugin-authors for more information.
+Running Xcode build...                                          
+Xcode build done.                                            9.0s
+✓ Built build/ios/iphonesimulator/Runner.app

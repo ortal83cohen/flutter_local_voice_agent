@@ -1,0 +1,8 @@
+Analyzing dependencies
+Downloading dependencies
+Installing flutter_local_voice_agent 0.1.0
+Generating Pods project
+Integrating client project
+Pod installation complete! There are 2 dependencies from the Podfile and 2 total pods installed.
+
+[!] CocoaPods did not set the base configuration of your project because your project already has a custom config set. In order for CocoaPods integration to work at all, please either set the base configurations of the target `Runner` to `Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig` or include the `Target Support Files/Pods-Runner/Pods-Runner.profile.xcconfig` in your build configuration (`Flutter/Release.xcconfig`).

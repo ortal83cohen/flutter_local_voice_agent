@@ -1,0 +1,139 @@
+-- The C compiler identification is AppleClang 17.0.0.17000604
+-- The CXX compiler identification is AppleClang 17.0.0.17000604
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/clang - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/clang++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- llama.cpp version: 0.4.1-dev
+CMAKE_BUILD_TYPE=Release
+-- Found Git: /opt/homebrew/bin/git (found version "2.49.0") 
+fatal: not a git repository (or any of the parent directories): .git
+fatal: not a git repository (or any of the parent directories): .git
+-- The ASM compiler identification is Clang with GNU-like command-line
+-- Found assembler: /Applications/Xcode 2.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang
+-- Looking for pthread.h
+-- Looking for pthread.h - found
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- Warning: ccache not found - consider installing it for faster compilation or disable this warning with GGML_CCACHE=OFF
+-- CMAKE_SYSTEM_PROCESSOR: arm64
+-- GGML_SYSTEM_ARCH: ARM
+-- Could NOT find OpenMP_C (missing: OpenMP_C_FLAGS OpenMP_C_LIB_NAMES) 
+-- Could NOT find OpenMP_CXX (missing: OpenMP_CXX_FLAGS OpenMP_CXX_LIB_NAMES) 
+-- Could NOT find OpenMP (missing: OpenMP_C_FOUND OpenMP_CXX_FOUND) 
+CMake Warning at /tmp/flva-llm-source/ggml/src/CMakeLists.txt:347 (message):
+  OpenMP not found
+
+
+-- Including CPU backend
+-- ARM detected
+-- Performing Test GGML_COMPILER_SUPPORTS_FP16_FORMAT_I3E
+-- Performing Test GGML_COMPILER_SUPPORTS_FP16_FORMAT_I3E - Failed
+-- Checking for ARM features using flags:
+-- Performing Test HAVE_DOTPROD
+-- Performing Test HAVE_DOTPROD - Success
+-- Performing Test HAVE_SVE
+-- Performing Test HAVE_SVE - Failed
+-- Performing Test HAVE_MATMUL_INT8
+-- Performing Test HAVE_MATMUL_INT8 - Failed
+-- Performing Test HAVE_FMA
+-- Performing Test HAVE_FMA - Success
+-- Performing Test HAVE_FP16_VECTOR_ARITHMETIC
+-- Performing Test HAVE_FP16_VECTOR_ARITHMETIC - Success
+-- Performing Test HAVE_SME
+-- Performing Test HAVE_SME - Failed
+-- Adding CPU backend variant ggml-cpu:  
+-- ggml version: 0.24.0
+-- ggml commit:  unknown
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /Users/ortalcohen/Documents/GitHub/flutter_local_voice_agent/build/llm-host
+[1/82] Building CXX object CMakeFiles/flva_llm_smoke.dir/smoke.cpp.o
+[2/82] Building CXX object CMakeFiles/flva_llm_adapter.dir/llm_adapter.cpp.o
+[3/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml.cpp.o
+[4/82] Building C object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-alloc.c.o
+[5/82] Building C object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml.c.o
+[6/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-backend.cpp.o
+[7/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-backend-meta.cpp.o
+[8/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-threading.cpp.o
+[9/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-opt.cpp.o
+[10/82] Building C object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/ggml-quants.c.o
+[11/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-base.dir/gguf.cpp.o
+[12/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml.dir/ggml-backend-dl.cpp.o
+[13/82] Linking CXX static library llama.cpp/ggml/src/libggml-base.a
+[14/82] Building C object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.c.o
+[15/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml.dir/ggml-backend-reg.cpp.o
+[16/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.cpp.o
+[17/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/iqp.cpp.o
+[18/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/hbm.cpp.o
+[19/82] Building C object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/quants.c.o
+[20/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/traits.cpp.o
+[21/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/repack.cpp.o
+[22/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/amx.cpp.o
+[23/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/mmq.cpp.o
+[24/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/binary-ops.cpp.o
+[25/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/unary-ops.cpp.o
+[26/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/vec.cpp.o
+[27/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/llamafile/sgemm.cpp.o
+[28/82] Building C object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/arm/quants.c.o
+[29/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/arm/repack.cpp.o
+[30/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_9_cxx.cxx.o
+[31/82] Building CXX object llama.cpp/ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ops.cpp.o
+[32/82] Linking CXX static library llama.cpp/ggml/src/libggml-cpu.a
+[33/82] Linking CXX static library llama.cpp/ggml/src/libggml.a
+[34/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_8_cxx.cxx.o
+[35/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_7_cxx.cxx.o
+[36/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_6_cxx.cxx.o
+[37/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_5_cxx.cxx.o
+[38/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_4_cxx.cxx.o
+[39/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_3_cxx.cxx.o
+[40/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_2_cxx.cxx.o
+[41/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_0_cxx.cxx.o
+[42/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/Unity/unity_1_cxx.cxx.o
+[43/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama.cpp.o
+[44/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-adapter.cpp.o
+[45/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-arch.cpp.o
+[46/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-batch.cpp.o
+[47/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-chat.cpp.o
+[48/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-cparams.cpp.o
+[49/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-context.cpp.o
+[50/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-grammar.cpp.o
+[51/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-hparams.cpp.o
+[52/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-impl.cpp.o
+[53/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-io.cpp.o
+[54/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-graph.cpp.o
+[55/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-iswa.cpp.o
+[56/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-dsa.cpp.o
+[57/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-dsa-iswa.cpp.o
+[58/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache.cpp.o
+[59/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-msa.cpp.o
+[60/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-memory.cpp.o
+[61/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-kv-cache-dsv4.cpp.o
+[62/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-memory-hybrid.cpp.o
+[63/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-memory-hybrid-iswa.cpp.o
+[64/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-memory-hybrid-idx.cpp.o
+[65/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-memory-recurrent.cpp.o
+[66/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-mmap.cpp.o
+[67/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-model-saver.cpp.o
+[68/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-model-loader.cpp.o
+[69/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-model.cpp.o
+[70/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-quant.cpp.o
+[71/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-vocab.cpp.o
+[72/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/llama-sampler.cpp.o
+[73/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/unicode-data.cpp.o
+[74/82] Building CXX object llama.cpp/vendor/hash/CMakeFiles/vendor-hash.dir/hash.cpp.o
+[75/82] Building C object llama.cpp/vendor/hash/CMakeFiles/vendor-hash.dir/xxhash/xxhash.c.o
+[76/82] Building CXX object llama.cpp/vendor/hash/CMakeFiles/vendor-hash.dir/sha1/sha1.c.o
+[77/82] Building C object llama.cpp/vendor/hash/CMakeFiles/vendor-hash.dir/sha256/sha256.c.o
+[78/82] Linking CXX static library llama.cpp/vendor/hash/libvendor-hash.a
+[79/82] Building CXX object llama.cpp/src/CMakeFiles/llama.dir/unicode.cpp.o
+[80/82] Linking CXX static library llama.cpp/src/libllama.a
+[81/82] Linking CXX static library libflva_llm_adapter.a
+[82/82] Linking CXX executable flva_llm_smoke

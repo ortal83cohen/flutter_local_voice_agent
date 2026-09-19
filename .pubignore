@@ -1,5 +1,5 @@
 # Repository-only source and verification material
-/tools/
+/tools/lint_wiki.py
 /wiki/
 /analysis_options.yaml
 
@@ -39,3 +39,12 @@ __pycache__/
 venv/
 .DS_Store
 Thumbs.db
+
+# Native archives require separate distribution review.
+/android/src/main/jniLibs/
+/ios/Frameworks/
+/native/tests/
+/test/
+/example/ios/Pods/
+/example/ios/.symlinks/
+/example/android/.gradle/
