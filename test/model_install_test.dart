@@ -22,12 +22,14 @@ void main() {
       );
 
       expect(await File(installed.manifestPath).exists(), isTrue);
-      final sourceHash = await File(
-        '${source.path}/vad',
-      ).openRead().transform(sha256).single;
-      final installedHash = await File(
-        '${installed.directory}/vad',
-      ).openRead().transform(sha256).single;
+      final sourceHash = await File('${source.path}/vad')
+          .openRead()
+          .transform(sha256)
+          .single;
+      final installedHash = await File('${installed.directory}/vad')
+          .openRead()
+          .transform(sha256)
+          .single;
       expect(installedHash.toString(), sourceHash.toString());
       expect(
         await const FileModelStore().validate(installed),
@@ -174,10 +176,9 @@ Future<void> _mutateManifest(
   Directory root,
   void Function(Map<String, Object?> document) mutate,
 ) async {
-  final document =
-      (jsonDecode(await File('${root.path}/manifest.json').readAsString())
-              as Map)
-          .map((key, value) => MapEntry('$key', value));
+  final document = (jsonDecode(
+    await File('${root.path}/manifest.json').readAsString(),
+  ) as Map).map((key, value) => MapEntry('$key', value));
   final files = (document['files']! as List)
       .map((item) => Map<String, Object?>.from(item as Map))
       .toList();

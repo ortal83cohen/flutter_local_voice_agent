@@ -73,9 +73,9 @@ void main() {
   test('rejects wrong profile and runtime', () async {
     final fixture = await _fixture();
     addTearDown(() => fixture.delete(recursive: true));
-    final map =
-        jsonDecode(await File('${fixture.path}/manifest.json').readAsString())
-            as Map<String, Object?>;
+    final map = jsonDecode(
+      await File('${fixture.path}/manifest.json').readAsString(),
+    ) as Map<String, Object?>;
     map['profile'] = 'wrong';
     await File('${fixture.path}/manifest.json').writeAsString(jsonEncode(map));
     await expectLater(

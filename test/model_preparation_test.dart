@@ -526,43 +526,40 @@ void main() {
       release.complete();
     });
 
-    test(
-      'cancel before transfer prevents requests and cancel after ready is a no-op',
-      () async {
-        final payloads = _payloads();
-        final server = await _servePayloads(payloads);
-        addTearDown(server.close);
-        final cancelledRoot = await Directory.systemTemp.createTemp(
-          'flva-cancel-early-',
-        );
-        final readyRoot = await Directory.systemTemp.createTemp(
-          'flva-cancel-ready-',
-        );
-        addTearDown(() => _deleteIfPresent(cancelledRoot));
-        addTearDown(() => _deleteIfPresent(readyRoot));
-        final descriptor = _descriptor(server, payloads);
+    test('cancel before transfer prevents requests and cancel after ready is a no-op', () async {
+      final payloads = _payloads();
+      final server = await _servePayloads(payloads);
+      addTearDown(server.close);
+      final cancelledRoot = await Directory.systemTemp.createTemp(
+        'flva-cancel-early-',
+      );
+      final readyRoot = await Directory.systemTemp.createTemp(
+        'flva-cancel-ready-',
+      );
+      addTearDown(() => _deleteIfPresent(cancelledRoot));
+      addTearDown(() => _deleteIfPresent(readyRoot));
+      final descriptor = _descriptor(server, payloads);
 
-        final cancelled = ModelPreparationManager(
-          rootDirectory: cancelledRoot.path,
-          httpClientFactory: server.createClient,
-        ).prepare(descriptor);
-        cancelled.cancel();
-        await _expectFailure(cancelled, ModelPreparationErrorCode.cancelled);
-        expect(server.requestCount, 0);
-        expect(await _stages(cancelledRoot), isEmpty);
+      final cancelled = ModelPreparationManager(
+        rootDirectory: cancelledRoot.path,
+        httpClientFactory: server.createClient,
+      ).prepare(descriptor);
+      cancelled.cancel();
+      await _expectFailure(cancelled, ModelPreparationErrorCode.cancelled);
+      expect(server.requestCount, 0);
+      expect(await _stages(cancelledRoot), isEmpty);
 
-        final ready = ModelPreparationManager(
-          rootDirectory: readyRoot.path,
-          httpClientFactory: server.createClient,
-        ).prepare(descriptor);
-        final bundle = await ready.result;
-        final snapshot = ready.progress;
-        ready.cancel();
-        expect(ready.progress.phase, ModelPreparationPhase.ready);
-        expect(identical(ready.progress, snapshot), isTrue);
-        expect(await File(bundle.manifestPath).exists(), isTrue);
-      },
-    );
+      final ready = ModelPreparationManager(
+        rootDirectory: readyRoot.path,
+        httpClientFactory: server.createClient,
+      ).prepare(descriptor);
+      final bundle = await ready.result;
+      final snapshot = ready.progress;
+      ready.cancel();
+      expect(ready.progress.phase, ModelPreparationPhase.ready);
+      expect(identical(ready.progress, snapshot), isTrue);
+      expect(await File(bundle.manifestPath).exists(), isTrue);
+    });
   });
 
   group('cache and activation safety', () {
@@ -592,9 +589,8 @@ void main() {
               (files.first as Map)['source'] = 'rewritten-but-self-consistent';
               await manifest.writeAsString(jsonEncode(document));
             } else if (mode == 'file') {
-              await File(
-                '${installed.directory}/$firstPath',
-              ).writeAsString('tampered');
+              await File('${installed.directory}/$firstPath')
+                  .writeAsString('tampered');
             } else {
               final file = File('${installed.directory}/$firstPath');
               final bytes = await file.readAsBytes();
@@ -704,9 +700,8 @@ void main() {
         addTearDown(server.close);
         final root = await Directory.systemTemp.createTemp('flva-versions-');
         addTearDown(() => _deleteIfPresent(root));
-        final abandoned = await Directory(
-          '${root.path}/.stage-abandoned',
-        ).create();
+        final abandoned = await Directory('${root.path}/.stage-abandoned')
+            .create();
         final first = await ModelPreparationManager(
           rootDirectory: root.path,
           httpClientFactory: server.createClient,

@@ -360,9 +360,8 @@ final class _PreparationOperation implements ModelPreparation {
     }
     _checkCancelled();
     try {
-      await File(
-        '${_stage!.path}${Platform.pathSeparator}manifest.json',
-      ).writeAsBytes(trusted.manifestBytes, flush: true);
+      await File('${_stage!.path}${Platform.pathSeparator}manifest.json')
+          .writeAsBytes(trusted.manifestBytes, flush: true);
     } on FileSystemException {
       throw _storage('Cannot write the staged model manifest.');
     }
