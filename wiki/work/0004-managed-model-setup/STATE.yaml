@@ -1,0 +1,40 @@
+id: "0004-managed-model-setup"
+title: "Managed model preparation and simple first-use experience"
+route: full
+phase: plan
+round: 1
+verdict: CONDITIONAL
+owner_agent: root
+created: "2026-09-20"
+updated: "2026-09-20"
+blockers: []
+followups:
+  - "Finalize default asset revisions, distribution source/notices, sizes and device qualification."
+  - "Finalize API names and native dependency packaging before freezing criteria."
+  - "Runtime implementation and all implementation acceptance checks are pending."
+  - "Background downloads and partial-file byte-range resume are explicitly deferred; foreground retry is in scope."
+decisions:
+  - action: scope
+    reason: "User requested documentation of needed changes only; no runtime code, model redistribution, release or prior acceptance-criteria changes."
+  - action: proposal
+    reason: "One recommended speech bundle, explicit managed preparation, existing offline create path, optional LLM separate."
+  - action: research-review-01
+    reason: "Accept PASS for source-grounded research only. Preserve pre-existing VITS and physical-device gates and all explicitly unresolved selections."
+  - action: plan-review-01
+    reason: "Accept planning coverage. Repair the sole report-schema finding by appending required sections to research-review-01 without changing its verdict; coordinator checks follow. No second validator round is needed for this format correction."
+  - action: retain-draft-plan
+    reason: "Documentation request is delivered; implementation plan remains draft until listed asset, API and packaging decisions close. No runtime task or acceptance criterion is marked complete."
+  - action: workflow
+    reason: "Follow wiki/conventions/workflow.md directly; no feature skill file was found in repository agent configuration. Stop at reviewed planning for this documentation-only request."
+escalations: []
+
+validation_results:
+  research_review_01: "PASS: research accuracy only; no runtime acceptance."
+  plan_review_01: "CONDITIONAL: planning coverage; sole report-format finding repaired by coordinator."
+  coordinator_wiki_command: "python3 tool/lint_wiki.py"
+  coordinator_wiki_output: "lint_wiki: clean (0 warning(s))."
+  coordinator_links_output: "Documentation links: clean (12 files checked)."
+  coordinator_index_output: "New wiki document index coverage: clean."
+  coordinator_whitespace_command: "git diff --check"
+  coordinator_whitespace_output: "Exit 0; no output."
+  runtime_validation: "Not run: documentation-only changes; implementation acceptance remains pending."

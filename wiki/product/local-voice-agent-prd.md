@@ -3,7 +3,7 @@ id: local-voice-agent-prd
 title: Flutter Local Voice Agent - Technical PRD and Implementation Architecture
 status: draft
 owner: unassigned
-last_verified: 2026-09-19
+last_verified: 2026-09-20
 applies_to: ["lib/**", "example/**", "android/**", "ios/**"]
 summary: Researched, proposed architecture and implementation roadmap for a strictly offline Flutter voice agent.
 ---
@@ -12,7 +12,16 @@ summary: Researched, proposed architecture and implementation roadmap for a stri
 
 **Status: proposed specification, not an implemented SDK.** Research date: 19 September 2026. Android and iOS are the primary targets. All API declarations, numerical budgets and project layouts below are proposals. Target-device performance, runtime behavior and compatibility remain **[UNVERIFIED]** until the specified experiments pass.
 
-The repository currently contains a generic `library_name` skeleton, not the proposed `flutter_local_voice_agent` exports; see [pubspec](../../pubspec.yaml) and [existing facade](../../lib/library_name.dart). This work changes documentation only.
+At the original research date, this specification described a generic skeleton. The current native implementation and remaining qualification gates are tracked in [work item 0002](../work/0002-native-offline-pipeline/STATE.yaml); the [public facade](../../lib/flutter_local_voice_agent.dart) now exists. The declarations below remain specification proposals unless verified against current source.
+
+## Planned setup policy amendment
+
+The [managed model setup proposal](managed-model-setup.md) records a later,
+unimplemented direction: library-owned explicit model preparation, one
+recommended speech bundle and a simplified example. It proposes narrowing the
+network prohibition below to local creation and inference while allowing an
+explicit preparation path. This original specification and its acceptance
+records remain historical; the amendment does not claim runtime delivery.
 
 ## Product decision and scope
 

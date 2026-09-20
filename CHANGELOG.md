@@ -2,6 +2,10 @@
 
 ## 0.1.0 (unreleased)
 
+- Document the planned managed model setup: one recommended speech bundle,
+  explicit installation, offline reuse, a simpler API/example and native build
+  packaging requirements. Runtime behavior is unchanged.
+
 - Replace the generic library skeleton with `flutter_local_voice_agent`.
 - Add local model integrity validation and staged installation, typed events,
   lifecycle controls, and bounded Dart event delivery.

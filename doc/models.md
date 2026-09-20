@@ -4,6 +4,13 @@ The first profile is `en-US-sherpa-vits`, schema 1, sherpa runtime `1.12.14`,
 16 kHz mono model input. Supply files locally; the SDK never fetches them.
 English is the initial fixture language, not an inference from the user's locale.
 
+## Planned managed installation
+
+The [managed setup proposal](../wiki/product/managed-model-setup.md) moves model
+selection, downloading and storage into the library, starting with one
+recommended speech bundle. It preserves this local-pack path for advanced and
+fully offline setup. It is not implemented; the current SDK never fetches models.
+
 ## Required roles
 
 | Role | Qualification fixture |

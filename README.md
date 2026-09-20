@@ -32,6 +32,13 @@ For a network-free build input step, pass `--archive /path/to/the/archive`.
 They are never invoked by the running application. No model weights ship here.
 Follow [local model installation](doc/models.md) to construct a trusted pack.
 
+## Planned setup simplification
+
+A [managed model setup proposal](wiki/product/managed-model-setup.md) describes
+one recommended speech bundle, explicit download/preparation, offline reuse,
+a simpler example and native dependency packaging work. These are planned
+changes, not available APIs; the local setup above is still required.
+
 ## Use
 
 ```dart

@@ -3,7 +3,7 @@ id: index
 title: Wiki index
 status: active
 owner: unassigned
-last_verified: 2026-09-19
+last_verified: 2026-09-20
 applies_to: ["**"]
 summary: Router for the whole wiki. One line per document, stating when to read it.
 ---
@@ -92,3 +92,16 @@ to this index when they are created.
 | [Implementation review](work/0002-native-offline-pipeline/validation/impl-review-01.md) | Read the independent FAIL and reproduced blockers. |
 | [Implementation verification](work/0002-native-offline-pipeline/04-verification.md) | Inspect final coordinator checks and their limits. |
 | [Continuation handoff](work/0002-native-offline-pipeline/05-handoff.md) | Resume unfinished implementation and qualification. |
+
+## Managed model setup proposal
+
+| Document | Read it when |
+|---|---|
+| [Product proposal](product/managed-model-setup.md) | Reviewing the planned first-use experience and library responsibilities. |
+| [Research](work/0004-managed-model-setup/00-research.md) | Preparing future managed model implementation; runtime work remains pending. |
+| [Implementation plan](work/0004-managed-model-setup/01-plan.md) | Preparing future managed model implementation; runtime work remains pending. |
+| [Draft acceptance criteria](work/0004-managed-model-setup/02-criteria.md) | Preparing future managed model implementation; runtime work remains pending. |
+| [Ordered implementation tasks](work/0004-managed-model-setup/03-tasks.md) | Preparing future managed model implementation; runtime work remains pending. |
+| [Planning state](work/0004-managed-model-setup/STATE.yaml) | Preparing future managed model implementation; runtime work remains pending. |
+| [Research review](work/0004-managed-model-setup/validation/research-review-01.md) | Inspect independent evidence review; runtime acceptance remains pending. |
+| [Plan review](work/0004-managed-model-setup/validation/plan-review-01.md) | Inspect draft criterion coverage and the recorded documentation-format finding. |
