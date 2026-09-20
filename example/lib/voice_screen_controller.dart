@@ -42,18 +42,16 @@ final class LocalAgentSession implements ExampleVoiceSession {
   Future<void> dispose() => _agent.dispose();
 }
 
-typedef PreparationFactory = ModelPreparation Function(
-  VoiceModelOption option,
-  String rootDirectory,
-  bool allowNetwork,
-);
-typedef VoiceSessionFactory = Future<ExampleVoiceSession> Function(
-  LocalModelBundle bundle,
-);
-typedef ProgressTimerFactory = Timer Function(
-  Duration duration,
-  void Function() callback,
-);
+typedef PreparationFactory =
+    ModelPreparation Function(
+      VoiceModelOption option,
+      String rootDirectory,
+      bool allowNetwork,
+    );
+typedef VoiceSessionFactory =
+    Future<ExampleVoiceSession> Function(LocalModelBundle bundle);
+typedef ProgressTimerFactory =
+    Timer Function(Duration duration, void Function() callback);
 
 final class VoiceScreenController extends ChangeNotifier {
   VoiceScreenController({
@@ -147,7 +145,8 @@ final class VoiceScreenController extends ChangeNotifier {
       if (restored == null) {
         selected = catalog.isEmpty ? null : catalog.first;
         phase = ExampleSetupPhase.needsDownload;
-        status = 'The saved model is no longer in this catalog. Choose another model.';
+        status =
+            'The saved model is no longer in this catalog. Choose another model.';
         allowRepairRemoval = false;
         return;
       }
@@ -261,7 +260,8 @@ final class VoiceScreenController extends ChangeNotifier {
         onError: (Object _) {
           if (_disposed) return;
           phase = ExampleSetupPhase.failed;
-          status = 'The local speech session stopped unexpectedly. Prepare the model again.';
+          status =
+              'The local speech session stopped unexpectedly. Prepare the model again.';
           _notify();
         },
       );
@@ -285,7 +285,8 @@ final class VoiceScreenController extends ChangeNotifier {
                   error.code == ModelPreparationErrorCode.storage));
       if (error.code == ModelPreparationErrorCode.cancelled) {
         phase = ExampleSetupPhase.cancelled;
-        status = 'Model preparation was cancelled. Tap Download and prepare to retry.';
+        status =
+            'Model preparation was cancelled. Tap Download and prepare to retry.';
       } else if (!allowNetwork &&
           error.code == ModelPreparationErrorCode.network) {
         allowRepairRemoval = false;
@@ -388,7 +389,8 @@ final class VoiceScreenController extends ChangeNotifier {
       if (_current(epoch) && identical(_session, session)) status = success;
     } on Object {
       if (_current(epoch) && identical(_session, session)) {
-        status = 'The local speech action failed. Check microphone access and try again.';
+        status =
+            'The local speech action failed. Check microphone access and try again.';
       }
     } finally {
       _endBusy(busy);
@@ -453,7 +455,9 @@ final class VoiceScreenController extends ChangeNotifier {
 
   void _handleAgentEvent(AgentEvent event) {
     if (_disposed) return;
-    debugPrint('FLVA UI event kind=${event.kind.name} activity=${event.activity.name} textLength=${event.text?.length ?? 0}');
+    debugPrint(
+      'FLVA UI event kind=${event.kind.name} activity=${event.activity.name} textLength=${event.text?.length ?? 0}',
+    );
     status = '${event.lifecycle.name} · ${event.activity.name}';
     if (event.kind == AgentEventKind.partialTranscript ||
         event.kind == AgentEventKind.finalTranscript) {
@@ -558,7 +562,8 @@ String _preparationMessage(
     offlineRestore
         ? 'The saved model is missing or damaged. Download it again to repair setup.'
         : 'The download failed. Check the connection and tap retry.',
-  ModelPreparationErrorCode.integrity => 'A model file failed verification. Remove the damaged copy, then download it again.',
+  ModelPreparationErrorCode.integrity =>
+    'A model file failed verification. Remove the damaged copy, then download it again.',
   ModelPreparationErrorCode.storage =>
     'The model could not be stored. Free device space, then retry.',
   ModelPreparationErrorCode.invalidDescriptor =>

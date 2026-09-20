@@ -8,9 +8,11 @@ void main() {
   test(
     'exported catalog exactly matches reviewed source inventory and notices',
     () {
-      final inventory = jsonDecode(
-        File('tool/model_catalog_inventory.json').readAsStringSync(),
-      ) as Map<String, dynamic>;
+      final inventory =
+          jsonDecode(
+                File('tool/model_catalog_inventory.json').readAsStringSync(),
+              )
+              as Map<String, dynamic>;
       final packs = (inventory['packs'] as List).cast<Map<String, dynamic>>();
       expect(VoiceModelCatalog.entries, hasLength(packs.length));
       for (var i = 0; i < packs.length; i++) {

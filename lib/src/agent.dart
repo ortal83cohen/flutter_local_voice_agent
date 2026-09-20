@@ -280,7 +280,9 @@ final class LocalVoiceAgent {
     try {
       final values = await _native.poll();
       if (values.isNotEmpty) {
-        debugPrint('FLVA poll events=${values.length} kinds=${values.map((value) => value['kind']).join(',')}');
+        debugPrint(
+          'FLVA poll events=${values.length} kinds=${values.map((value) => value['kind']).join(',')}',
+        );
       }
       if (_disposed || !_started || epoch != _epoch) return;
       for (final value in values) {
@@ -374,7 +376,9 @@ final class LocalVoiceAgent {
         failure: failure,
       ),
     );
-    debugPrint('FLVA event kind=$kind sequence=$sequence generation=$generation activity=${eventActivity.name} textLength=${(value['text'] as String?)?.length ?? 0}');
+    debugPrint(
+      'FLVA event kind=$kind sequence=$sequence generation=$generation activity=${eventActivity.name} textLength=${(value['text'] as String?)?.length ?? 0}',
+    );
     if (failure?.fatal ?? false) {
       _fatal(failure!);
       return;

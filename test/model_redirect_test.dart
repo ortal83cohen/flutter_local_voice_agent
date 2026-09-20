@@ -48,84 +48,90 @@ void main() {
   );
   tearDown(() async => root.delete(recursive: true));
 
-  test('default rejects; opt-in follows all supported redirects and relative targets', () async {
-    for (final status in [301, 302, 303, 307, 308]) {
-      final server = await PreparationHttpsServer.start((request) async {
-        if (request.uri.path == '/start') {
-          request.response.statusCode = status;
-          request.response.headers.set('location', '/final');
-        } else {
-          expect(request.headers.value('authorization'), isNull);
-          expect(request.headers.value('cookie'), isNull);
-          expect(request.headers.value('accept-encoding'), 'identity');
-          request.response.add([1]);
-        }
-        await request.response.close();
-      });
-      try {
-        await expectLater(
-          ModelPreparationManager(
-            rootDirectory: '${root.path}/deny-$status',
+  test(
+    'default rejects; opt-in follows all supported redirects and relative targets',
+    () async {
+      for (final status in [301, 302, 303, 307, 308]) {
+        final server = await PreparationHttpsServer.start((request) async {
+          if (request.uri.path == '/start') {
+            request.response.statusCode = status;
+            request.response.headers.set('location', '/final');
+          } else {
+            expect(request.headers.value('authorization'), isNull);
+            expect(request.headers.value('cookie'), isNull);
+            expect(request.headers.value('accept-encoding'), 'identity');
+            request.response.add([1]);
+          }
+          await request.response.close();
+        });
+        try {
+          await expectLater(
+            ModelPreparationManager(
+              rootDirectory: '${root.path}/deny-$status',
+              httpClientFactory: server.createClient,
+            ).prepare(descriptor(server.uri('/start'))).result,
+            throwsA(failure(ModelPreparationErrorCode.network)),
+          );
+          final result = await ModelPreparationManager(
+            rootDirectory: '${root.path}/allow-$status',
             httpClientFactory: server.createClient,
-          ).prepare(descriptor(server.uri('/start'))).result,
-          throwsA(failure(ModelPreparationErrorCode.network)),
-        );
-        final result = await ModelPreparationManager(
-          rootDirectory: '${root.path}/allow-$status',
-          httpClientFactory: server.createClient,
-          maxRedirects: 1,
-        ).prepare(descriptor(server.uri('/start'))).result;
-        expect(await File(result.manifestPath).exists(), isTrue);
-      } finally {
-        await server.close();
+            maxRedirects: 1,
+          ).prepare(descriptor(server.uri('/start'))).result;
+          expect(await File(result.manifestPath).exists(), isTrue);
+        } finally {
+          await server.close();
+        }
       }
-    }
-  });
+    },
+  );
 
-  test('rejects unsafe locations, loops and hop exhaustion without visiting targets', () async {
-    for (final location in [
-      'http://127.0.0.1/model',
-      'https://user:secret@localhost/model',
-      'https://localhost:65536/model',
-      'https://localhost/model#fragment',
-      'https://untrusted.invalid/model',
-      'https://[malformed',
-      '/start',
-      '/next',
-    ]) {
-      var nextRequests = 0;
-      final server = await PreparationHttpsServer.start((request) async {
-        if (request.uri.path == '/next') nextRequests++;
-        request.response.statusCode = 302;
-        request.response.headers.set(
-          'location',
-          request.uri.path == '/next' ? '/third' : location,
-        );
-        await request.response.close();
-      });
-      try {
-        final preparation = ModelPreparationManager(
-          rootDirectory: '${root.path}/pack',
-          httpClientFactory: server.createClient,
-          maxRedirects: 1,
-        ).prepare(descriptor(server.uri('/start')));
-        await expectLater(
-          preparation.result,
-          throwsA(failure(ModelPreparationErrorCode.network)),
-        );
-        expect(nextRequests, location == '/next' ? 1 : 0);
-        expect(
-          await root
-              .list(recursive: true)
-              .where((e) => e.path.contains('bundle-'))
-              .isEmpty,
-          isTrue,
-        );
-      } finally {
-        await server.close();
+  test(
+    'rejects unsafe locations, loops and hop exhaustion without visiting targets',
+    () async {
+      for (final location in [
+        'http://127.0.0.1/model',
+        'https://user:secret@localhost/model',
+        'https://localhost:65536/model',
+        'https://localhost/model#fragment',
+        'https://untrusted.invalid/model',
+        'https://[malformed',
+        '/start',
+        '/next',
+      ]) {
+        var nextRequests = 0;
+        final server = await PreparationHttpsServer.start((request) async {
+          if (request.uri.path == '/next') nextRequests++;
+          request.response.statusCode = 302;
+          request.response.headers.set(
+            'location',
+            request.uri.path == '/next' ? '/third' : location,
+          );
+          await request.response.close();
+        });
+        try {
+          final preparation = ModelPreparationManager(
+            rootDirectory: '${root.path}/pack',
+            httpClientFactory: server.createClient,
+            maxRedirects: 1,
+          ).prepare(descriptor(server.uri('/start')));
+          await expectLater(
+            preparation.result,
+            throwsA(failure(ModelPreparationErrorCode.network)),
+          );
+          expect(nextRequests, location == '/next' ? 1 : 0);
+          expect(
+            await root
+                .list(recursive: true)
+                .where((e) => e.path.contains('bundle-'))
+                .isEmpty,
+            isTrue,
+          );
+        } finally {
+          await server.close();
+        }
       }
-    }
-  });
+    },
+  );
 
   test(
     'cross-origin redirect requires exact opt-in, keeps final hash validation',

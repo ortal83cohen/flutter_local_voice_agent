@@ -8,11 +8,14 @@ typedef PreparationHttpsHandler = FutureOr<void> Function(HttpRequest request);
 /// Loopback HTTPS server with a runtime-generated certificate trusted by clients.
 final class PreparationHttpsServer {
   PreparationHttpsServer._({
-    required this._server,
-    required this._certificateDirectory,
-    required this._certificatePath,
-    required this._handler,
-  });
+    required HttpServer server,
+    required Directory certificateDirectory,
+    required String certificatePath,
+    required PreparationHttpsHandler handler,
+  }) : _server = server,
+       _certificateDirectory = certificateDirectory,
+       _certificatePath = certificatePath,
+       _handler = handler;
 
   final HttpServer _server;
   final Directory _certificateDirectory;
