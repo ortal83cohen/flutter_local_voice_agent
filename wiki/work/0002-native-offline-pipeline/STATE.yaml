@@ -10,7 +10,7 @@ updated: "2026-09-19"
 blockers:
   - "F3 / AC-004: VITS allocates an entire sentence before callback; hard synthesis allocation bound not established."
   - "AC-005 / AC-008: physical mobile offline, audio, lifecycle and performance qualification unavailable."
-  - "AC-007: package dry-run exits 65 with three warnings; consumer release packaging remains unqualified."
+  - "AC-007: historical package dry-run exits 65 with three warnings; concurrent tool rename requires fresh package validation; consumer release packaging remains unqualified."
 followups:
   - "Resume from 05-handoff.md; user requested orderly pause after in-flight work."
   - "Resolve F3 with measured evidence; do not silently relax frozen criteria."

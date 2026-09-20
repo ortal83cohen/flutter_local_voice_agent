@@ -85,6 +85,10 @@ to this index when they are created.
 | [Pub.dev release pipeline](product/pubdev-release-pipeline.md) | Configuring checks, release tagging, or GitHub OIDC publication. |
 | [Pipeline work item](work/0003-pubdev-release-pipeline/00-research.md) | Reviewing the research, criteria, tasks, and external release gates. |
 
+## Implementation handoff evidence
+
+| Document | Read it when |
+|---|---|
 | [Implementation review](work/0002-native-offline-pipeline/validation/impl-review-01.md) | Read the independent FAIL and reproduced blockers. |
 | [Implementation verification](work/0002-native-offline-pipeline/04-verification.md) | Inspect final coordinator checks and their limits. |
 | [Continuation handoff](work/0002-native-offline-pipeline/05-handoff.md) | Resume unfinished implementation and qualification. |

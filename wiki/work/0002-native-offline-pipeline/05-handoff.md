@@ -80,7 +80,9 @@ implement/verify/document with append-only artifacts. Repository text is English
    treat UBSan/prebuilt libraries as full memory-safety evidence.
 7. Verify unsigned release builds and clean consumer packaging for speech-only
    and optional LLM variants. Fix or formally disposition package dry-run's
-   three warnings (ignored tracked files, dirty files, plural tools). Do not
+   historical warnings (ignored tracked files, dirty files, plural tools).
+   Concurrent work renamed tools to tool during handoff; rerun dry-run for the
+   new snapshot rather than assuming the historical warnings still apply. Do not
    clean/stage/commit simply to remove a warning. Native runtime archives are
    deliberately excluded from the package and must be provisioned explicitly.
    CocoaPods is tested; Swift Package Manager support is still a warning.
@@ -101,7 +103,7 @@ CMake/Ninja under `/Users/ortalcohen/Library/Android/sdk/cmake/3.22.1/bin` were 
 Xcode 26.3 is installed at `/Applications/Xcode 2.app`.
 
 See doc/testing.md for commands and model installation, doc/models.md for the
-manifest, doc/llm.md for optional switches, and tools/test_native.py for native
+manifest, doc/llm.md for optional switches, and tool/test_native.py for native
 invocation. The exact real speech asset command is retained in the review.
 Run the example from `example` with the same Flutter SDK, after explicit runtime
 and model provisioning; enter the local model-pack path, load, then start.
@@ -135,3 +137,13 @@ justify stopping source/build/documentation tasks. Record exact blocked gates.
 Do not commit, push, publish, deploy, redistribute weights, delete wiki artifacts
 or discard unrelated changes. Final reporting must separate implementation,
 host test, build, simulator execution and real-device evidence.
+
+## Concurrent checkout change at handoff
+
+After the final builds, another task renamed `tools/` to `tool/` and changed
+release/build configuration. Preserve that task's staged and unstaged work.
+Commands in historical evidence retain their actual executed spelling; use
+`tool/` for current invocations. Final mobile build claims describe the source
+snapshot at execution, not later concurrent configuration edits. Re-run affected
+checks after integrating concurrent changes. No requalification of those
+external edits is claimed here.

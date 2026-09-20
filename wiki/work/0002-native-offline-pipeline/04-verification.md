@@ -161,3 +161,21 @@ No validator was asked to recheck its own findings. The single independent FAIL
 stands. The coordinator verified repairs and recorded F3 as unresolved, instead
 of changing frozen criteria. Missing physical tests, ASan, hard synthesis bounds,
 release packaging and consumer qualification remain explicit open gates.
+
+## Concurrent checkout note
+
+At handoff another task renamed tools to tool and edited build/release files.
+The commands above retain the spelling actually executed. Their outputs prove
+that execution snapshot; subsequent external configuration changes require
+their own validation. See 05-handoff.md.
+
+## Handoff documentation checks
+
+After observing the concurrent rename, `python3 tool/lint_wiki.py` exited 0:
+
+```text
+lint_wiki: clean (0 warning(s)).
+```
+
+`git diff --check` exited 0 with no output. The initial lint invocation against
+removed tools/lint_wiki.py failed; the evidence log retains that attempt.
