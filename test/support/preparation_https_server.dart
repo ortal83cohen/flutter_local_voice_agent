@@ -23,6 +23,9 @@ final class PreparationHttpsServer {
   /// Number of requests accepted by this server.
   int requestCount = 0;
 
+  /// Ephemeral TCP port used by this server.
+  int get serverPort => _server.port;
+
   /// Certificate bytes for a separately isolated test client trust store.
   Uint8List get certificateBytes => File(_certificatePath).readAsBytesSync();
 

@@ -453,6 +453,7 @@ final class VoiceScreenController extends ChangeNotifier {
 
   void _handleAgentEvent(AgentEvent event) {
     if (_disposed) return;
+    debugPrint('FLVA UI event kind=${event.kind.name} activity=${event.activity.name} textLength=${event.text?.length ?? 0}');
     status = '${event.lifecycle.name} · ${event.activity.name}';
     if (event.kind == AgentEventKind.partialTranscript ||
         event.kind == AgentEventKind.finalTranscript) {

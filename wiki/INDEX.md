@@ -146,3 +146,7 @@ to this index when they are created.
 | [Example catalog verification](work/0006-example-model-catalog/04-verification.md) | Inspect real downloads, engine execution, final checks and mobile boundaries. |
 | [Catalog implementation review](work/0006-example-model-catalog/validation/impl-review-01.md) | Inspect independent per-criterion findings and executed negative checks. |
 | [Catalog delivery](work/0006-example-model-catalog/05-delivery.md) | Use the completed example and understand remaining release qualification gates. |
+
+## Android audio diagnostics
+
+| [Android audio instrumentation](work/0007-android-audio-instrumentation/00-research.md) | Trace Android capture, native recognition, Dart polling and UI transcript delivery. |

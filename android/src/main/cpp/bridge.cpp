@@ -3,6 +3,8 @@
 #include <vector>
 #include <cstring>
 #include "flva.h"
+#include <android/log.h>
+#define FLVA_LOG(...) __android_log_print(ANDROID_LOG_INFO, "FLVA", __VA_ARGS__)
 static std::string utf8(JNIEnv *e, jstring s) {
   auto cls=e->FindClass("java/lang/String");
   auto encoding=e->NewStringUTF("UTF-8");
@@ -42,7 +44,11 @@ Java_dev_localvoice_flutter_1local_1voice_1agent_FlutterLocalVoiceAgentPlugin_na
 extern "C" JNIEXPORT jlong JNICALL
 Java_dev_localvoice_flutter_1local_1voice_1agent_FlutterLocalVoiceAgentPlugin_nativeInterrupt(JNIEnv *,jobject,jlong h){return flva_interrupt(session(h));}
 extern "C" JNIEXPORT jint JNICALL
-Java_dev_localvoice_flutter_1local_1voice_1agent_FlutterLocalVoiceAgentPlugin_nativePush(JNIEnv *e,jobject,jlong h,jobject b,jint n){return flva_push(session(h),static_cast<float*>(e->GetDirectBufferAddress(b)),n);}
+Java_dev_localvoice_flutter_1local_1voice_1agent_FlutterLocalVoiceAgentPlugin_nativePush(JNIEnv *e,jobject,jlong h,jobject b,jint n){
+  auto *p=static_cast<float*>(e->GetDirectBufferAddress(b)); auto result=flva_push(session(h),p,n);
+  if(!p || result==0) FLVA_LOG("nativePush rejected ptr=%p frames=%d result=%d",p,n,result);
+  return result;
+}
 extern "C" JNIEXPORT void JNICALL
 Java_dev_localvoice_flutter_1local_1voice_1agent_FlutterLocalVoiceAgentPlugin_nativeRender(JNIEnv *e,jobject,jlong h,jobject b,jint n){flva_render(session(h),static_cast<float*>(e->GetDirectBufferAddress(b)),n);}
 extern "C" JNIEXPORT jint JNICALL

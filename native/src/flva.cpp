@@ -18,6 +18,12 @@
 #include <vector>
 #include <deque>
 #include <stdexcept>
+#ifdef __ANDROID__
+#include <android/log.h>
+#define FLVA_NATIVE_LOG(...) __android_log_print(ANDROID_LOG_INFO, "FLVA", __VA_ARGS__)
+#else
+#define FLVA_NATIVE_LOG(...) ((void)0)
+#endif
 #ifdef FLVA_ENABLE_LLM
 #include "llm_adapter.h"
 #endif
@@ -28,7 +34,8 @@ constexpr int kVadRate = 16000;
 constexpr int kVadWindow = 512;
 constexpr int kInputMs = 250;
 constexpr int kOutputMs = 500;
-constexpr int kPreRollSamples = 4800;
+// Keep enough audio to cover VAD decision latency and the beginning of a word.
+constexpr int kPreRollSamples = 8000;
 constexpr int kMaxUtteranceSamples = 20 * kVadRate;
 constexpr int kMaxReplyBytes = 960;
 constexpr int kMaxTtsSeconds = 10;
@@ -84,7 +91,10 @@ class Session {
     for (const char* path : paths) if (!path[0] || !SherpaOnnxFileExists(path)) { *error = "missingAsset"; return false; }
 
     SherpaOnnxVadModelConfig vad{};
-    vad.silero_vad = {config_.vad, 0.5f, 0.5f, 0.25f, kVadWindow, 20.0f};
+    // A slightly more sensitive onset avoids clipping the first syllable on
+    // quiet mobile microphones. Background-noise qualification remains a
+    // device-level check.
+    vad.silero_vad = {config_.vad, 0.38f, 0.5f, 0.25f, kVadWindow, 20.0f};
     vad.sample_rate = kVadRate; vad.num_threads = 1; vad.provider = "cpu";
     vad_ = SherpaOnnxCreateVoiceActivityDetector(&vad, 21.0f);
 
@@ -229,6 +239,7 @@ class Session {
       if(speaking && !in_speech_) {
         in_speech_=true;began=true;utterance_samples_=0;
         publish("state","recognizing","","",generation);
+        FLVA_NATIVE_LOG("vad speech onset generation=%llu", static_cast<unsigned long long>(generation));
         std::array<float,kPreRollSamples> history{};std::copy(pre_roll_.begin(),pre_roll_.end(),history.begin());
         SherpaOnnxOnlineStreamAcceptWaveform(stream_,kVadRate,history.data(),static_cast<int>(pre_roll_.size()));
       }
@@ -253,7 +264,22 @@ class Session {
     const char* text=result->text?result->text:"";
     if(strnlen(text,2048)>=2048){SherpaOnnxDestroyOnlineRecognizerResult(result);capacity_failure();return;}
     std::string now=text;SherpaOnnxDestroyOnlineRecognizerResult(result);
-    if(now!=partial_){partial_=now;publish("partial","recognizing","",partial_.c_str(),generation);}
+    // Some mobile/runtime combinations expose only the newest decoded span
+    // instead of the complete stream result. Preserve already decoded words
+    // when the new result is a non-overlapping suffix, while still allowing
+    // normal online-ASR revisions and retractions.
+    const std::string before = partial_;
+    if (!now.empty() && !partial_.empty() &&
+        now.find(partial_) == std::string::npos &&
+        partial_.find(now) == std::string::npos) {
+      partial_ += " ";
+      partial_ += now;
+    } else if (!now.empty() &&
+               (partial_.empty() || now.size() >= partial_.size() ||
+                now != partial_)) {
+      partial_ = now;
+    }
+    if(before!=partial_){publish("partial","recognizing","",partial_.c_str(),generation); FLVA_NATIVE_LOG("asr partial generation=%llu length=%zu", static_cast<unsigned long long>(generation), partial_.size());}
   }
   void finish_transcript(uint64_t generation) {
     capture_admission_.store(false);in_speech_=false;
@@ -264,6 +290,7 @@ class Session {
     if(partial_.empty()){generation_.fetch_add(1);return;}
     {std::lock_guard<std::mutex> lock(command_mutex_);awaited_reply_=generation;}
     publish("final","thinking","",partial_.c_str(),generation);
+    FLVA_NATIVE_LOG("asr final generation=%llu length=%zu", static_cast<unsigned long long>(generation), partial_.size());
 #ifdef FLVA_ENABLE_LLM
     if(llm_) {
       try {

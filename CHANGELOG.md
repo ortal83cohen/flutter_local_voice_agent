@@ -3,7 +3,7 @@
 ## Unreleased
 
 - Make the cross-origin TLS redirect regression portable across OpenSSL-backed
-  CI runners by loading its trusted test certificates as one PEM bundle.
+  CI runners by explicitly validating its generated loopback certificates.
 - Replace the example's required model path with a verified English speech
   catalog, explicit downloads, progress/cancel/retry and private offline reuse.
 - Export compact/full-precision model descriptors with pinned hashes and notices;

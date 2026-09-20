@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 
 import 'bounded_stream.dart';
@@ -278,6 +279,9 @@ final class LocalVoiceAgent {
     _polling = true;
     try {
       final values = await _native.poll();
+      if (values.isNotEmpty) {
+        debugPrint('FLVA poll events=${values.length} kinds=${values.map((value) => value['kind']).join(',')}');
+      }
       if (_disposed || !_started || epoch != _epoch) return;
       for (final value in values) {
         _accept(value);
@@ -370,6 +374,7 @@ final class LocalVoiceAgent {
         failure: failure,
       ),
     );
+    debugPrint('FLVA event kind=$kind sequence=$sequence generation=$generation activity=${eventActivity.name} textLength=${(value['text'] as String?)?.length ?? 0}');
     if (failure?.fatal ?? false) {
       _fatal(failure!);
       return;

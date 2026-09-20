@@ -1,6 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:crypto/crypto.dart';
 import 'package:flutter_local_voice_agent/src/model_preparation.dart';
@@ -145,17 +145,15 @@ void main() {
         await request.response.close();
       });
       HttpClient client() {
-        final context = SecurityContext(withTrustedRoots: false)
-          // OpenSSL-backed runners treat repeated calls as replacement rather
-          // than additive. Supply one PEM bundle so both loopback origins are
-          // trusted consistently across platforms.
-          ..setTrustedCertificatesBytes(
-            Uint8List.fromList([
-              ...source.certificateBytes,
-              ...target.certificateBytes,
-            ]),
-          );
-        return HttpClient(context: context);
+        final trustedCertificates = {
+          utf8.decode(source.certificateBytes),
+          utf8.decode(target.certificateBytes),
+        };
+        return HttpClient(context: SecurityContext(withTrustedRoots: false))
+          ..badCertificateCallback = (certificate, host, port) =>
+              host == '127.0.0.1' &&
+              {source.serverPort, target.serverPort}.contains(port) &&
+              trustedCertificates.contains(certificate.pem);
       }
 
       try {
