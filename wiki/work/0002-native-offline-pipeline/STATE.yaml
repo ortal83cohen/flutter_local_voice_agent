@@ -12,7 +12,7 @@ blockers:
   - "AC-005 / AC-008: physical mobile offline, audio, lifecycle and performance qualification unavailable."
   - "AC-007: native binaries and provisioning tools are excluded from the pub payload; clean consumer installation remains unqualified. Final dirty-checkout dry run exits 65 with one warning."
 followups:
-  - "Resume from 06-continuation.md and 07-continuation-verification.md; Unicode and SDK path repairs delivered, overall implementation remains incomplete."
+  - "Unicode and SDK path repairs were previously explored; overall implementation remains incomplete."
   - "Resolve F3 with measured evidence; do not silently relax frozen criteria."
   - "Qualify physical mobile runtime, clean consumer install, licenses and optional LLM resource/quality limits; see new build evidence separately."
   - "Investigate ASan host startup stall; UBSan does not cover upstream prebuilt internals."
@@ -22,7 +22,7 @@ decisions:
   - action: continuation-input-validation
     reason: "Reproduced malformed native UTF-8 admission. Repaired strict scalar checks, Dart invalid-reply failures and recovery; moved native negative replies to an actual awaited generation. Frozen criteria unchanged."
   - action: continuation-sdk-paths
-    reason: "Android build exposed singular flutter_tool SDK path; restored flutter_tools in Android and iOS project scripts. Debug builds now pass; see 07-continuation-verification.md."
+    reason: "Android build exposed singular flutter_tool SDK path; restored flutter_tools in Android and iOS project scripts."
   - action: continuation-packaging
     reason: "Baseline dry run has zero warnings but package excludes required native dependencies and provisioning scripts. Preserve the consumer packaging gate and clarify checkout-based setup."
   - action: continuation-f3

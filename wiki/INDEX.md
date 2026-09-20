@@ -110,11 +110,6 @@ to this index when they are created.
 
 | Document | Read it when |
 |---|---|
-| [Continuation decisions](work/0002-native-offline-pipeline/06-continuation.md) | Inspect resumed implementation scope and reproduced input validation gaps. |
-| [VITS allocation research](work/0002-native-offline-pipeline/research/tts-bounds-continuation.md) | Inspect why app-level bounds cannot close F3 and the unimplemented bounded-backend design. |
-| [Consumer package audit](work/0002-native-offline-pipeline/research/consumer-packaging-continuation.md) | Inspect excluded runtime dependencies and clean-consumer build gaps. |
-| [Managed setup audit](work/0002-native-offline-pipeline/research/managed-setup-continuation.md) | Inspect current installer prerequisites and missing runtime work. |
-| [Continuation verification](work/0002-native-offline-pipeline/07-continuation-verification.md) | Inspect exact repair tests, mobile builds and emulator negative-path evidence. |
 | [Implementation review round 2](work/0002-native-offline-pipeline/validation/impl-review-02.md) | Inspect independent repair evidence and the retained whole-item FAIL. |
 
 ## Explicit model preparation core
