@@ -2,21 +2,31 @@ id: "0002-native-offline-pipeline"
 title: "Native offline pipeline implementation and qualification"
 route: full
 phase: implement
-round: 1
+round: 2
 verdict: FAIL
 owner_agent: root
 created: "2026-09-19"
-updated: "2026-09-19"
+updated: "2026-09-20"
 blockers:
   - "F3 / AC-004: VITS allocates an entire sentence before callback; hard synthesis allocation bound not established."
   - "AC-005 / AC-008: physical mobile offline, audio, lifecycle and performance qualification unavailable."
-  - "AC-007: historical package dry-run exits 65 with three warnings; concurrent tool rename requires fresh package validation; consumer release packaging remains unqualified."
+  - "AC-007: native binaries and provisioning tools are excluded from the pub payload; clean consumer installation remains unqualified. Final dirty-checkout dry run exits 65 with one warning."
 followups:
-  - "Resume from 05-handoff.md; user requested orderly pause after in-flight work."
+  - "Resume from 06-continuation.md and 07-continuation-verification.md; Unicode and SDK path repairs delivered, overall implementation remains incomplete."
   - "Resolve F3 with measured evidence; do not silently relax frozen criteria."
-  - "Qualify mobile runtime, release builds, clean consumer install, licenses and optional LLM resource/quality limits."
+  - "Qualify physical mobile runtime, clean consumer install, licenses and optional LLM resource/quality limits; see new build evidence separately."
   - "Investigate ASan host startup stall; UBSan does not cover upstream prebuilt internals."
 decisions:
+  - action: continuation-review-02
+    reason: "Accept no-new-defect scoped repair evidence; retain whole-item FAIL for pre-existing allocation and physical gates. Append required report-schema headings without changing findings. No third review loop."
+  - action: continuation-input-validation
+    reason: "Reproduced malformed native UTF-8 admission. Repaired strict scalar checks, Dart invalid-reply failures and recovery; moved native negative replies to an actual awaited generation. Frozen criteria unchanged."
+  - action: continuation-sdk-paths
+    reason: "Android build exposed singular flutter_tool SDK path; restored flutter_tools in Android and iOS project scripts. Debug builds now pass; see 07-continuation-verification.md."
+  - action: continuation-packaging
+    reason: "Baseline dry run has zero warnings but package excludes required native dependencies and provisioning scripts. Preserve the consumer packaging gate and clarify checkout-based setup."
+  - action: continuation-f3
+    reason: "Pinned Sherpa source confirms allocation precedes callbacks. A derived bounded graph/runtime remains unimplemented and unverified; keep F3 open without weakening criteria."
   - action: implementation-review-F1-F2
     reason: "Repair role allowlist, typed lifecycle failures, retryable disposal and background failures; coordinator final suite 27 passes, strict analysis clean."
   - action: implementation-review-F3
@@ -37,9 +47,13 @@ decisions:
     reason: "New implementation work; 0001 remains specification evidence only. No commit, publication or model redistribution authorized."
   - action: design
     reason: "Foreground half-duplex; native worker ownership; bounded PCM and events; generation gates; full duplex rejected until acoustic qualification."
-escalations: []
+escalations:
+  - "Second whole-item implementation verdict remains FAIL: bounded VITS backend/profile design and physical Android/iPhone resources are required; surface unresolved gates to the user, do not run a third review loop."
 
 validation_results:
+  implementation_review_02: "FAIL for complete criteria; no new scoped defects; 33 Dart tests and 19 real-engine checks independently pass."
+  continuation_full_suite: "Stages 1-5 pass; stage 6 exits 65 solely for modified tracked files; release helper tests pass separately."
+  continuation_mobile: "Speech-only Android debug/release and iOS simulator/unsigned-device-release builds pass; emulator launch/missing-model rejection observed; no physical speech qualification."
   implementation_review_01: FAIL
   coordinator_regression: "27 Dart tests pass; analysis clean; native UBSan and actual GGUF evidence recorded in 04-verification.md"
   plan_review_01: CONDITIONAL

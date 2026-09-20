@@ -10,6 +10,13 @@ dart analyze --fatal-infos --fatal-warnings
 python3 tool/lint_wiki.py
 ```
 
+The preparation tests additionally need the `openssl` executable on the host.
+They generate a temporary localhost certificate/key, start a real TLS server and
+configure the test client to trust that certificate. No key is committed and no
+real model download is required. These controlled synthetic payloads qualify
+installer behavior only. Tests exercise truncated/corrupt responses, redirects,
+network waits, cancellation, cache integrity and concurrent activation.
+
 These tests use actual temporary files for manifest integrity and injected
 platform schedulers for lifecycle fault cases. They do not count as speech-engine
 or microphone tests. Flutter 3.47.0 / Dart 3.13.0 is the validation toolchain.
@@ -20,7 +27,10 @@ or microphone tests. Flutter 3.47.0 / Dart 3.13.0 is the validation toolchain.
 python3 tool/test_native.py --ubsan
 ```
 
-This runs bounded-ring and stateful resampler tests. Add `--runtime` pointing to
+This runs bounded-ring, stateful resampler and exhaustive Unicode scalar tests.
+Malformed native replies are also tested during an actual awaited real-engine
+reply, followed by a valid reply on the same generation. This prevents a stale
+generation rejection from masking a missing input check. Add `--runtime` pointing to
 the local sherpa `lib` directory and `--assets` with these nine absolute paths,
 in order: Silero, encoder, decoder, joiner, ASR tokens, VITS model, VITS tokens,
 VITS lexicon, and mono 16 kHz PCM16 test WAV. The script compiles and runs real
@@ -50,23 +60,26 @@ not qualify iPhone microphones, audio focus, routes, thermals or memory. Debug
 and unsigned artifacts are not release/store approval. Optional LLM builds are
 described in [the LLM guide](llm.md).
 
-## Local model installation for the example
+## Catalog and example acceptance
 
-Create and validate a trusted pack as described in [models](models.md). For an
-installed Android debug example, explicitly copy into its private storage:
+Run `flutter test` inside example in addition to the root package tests. The
+controller/widget tests cover selection, download cancellation and retry,
+private storage, cache reuse, corruption recovery, low capacity and late
+lifecycle completions. Run `sh tool/check.sh` for the combined checks.
 
-```sh
-adb shell run-as dev.localvoice.flutter_local_voice_agent_example mkdir -p files/models
-tar -C /local/trusted-pack -cf - . | adb shell run-as dev.localvoice.flutter_local_voice_agent_example tar -xf - -C files/models
-```
+For real publisher bytes, run `dart run tool/verify_catalog.dart /absolute/temp/output`.
+This downloads both catalog configurations (about 498 MB combined), verifies
+all declared bytes and manifests, then retries with a client factory that
+throws to prove offline reuse. Its verification.json records installed role
+paths for the native smoke command described above. Network access and disk
+space are required; this is separate from ordinary unit tests.
 
-Enter `/data/user/0/dev.localvoice.flutter_local_voice_agent_example/files/models`
-in the example. This example command is an operator instruction; it was not run
-against a physical device during development. On a booted iOS simulator, obtain
-the data container with `xcrun simctl get_app_container booted
- dev.localvoice.flutterLocalVoiceAgentExample data`, copy the pack into its
-Documents directory, and enter the resulting absolute path. A real iPhone
-requires a host-owned import/bundled-asset flow.
+In the provisioned example, select a catalog entry, tap Download and prepare,
+then Start once ready. No directory entry or model copying is required. Verify
+cancel/retry, model switching and a force-stop/relaunch with device networking
+disabled. Restore networking after the test. See [the catalog guide](model-catalog.md)
+for source, size, storage and recovery details. Advanced host-managed local
+packs remain supported by the library as described in [models](models.md).
 
 ## Required device protocol (still open)
 

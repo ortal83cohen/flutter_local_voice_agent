@@ -2,6 +2,7 @@
 #include "c-api.h"
 #include "spsc_ring.h"
 #include "resampler.h"
+#include "utf8.h"
 
 #include <algorithm>
 #include <array>
@@ -42,22 +43,6 @@ void copy_text(char* target, size_t target_size, const char* source) {
   if (!source || !target_size) return;
   std::strncpy(target, source, target_size - 1);
   target[target_size - 1] = '\0';
-}
-
-bool valid_utf8_and_scalar_limit(const char* value, int maximum_scalars) {
-  if (!value) return false;
-  int scalars = 0;
-  for (const unsigned char* p = reinterpret_cast<const unsigned char*>(value); *p;) {
-    unsigned char c = *p++; int continuation = 0;
-    if (c < 0x80) { if (++scalars > maximum_scalars) return false; continue; }
-    if ((c & 0xe0) == 0xc0) continuation = 1;
-    else if ((c & 0xf0) == 0xe0) continuation = 2;
-    else if ((c & 0xf8) == 0xf0) continuation = 3;
-    else return false;
-    for (int i = 0; i < continuation; ++i) { if (!*p || (*p++ & 0xc0) != 0x80) return false; }
-    if (++scalars > maximum_scalars) return false;
-  }
-  return true;
 }
 
 struct GeneratedAudioDeleter {
@@ -176,7 +161,7 @@ class Session {
     if (active!=generation_.load(std::memory_order_acquire)) std::fill(frames,frames+count,0.0f);
   }
   int reply(uint64_t generation, const char* text) {
-    if (!text || !text[0] || strnlen(text, kMaxReplyBytes + 1) > kMaxReplyBytes || !valid_utf8_and_scalar_limit(text, 240)) return 0;
+    if (!text || !text[0] || strnlen(text, kMaxReplyBytes + 1) > kMaxReplyBytes || !flva_internal::valid_utf8_and_scalar_limit(text, 240)) return 0;
     std::lock_guard<std::mutex> lock(command_mutex_);
     if (closed_.load() || generation != generation_.load() || generation != awaited_reply_) return 0;
     reply_ = text; reply_generation_ = generation; awaited_reply_ = 0;

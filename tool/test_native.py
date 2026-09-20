@@ -32,6 +32,9 @@ if __name__ == '__main__':
     resampler = build / 'resampler'
     run(['clang++', *flags, str(root/'native/tests/resampler_test.cpp'), '-o',str(resampler)])
     run([str(resampler)],20)
+    utf8 = build / 'utf8'
+    run(['clang++', *flags, str(root/'native/tests/utf8_test.cpp'), '-o', str(utf8)])
+    run([str(utf8)], 20)
     if args.runtime or args.assets:
         if not (args.runtime and args.assets): parser.error('--runtime and --assets must be supplied together')
         for name in ['real_engine_smoke', 'real_engine_failures']:

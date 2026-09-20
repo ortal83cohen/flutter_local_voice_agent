@@ -50,7 +50,7 @@ Validation is adversarial and blind. A validator sees the acceptance criteria an
 
 ## Delegation
 
-When you delegate to a subagent, the prompt must state: the objective, the exact output format, which tools and sources to use, the task boundary, and the file path the subagent writes to. A delegation missing any of these produces duplicated or missing work.
+When you delegate to a subagent, the prompt must state: the objective, the exact output format, which tools and sources to use, and the task boundary. A delegation missing any of these produces duplicated or missing work. A subagent writes a file only when the requested output is a durable workflow artifact that other agents or phases must consume, such as a research artifact, plan, acceptance criteria, task list, validation report, or verification artifact. For exploratory findings, test results, diagnostics, reviews, and other temporary work, the subagent returns the result directly to the parent agent and does not create a document.
 
 Parallelise read-only fan-out: research streams, independent modules, competing debugging hypotheses. Target 3 concurrent subagents, never more than 5.
 

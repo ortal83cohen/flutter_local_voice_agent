@@ -1,5 +1,27 @@
 # Changelog
 
+## Unreleased
+
+- Replace the example's required model path with a verified English speech
+  catalog, explicit downloads, progress/cancel/retry and private offline reuse.
+- Export compact/full-precision model descriptors with pinned hashes and notices;
+  add opt-in bounded HTTPS redirects restricted to exact publisher origins.
+- Add example storage/backup handling, lifecycle and catalog transport regressions.
+
+- Add explicit host-configured HTTPS model preparation with trusted descriptor
+  verification, staged immutable installation, cancellation, progress snapshots
+  and offline reuse. Existing local creation and model-store APIs stay offline.
+- Add controlled real-TLS installer tests; general library storage discovery,
+  automatic cleanup and physical-device setup qualification remain open.
+
+- Reject invalid Unicode and empty/NUL logic replies before synthesis, with
+  recoverable typed errors and exhaustive native scalar regression coverage.
+- Exercise invalid native replies on an awaited generation before accepting a
+  valid reply, preventing state rejection from masking validation defects.
+- Restore Flutter SDK build-tool paths in the Android and iOS examples; verify
+  speech-only debug/release builds and the emulator missing-model path.
+- Clarify provisioned-checkout requirements and unfinished native packaging.
+
 ## 0.1.0 - 2026-09-20
 
 - Document the planned managed model setup: one recommended speech bundle,

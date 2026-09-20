@@ -36,6 +36,10 @@ STATE.yaml
 
 `STATE.yaml` is the only mutable file. Every other artifact is append-or-supersede.
 
+## Subagent output
+
+Subagents do not create temporary documents for their responses. Exploratory findings, test results, diagnostics, reviews, and similar short-lived output are returned directly to the parent agent. A subagent writes a file only when the file is a durable workflow artifact required by a later phase or another agent, such as research, a plan, acceptance criteria, a task list, a validation report, or a verification artifact. The parent agent records any required decision or durable result in the appropriate workflow artifact.
+
 ## Phase 1 — Research
 
 Goal: know enough that the plan is not guesswork.

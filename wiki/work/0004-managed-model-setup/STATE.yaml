@@ -9,11 +9,15 @@ created: "2026-09-20"
 updated: "2026-09-20"
 blockers: []
 followups:
-  - "Finalize default asset revisions, distribution source/notices, sizes and device qualification."
+  - "Work0006 delivers pinned asset revisions, source/notices, exact sizes and catalog UX; physical device qualification remains open."
   - "Finalize API names and native dependency packaging before freezing criteria."
-  - "Runtime implementation and all implementation acceptance checks are pending."
+  - "Parent acceptance remains pending; explicit host-configured preparation infrastructure is implemented and host-verified separately in 0005 without freezing or completing this parent plan."
   - "Background downloads and partial-file byte-range resume are explicitly deferred; foreground retry is in scope."
 decisions:
+  - action: example-catalog-delivery
+    reason: "Work0006 separately implements the path-free catalog, actual downloads and emulator offline restoration. Retain this parent draft and its native distribution/device qualification gates; do not silently freeze or rewrite parent criteria."
+  - action: preparation-core-dependency
+    reason: "User requested continued implementation. Work0005 adds explicit trusted-descriptor/private-root preparation as an independently testable prerequisite; this parent still requires qualified default assets, path-free UX, native packaging and device evidence."
   - action: scope
     reason: "User requested documentation of needed changes only; no runtime code, model redistribution, release or prior acceptance-criteria changes."
   - action: proposal

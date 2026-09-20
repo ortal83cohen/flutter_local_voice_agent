@@ -1,0 +1,41 @@
+id: "0006-example-model-catalog"
+title: "Selectable downloadable models in the working example"
+route: full
+phase: document
+round: 1
+verdict: PASS
+owner_agent: root
+created: "2026-09-20"
+updated: "2026-09-20"
+blockers: []
+followups:
+  - "Separate release gates remain: native dependency distribution, physical Android/iPhone qualification, iOS runtime verification and VITS output allocation bound."
+decisions:
+  - action: implementation-review-01
+    reason: "Accept independent PASS on AC-001 through AC-007; no findings. Reviewer independently ran package/example tests, five additional failure probes, actual cache integrity checks and both native model configurations; inspected coordinator mobile evidence without device mutations."
+  - action: delivery
+    reason: "All five tasks closed for this scoped catalog/example item. Full-check source snapshot passed all seven stages; final Android installed first-download/cancel/retry/offline restart/listening and iOS simulator compilation recorded. Preserve parent release gates and dirty Git state."
+  - action: report-schema
+    reason: "Append required level-two verification/recurrence headings to the two phase reviews; original executed evidence and verdicts remain unchanged."
+  - action: research-review-01
+    reason: "Accept blind PASS with independent byte, publisher metadata and platform SDK evidence; runtime/device acceptance remains separate."
+  - action: freeze
+    reason: "Freeze AC-001 through AC-007; proceed with coordinator-owned core/catalog and worker-owned example modules. No changes to parent0004 or old0002 frozen requirements."
+  - action: plan-review-01
+    reason: "PASS; fix NIT by adding frontmatter. Reviewer finished before subsequent exact-origin allowlist, separate pack roots and capacity preflight refinements; do not misattribute those refinements to this verdict. Coordinator accepts them as stricter implementation constraints under unchanged user scope; research and final implementation validation must cover them."
+  - action: user-outcome
+    reason: "User explicitly requires the example to select and download real models without manual paths. Deliver the visible first-run flow, not infrastructure alone."
+  - action: preserve-existing
+    reason: "Retain staged and unstaged changes from other work; no Git mutation or publication."
+  - action: design
+    reason: "Pinned compatible English speech bundles; explicit download with bounded HTTPS redirects; existing offline inference; platform-private no-backup storage; persisted selection; cancellation and retry."
+escalations: []
+
+validation_results:
+  implementation_review_01: "PASS: AC-001 through AC-007; no findings."
+  package_tests: "63 passed"
+  example_tests: "16 passed"
+  full_check: "Exit 0 in byte-identical Git-free source snapshot; seven stages passed."
+  android: "Final debug APK built and installed; actual catalog download, cancel/retry, ready/listening and offline restart observed."
+  ios: "Final simulator debug build passed; runtime/device qualification not claimed."
+  source_identity: "Source files identical to accepted full-check snapshot."

@@ -1,7 +1,7 @@
 #!/bin/sh
 set -eu
 root=$(CDPATH= cd -- "$(dirname -- "$0")/.." && pwd); cd "$root"
-for binary in flutter dart python3; do command -v "$binary" >/dev/null 2>&1 || { echo "Preflight failed: missing $binary" >&2; exit 1; }; done
+for binary in flutter dart python3 openssl; do command -v "$binary" >/dev/null 2>&1 || { echo "Preflight failed: missing $binary" >&2; exit 1; }; done
 python3 tool/lint_wiki.py; echo 'Stage 1 passed: wiki lint'
 flutter pub get; (cd example && flutter pub get); echo 'Stage 2 passed: dependencies'
 format_paths='lib example/lib'

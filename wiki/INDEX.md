@@ -105,3 +105,49 @@ to this index when they are created.
 | [Planning state](work/0004-managed-model-setup/STATE.yaml) | Preparing future managed model implementation; runtime work remains pending. |
 | [Research review](work/0004-managed-model-setup/validation/research-review-01.md) | Inspect independent evidence review; runtime acceptance remains pending. |
 | [Plan review](work/0004-managed-model-setup/validation/plan-review-01.md) | Inspect draft criterion coverage and the recorded documentation-format finding. |
+
+## Native pipeline continuation
+
+| Document | Read it when |
+|---|---|
+| [Continuation decisions](work/0002-native-offline-pipeline/06-continuation.md) | Inspect resumed implementation scope and reproduced input validation gaps. |
+| [VITS allocation research](work/0002-native-offline-pipeline/research/tts-bounds-continuation.md) | Inspect why app-level bounds cannot close F3 and the unimplemented bounded-backend design. |
+| [Consumer package audit](work/0002-native-offline-pipeline/research/consumer-packaging-continuation.md) | Inspect excluded runtime dependencies and clean-consumer build gaps. |
+| [Managed setup audit](work/0002-native-offline-pipeline/research/managed-setup-continuation.md) | Inspect current installer prerequisites and missing runtime work. |
+| [Continuation verification](work/0002-native-offline-pipeline/07-continuation-verification.md) | Inspect exact repair tests, mobile builds and emulator negative-path evidence. |
+| [Implementation review round 2](work/0002-native-offline-pipeline/validation/impl-review-02.md) | Inspect independent repair evidence and the retained whole-item FAIL. |
+
+## Explicit model preparation core
+
+| Document | Read it when |
+|---|---|
+| [Research](work/0005-model-preparation-core/00-research.md) | Implement or review the explicit host-configured preparation prerequisite to managed setup. |
+| [Plan](work/0005-model-preparation-core/01-plan.md) | Implement or review the explicit host-configured preparation prerequisite to managed setup. |
+| [Acceptance criteria](work/0005-model-preparation-core/02-criteria.md) | Implement or review the explicit host-configured preparation prerequisite to managed setup. |
+| [Tasks](work/0005-model-preparation-core/03-tasks.md) | Implement or review the explicit host-configured preparation prerequisite to managed setup. |
+| [State](work/0005-model-preparation-core/STATE.yaml) | Implement or review the explicit host-configured preparation prerequisite to managed setup. |
+| [Research review](work/0005-model-preparation-core/validation/research-review-01.md) | Inspect the independent source verdict and wording correction. |
+| [Plan review](work/0005-model-preparation-core/validation/plan-review-01.md) | Inspect the independent plan verdict before implementation freeze. |
+| [Preparation product record](product/model-preparation-core.md) | Understand the host-configured core and retained managed-setup requirements. |
+| [Preparation architecture decision](adr/0002-explicit-model-preparation.md) | Inspect the separation of explicit delivery and offline inference. |
+| [Preparation verification](work/0005-model-preparation-core/04-verification.md) | Inspect coordinator commands, exact output and validation boundaries. |
+| [Preparation implementation review 1](work/0005-model-preparation-core/validation/impl-review-01.md) | Inspect the independent FAIL and reproduced descriptor/storage defects. |
+| [Preparation delivery and remaining work](work/0005-model-preparation-core/05-delivery.md) | Continue from implemented preparation infrastructure to unresolved parent gates. |
+| [Preparation implementation review 2](work/0005-model-preparation-core/validation/impl-review-02.md) | Inspect final independent PASS, per-criterion evidence and retained qualification boundaries. |
+
+## Selectable example model catalog
+
+| Document | Read it when |
+|---|---|
+| [00-research.md](work/0006-example-model-catalog/00-research.md) | Implement or review the real picker/download/offline example flow. |
+| [01-plan.md](work/0006-example-model-catalog/01-plan.md) | Implement or review the real picker/download/offline example flow. |
+| [02-criteria.md](work/0006-example-model-catalog/02-criteria.md) | Implement or review the real picker/download/offline example flow. |
+| [03-tasks.md](work/0006-example-model-catalog/03-tasks.md) | Implement or review the real picker/download/offline example flow. |
+| [STATE.yaml](work/0006-example-model-catalog/STATE.yaml) | Implement or review the real picker/download/offline example flow. |
+| [Catalog plan review](work/0006-example-model-catalog/validation/plan-review-01.md) | Inspect plan coverage and reviewed-snapshot boundary. |
+| [Catalog research review](work/0006-example-model-catalog/validation/research-review-01.md) | Inspect independent model-byte, source and platform evidence. |
+| [Example catalog product](product/example-model-catalog.md) | Understand the implemented selection/download journey and qualification boundaries. |
+| [Catalog architecture decision](adr/0003-example-model-catalog.md) | Inspect trusted catalog, bounded CDN redirects and example storage design. |
+| [Example catalog verification](work/0006-example-model-catalog/04-verification.md) | Inspect real downloads, engine execution, final checks and mobile boundaries. |
+| [Catalog implementation review](work/0006-example-model-catalog/validation/impl-review-01.md) | Inspect independent per-criterion findings and executed negative checks. |
+| [Catalog delivery](work/0006-example-model-catalog/05-delivery.md) | Use the completed example and understand remaining release qualification gates. |

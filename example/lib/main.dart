@@ -3,185 +3,312 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_voice_agent/flutter_local_voice_agent.dart';
 
+import 'voice_screen_controller.dart';
+
 void main() => runApp(const VoiceExample());
 
-/// Foreground demonstration using a model pack already present on the device.
 class VoiceExample extends StatelessWidget {
-  /// Creates the example application.
   const VoiceExample({super.key});
 
   @override
   Widget build(BuildContext context) => MaterialApp(
-    title: 'Local voice',
-    theme: ThemeData(colorSchemeSeed: Colors.indigo, useMaterial3: true),
+    title: 'Local voice catalog',
+    debugShowCheckedModeBanner: false,
+    theme: ThemeData(
+      colorSchemeSeed: const Color(0xff4458a7),
+      useMaterial3: true,
+      inputDecorationTheme: const InputDecorationTheme(
+        border: OutlineInputBorder(),
+      ),
+    ),
     home: const VoiceScreen(),
   );
 }
 
-/// Controls one locally provisioned, half-duplex conversation.
 class VoiceScreen extends StatefulWidget {
-  /// Creates the conversation screen.
-  const VoiceScreen({super.key});
+  const VoiceScreen({super.key, this.controller});
+
+  final VoiceScreenController? controller;
 
   @override
   State<VoiceScreen> createState() => _VoiceScreenState();
 }
 
 class _VoiceScreenState extends State<VoiceScreen> with WidgetsBindingObserver {
-  final _directory = TextEditingController(
-    text: const String.fromEnvironment('MODEL_DIRECTORY'),
-  );
-  LocalVoiceAgent? _agent;
-  StreamSubscription<AgentEvent>? _subscription;
-  bool _busy = false;
-  String _status = 'Choose a local model folder to begin.';
-  String _heard = '';
-  String _reply = '';
+  late final VoiceScreenController _controller =
+      widget.controller ?? VoiceScreenController.production();
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
+    _controller.addListener(_refresh);
+    unawaited(_controller.initialize());
   }
 
-  Future<void> _run(Future<void> Function() operation) async {
-    if (_busy) return;
-    setState(() => _busy = true);
-    try {
-      await operation();
-    } catch (error) {
-      if (mounted) setState(() => _status = error.toString());
-    } finally {
-      if (mounted) setState(() => _busy = false);
-    }
-  }
-
-  Future<void> _load() async {
-    await _subscription?.cancel();
-    await _agent?.dispose();
-    _agent = null;
-    final directory = _directory.text.trim();
-    final agent = await LocalVoiceAgent.create(
-      models: LocalModelBundle(
-        directory: directory,
-        manifestPath: '$directory/manifest.json',
-      ),
-      logic: (text) async {
-        final command = text.toLowerCase();
-        if (command.contains('hello')) return 'Hello. How are you?';
-        if (command.contains('name')) return 'My name is local voice.';
-        if (command.contains('thank')) return 'You are welcome.';
-        return 'I heard you. Please say hello.';
-      },
-    );
-    if (!mounted) {
-      await agent.dispose();
-      return;
-    }
-    _agent = agent;
-    _subscription = agent.events.listen(
-      (event) {
-        if (!mounted) return;
-        setState(() {
-          _status = '${event.lifecycle.name} · ${event.activity.name}';
-          if (event.kind == AgentEventKind.partialTranscript ||
-              event.kind == AgentEventKind.finalTranscript) {
-            _heard = event.text ?? '';
-          }
-          if (event.kind == AgentEventKind.replyText) _reply = event.text ?? '';
-          if (event.failure != null) _status = event.failure.toString();
-        });
-      },
-      onError: (Object error) {
-        if (mounted) setState(() => _status = error.toString());
-      },
-    );
-    setState(
-      () => _status = 'Models loaded. Tap Start and allow the microphone.',
-    );
+  void _refresh() {
+    if (mounted) setState(() {});
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state != AppLifecycleState.resumed) {
-      unawaited(
-        _agent?.stop().catchError((Object _) {}) ?? Future<void>.value(),
-      );
+    switch (state) {
+      case AppLifecycleState.resumed:
+        _controller.onResume();
+      case AppLifecycleState.paused:
+      case AppLifecycleState.hidden:
+      case AppLifecycleState.detached:
+        _controller.onBackground();
+      case AppLifecycleState.inactive:
+        // Permission prompts and temporary focus loss must not invalidate Start.
+        break;
     }
   }
 
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    unawaited(_subscription?.cancel());
-    unawaited(_agent?.dispose());
-    _directory.dispose();
+    _controller.removeListener(_refresh);
+    unawaited(_controller.close());
     super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) => Scaffold(
-    appBar: AppBar(title: const Text('Local voice')),
-    body: SafeArea(
-      child: ListView(
-        padding: const EdgeInsets.all(24),
-        children: [
-          Text(
-            'A conversation on your device',
-            style: Theme.of(context).textTheme.headlineSmall,
-          ),
-          const SizedBox(height: 12),
-          const Text(
-            'Speech stays on this device. Supply a local model pack before starting. Listening pauses while a reply plays.',
-          ),
-          const SizedBox(height: 24),
-          TextField(
-            controller: _directory,
-            decoration: const InputDecoration(
-              labelText: 'Local model folder',
-              border: OutlineInputBorder(),
+  Widget build(BuildContext context) {
+    final controller = _controller;
+    final selected = controller.selected;
+    final progress = controller.progress;
+    return Scaffold(
+      appBar: AppBar(title: const Text('Local voice')),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.fromLTRB(16, 8, 16, 32),
+          children: [
+            Text(
+              'Choose a voice for this device',
+              style: Theme.of(context).textTheme.headlineSmall,
             ),
-          ),
-          const SizedBox(height: 12),
-          FilledButton(
-            onPressed: _busy ? null : () => _run(_load),
-            child: const Text('Load models'),
-          ),
-          const SizedBox(height: 24),
-          Semantics(liveRegion: true, child: Text(_status)),
-          if (_busy) const LinearProgressIndicator(),
-          const SizedBox(height: 16),
-          Wrap(
-            spacing: 12,
-            children: [
-              FilledButton(
-                onPressed: _agent == null || _busy
-                    ? null
-                    : () => _run(() => _agent!.start()),
-                child: const Text('Start'),
+            const SizedBox(height: 8),
+            const Text(
+              'Download once, then speech recognition and playback run offline. Listening pauses while a reply plays.',
+            ),
+            const SizedBox(height: 20),
+            DropdownButtonFormField<VoiceModelOption>(
+              key: ValueKey('model-picker-${selected?.id ?? 'none'}'),
+              initialValue: selected,
+              isExpanded: true,
+              decoration: const InputDecoration(
+                labelText: 'English voice model',
               ),
-              OutlinedButton(
-                onPressed: _agent == null || _busy
-                    ? null
-                    : () => _run(() => _agent!.interrupt()),
-                child: const Text('Interrupt'),
-              ),
-              OutlinedButton(
-                onPressed: _agent == null || _busy
-                    ? null
-                    : () => _run(() => _agent!.stop()),
-                child: const Text('Stop'),
+              items: controller.catalog
+                  .map(
+                    (option) => DropdownMenuItem(
+                      value: option,
+                      child: Text(
+                        option.title,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  )
+                  .toList(),
+              onChanged: controller.operationBusy
+                  ? null
+                  : (option) => unawaited(controller.select(option)),
+            ),
+            if (selected != null) ...[
+              const SizedBox(height: 12),
+              Card.filled(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        selected.title,
+                        style: Theme.of(context).textTheme.titleMedium,
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        '${selected.language} • ${_downloadSize(selected.downloadBytes)} download',
+                      ),
+                      const SizedBox(height: 8),
+                      Text(selected.description),
+                      if (controller.phase == ExampleSetupPhase.ready) ...[
+                        const SizedBox(height: 10),
+                        const Chip(
+                          avatar: Icon(Icons.verified, size: 18),
+                          label: Text('Installed and verified'),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
               ),
             ],
-          ),
-          const SizedBox(height: 24),
-          Text('You said', style: Theme.of(context).textTheme.titleMedium),
-          SelectableText(_heard),
-          const SizedBox(height: 24),
-          Text('Reply', style: Theme.of(context).textTheme.titleMedium),
-          SelectableText(_reply),
+            const SizedBox(height: 12),
+            Semantics(
+              liveRegion: true,
+              child: Text(controller.status, key: const Key('status')),
+            ),
+            if (_showsTransferProgress(controller.phase) &&
+                progress != null) ...[
+              const SizedBox(height: 10),
+              LinearProgressIndicator(
+                key: const Key('download-progress'),
+                value: progress.totalBytes > 0
+                    ? (progress.receivedBytes / progress.totalBytes).clamp(0, 1)
+                    : null,
+              ),
+              const SizedBox(height: 6),
+              Text(
+                '${_downloadSize(progress.receivedBytes)} of ${_downloadSize(progress.totalBytes)}',
+                style: Theme.of(context).textTheme.bodySmall,
+              ),
+            ] else if (controller.operationBusy) ...[
+              const SizedBox(height: 10),
+              const LinearProgressIndicator(),
+            ],
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                FilledButton.icon(
+                  key: const Key('prepare-button'),
+                  onPressed: controller.canPrepare
+                      ? () => unawaited(controller.downloadAndPrepare())
+                      : null,
+                  icon: const Icon(Icons.download),
+                  label: Text(
+                    controller.phase == ExampleSetupPhase.failed
+                        ? 'Retry download'
+                        : 'Download and prepare',
+                  ),
+                ),
+                if (controller.canCancel)
+                  OutlinedButton(
+                    key: const Key('cancel-button'),
+                    onPressed: controller.cancelPreparation,
+                    child: const Text('Cancel'),
+                  ),
+                if (controller.allowRepairRemoval)
+                  OutlinedButton.icon(
+                    key: const Key('remove-copy-button'),
+                    onPressed: controller.operationBusy
+                        ? null
+                        : () => unawaited(controller.removeDamagedCopy()),
+                    icon: const Icon(Icons.delete_outline),
+                    label: const Text('Remove damaged copy'),
+                  ),
+              ],
+            ),
+            const SizedBox(height: 16),
+            const _DisclosureCard(),
+            const SizedBox(height: 20),
+            Text('Conversation', style: Theme.of(context).textTheme.titleLarge),
+            const SizedBox(height: 6),
+            const Text(
+              'Replies are fixed demo rules, not an LLM. Try “hello”, “what is your name?”, or “thank you”.',
+            ),
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: [
+                FilledButton(
+                  key: const Key('start-button'),
+                  onPressed: controller.canStart && !controller.operationBusy
+                      ? () => unawaited(controller.start())
+                      : null,
+                  child: const Text('Start'),
+                ),
+                OutlinedButton(
+                  key: const Key('interrupt-button'),
+                  onPressed: controller.hasSession && !controller.operationBusy
+                      ? () => unawaited(controller.interrupt())
+                      : null,
+                  child: const Text('Interrupt'),
+                ),
+                OutlinedButton(
+                  key: const Key('stop-button'),
+                  onPressed: controller.hasSession && !controller.operationBusy
+                      ? () => unawaited(controller.stop())
+                      : null,
+                  child: const Text('Stop'),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            _TranscriptCard(
+              title: 'You said',
+              value: controller.heard,
+              placeholder: 'Your partial and final transcript appears here.',
+            ),
+            const SizedBox(height: 12),
+            _TranscriptCard(
+              title: 'Local reply',
+              value: controller.reply,
+              placeholder: 'The fixed local demo reply appears here.',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DisclosureCard extends StatelessWidget {
+  const _DisclosureCard();
+
+  @override
+  Widget build(BuildContext context) => const Card.outlined(
+    child: ExpansionTile(
+      dense: true,
+      title: Text('Files, sources, and licenses'),
+      childrenPadding: EdgeInsets.fromLTRB(16, 0, 16, 16),
+      expandedCrossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'The catalog pins each source, file size, and checksum. License records download with the model. Preparation needs internet; conversations do not.',
+        ),
+      ],
+    ),
+  );
+}
+
+class _TranscriptCard extends StatelessWidget {
+  const _TranscriptCard({
+    required this.title,
+    required this.value,
+    required this.placeholder,
+  });
+
+  final String title;
+  final String value;
+  final String placeholder;
+
+  @override
+  Widget build(BuildContext context) => Card.outlined(
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(title, style: Theme.of(context).textTheme.titleMedium),
+          const SizedBox(height: 6),
+          SelectableText(value.isEmpty ? placeholder : value),
         ],
       ),
     ),
   );
 }
+
+String _downloadSize(int bytes) {
+  final megabytes = bytes / 1000000;
+  return '${megabytes.toStringAsFixed(1)} MB';
+}
+
+bool _showsTransferProgress(ExampleSetupPhase phase) =>
+    phase == ExampleSetupPhase.checking ||
+    phase == ExampleSetupPhase.downloading ||
+    phase == ExampleSetupPhase.verifying;

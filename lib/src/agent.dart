@@ -401,13 +401,7 @@ final class LocalVoiceAgent {
     }
     final run = reply
         .then((result) async {
-          if (result.runes.length > 240 || utf8.encode(result).length > 960) {
-            throw const AgentFailure(
-              AgentErrorCode.capacityExceeded,
-              'Reply exceeds bounds.',
-              fatal: false,
-            );
-          }
+          _validateLogicReply(result);
           if (!_disposed && generation == _generation) {
             await _native.reply(generation: generation, text: result);
           }
@@ -507,6 +501,57 @@ AgentErrorCode _code(String v) => AgentErrorCode.values.firstWhere(
 );
 AgentFailure _platformFailure(PlatformException e) =>
     AgentFailure(_code(e.code), e.message ?? e.code, fatal: false);
+
+void _validateLogicReply(String reply) {
+  if (reply.isEmpty) {
+    throw const AgentFailure(
+      AgentErrorCode.inferenceFailed,
+      'Reply is empty.',
+      fatal: false,
+    );
+  }
+  for (var index = 0; index < reply.length; index++) {
+    final codeUnit = reply.codeUnitAt(index);
+    if (codeUnit == 0) {
+      throw const AgentFailure(
+        AgentErrorCode.inferenceFailed,
+        'Reply contains an embedded NUL.',
+        fatal: false,
+      );
+    }
+    if (codeUnit >= 0xD800 && codeUnit <= 0xDBFF) {
+      if (index + 1 >= reply.length) {
+        throw const AgentFailure(
+          AgentErrorCode.inferenceFailed,
+          'Reply contains an unpaired UTF-16 surrogate.',
+          fatal: false,
+        );
+      }
+      final next = reply.codeUnitAt(index + 1);
+      if (next < 0xDC00 || next > 0xDFFF) {
+        throw const AgentFailure(
+          AgentErrorCode.inferenceFailed,
+          'Reply contains an unpaired UTF-16 surrogate.',
+          fatal: false,
+        );
+      }
+      index++;
+    } else if (codeUnit >= 0xDC00 && codeUnit <= 0xDFFF) {
+      throw const AgentFailure(
+        AgentErrorCode.inferenceFailed,
+        'Reply contains an unpaired UTF-16 surrogate.',
+        fatal: false,
+      );
+    }
+  }
+  if (reply.runes.length > 240 || utf8.encode(reply).length > 960) {
+    throw const AgentFailure(
+      AgentErrorCode.capacityExceeded,
+      'Reply exceeds bounds.',
+      fatal: false,
+    );
+  }
+}
 
 /// Flutter method-channel native platform.
 final class MethodChannelVoicePlatform implements NativeVoicePlatform {

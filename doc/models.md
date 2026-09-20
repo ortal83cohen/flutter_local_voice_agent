@@ -1,15 +1,15 @@
 # Local model packs
 
 The first profile is `en-US-sherpa-vits`, schema 1, sherpa runtime `1.12.14`,
-16 kHz mono model input. Supply files locally; the SDK never fetches them.
+16 kHz mono model input. Local creation remains offline; explicit preparation
+can download a verified catalog pack.
 English is the initial fixture language, not an inference from the user's locale.
 
-## Planned managed installation
+## Example catalog and advanced local installation
 
-The [managed setup proposal](../wiki/product/managed-model-setup.md) moves model
-selection, downloading and storage into the library, starting with one
-recommended speech bundle. It preserves this local-pack path for advanced and
-fully offline setup. It is not implemented; the current SDK never fetches models.
+The example uses the [built-in catalog](model-catalog.md): select a speech
+configuration and explicitly download it. No path or manifest input is required.
+The rest of this guide describes advanced host-provided packs and offline imports.
 
 ## Required roles
 
@@ -61,8 +61,8 @@ files with `adb push` followed by `run-as` copying into its `files` directory;
 use its actual application ID and paths, and verify the copy's manifest inside
 the app. On iOS, use an app-owned import flow or copy into a simulator's app
 container obtained with `xcrun simctl get_app_container`. A development-machine
-path does not identify an iPhone path. The reference UI takes an already
-provisioned directory; it does not implement a network browser or downloader.
+path does not identify an iPhone path. These manual-copy steps are for advanced hosts, not the reference UI, which
+now provides catalog selection and verified downloads.
 
 `FileModelStore.install(source: ..., targetRoot: ...)` is a transactional local
 copy. It validates before and after staging, then atomically renames into a

@@ -1,0 +1,46 @@
+id: "0005-model-preparation-core"
+title: "Explicit verified model preparation infrastructure"
+route: full
+phase: done
+round: 2
+verdict: PASS
+owner_agent: root
+created: "2026-09-20"
+updated: "2026-09-20"
+blockers: []
+followups:
+  - "Include implementation and accompanying documentation together in a later user-authorized commit; no staging, commit or publication performed by coordinator."
+  - "Complete parent0004 default catalog/private storage/native packaging/device qualification separately."
+decisions:
+  - action: impl-review-02
+    reason: "Accept blind PASS for all seven frozen core criteria, with no findings. Coordinator independently reproduced both round01 repairs and reran all seven checks on matching source bytes."
+  - action: package-warning-boundary
+    reason: "Preserve concurrent dirty Git state. Root exit65 is retained, while coordinator and independent reviewer each obtained zero-warning package checks on byte-identical source snapshots without Git metadata. This does not prove native consumer builds or publication."
+  - action: scoped-local-delivery
+    reason: "Complete only work0005 core and documentation. Parent0004 remains draft; old0002 remains FAIL. No broader physical/native/default-catalog claim or Git authorization is inferred."
+  - action: impl-review-01-F-001
+    reason: "Accept implementation defect: reject invalid explicit TCP ports before filesystem or client effects; add regression coverage. Criteria remain frozen."
+  - action: impl-review-01-F-002
+    reason: "Accept implementation defect: preserve storage classification for cached filesystem read failures; add real permission-denial regression coverage. Criteria remain frozen."
+  - action: implementation-confirmation
+    reason: "Both defects affect public failure contracts; use the one permitted fresh confirmation round after repairs and rerun the complete source-snapshot suite."
+  - action: research-review-01
+    reason: "PASS; correct F-001 wording: physical evidence is implementation acceptance, not a parent criteria-freeze prerequisite. No criterion or implementation change."
+  - action: plan-review-01
+    reason: "PASS without findings. Review baseline SDK analysis used the older system Dart path; it is not counted as pinned implementation evidence. Coordinator and implementation checks use FVM3.47/Dart3.13."
+  - action: freeze
+    reason: "Freeze AC-001 through AC-007 after reviewed design. Implement new modules serially; old0002 and parent0004 criteria unchanged."
+  - action: scope
+    reason: "User requested continued implementation management. Implement independently verifiable preparation infrastructure without relaxing parent criteria or starting a third 0002 review loop."
+  - action: shared-design
+    reason: "Explicit host-trusted HTTPS descriptor and private root; immutable fingerprinted installation; per-operation staging/cancellation; snapshot progress; existing offline contracts unchanged."
+escalations: []
+validation_results:
+  research_review_01: PASS
+  plan_review_01: PASS
+  implementation_review_01: FAIL
+  implementation_review_02: PASS
+  implementation: "Local scoped delivery verified; parent gates remain open."
+  final_full_check: "Byte-identical source snapshot: all seven stages passed, exit 0; 56 Flutter tests including 23 preparation tests."
+  original_worktree_check: "Exit 65 at package dry run: modified Git files warning. No Git mutation; isolated package source check has zero warnings."
+  final_evidence: "04-verification.md and validation/impl-review-02.md"

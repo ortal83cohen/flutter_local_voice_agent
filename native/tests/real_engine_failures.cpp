@@ -106,17 +106,23 @@ int main(int argc, char** argv) {
   }
   check(accepted_after_interrupt, "interrupt resumes capture while started");
   check(flva_reply(s, old, "stale") == 0, "old generation reply refused");
-  std::string long_ascii(241, 'a');
-  check(flva_reply(s, flva_interrupt(s), long_ascii.c_str()) == 0, "241 scalar ASCII reply refused");
-  std::string bad_utf8("\xF0\x9F", 2);
-  check(flva_reply(s, flva_interrupt(s), bad_utf8.c_str()) == 0, "truncated UTF-8 reply refused");
-
   // Feed twice through real engines. A new final/reply pair must not reuse the
   // preceding stream's decoder state or generation.
   for (int turn = 0; turn != 2; ++turn) {
     FlvaEvent final{};
     const bool got_final = feed_wav_until_final(s, a.wav, &final);
     check(got_final && final.text[0], turn == 0 ? "first real final" : "second real final after reset");
+    if (got_final && turn == 0) {
+      std::string long_ascii(241, 'a');
+      check(flva_reply(s, final.generation, long_ascii.c_str()) == 0, "241 scalars refused on awaited generation");
+      const char* malformed[] = {"\xF0\x9F", "\xc0\xaf", "\xe0\x80\x80", "\xed\xa0\x80",
+        "\xf0\x80\x80\x80", "\xf4\x90\x80\x80", "\xf5\x80\x80\x80", "\x80", "\xff"};
+      bool rejected = true;
+      for (auto text : malformed) rejected = (flva_reply(s, final.generation, text) == 0) && rejected;
+      check(rejected, "malformed UTF-8 refused on awaited generation");
+      check(flva_reply(s, final.generation, "") == 0, "empty reply refused on awaited generation");
+      check(flva_reply(s, final.generation + 1, "hello") == 0, "wrong generation refused while awaiting reply");
+    }
     if (got_final) {
       check(flva_reply(s, final.generation, "hello") == 1, turn == 0 ? "first real reply admitted" : "second real reply admitted");
       check(wait_for(s, "state", "listening", nullptr, 15000), turn == 0 ? "first playback drained" : "second playback drained");
@@ -136,5 +142,5 @@ int main(int argc, char** argv) {
   flva_stop(s); flva_stop(s); flva_destroy(s);
   check(true, "double stop and destroy after active worker");
   std::printf("PASSED %d checks\n", passed);
-  return passed == 17 ? 0 : 1;
+  return passed == 19 ? 0 : 1;
 }
