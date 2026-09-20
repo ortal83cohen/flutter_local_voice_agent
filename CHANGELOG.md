@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.1 - 2026-09-20
+
+- Automated patch release from main.
+
 ## Unreleased
 
 - Make the cross-origin TLS redirect regression portable across OpenSSL-backed

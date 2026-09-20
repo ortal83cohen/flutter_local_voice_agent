@@ -1,6 +1,6 @@
 name: flutter_local_voice_agent
 description: Offline native voice pipeline with locally supplied speech models, explicit lifecycle controls, and bounded audio transport.
-version: 0.1.0
+version: 0.1.1
 repository: https://github.com/ortal83cohen/flutter_local_voice_agent
 
 environment:
