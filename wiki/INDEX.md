@@ -150,3 +150,33 @@ to this index when they are created.
 ## Android audio diagnostics
 
 | [Android audio instrumentation](work/0007-android-audio-instrumentation/00-research.md) | Trace Android capture, native recognition, Dart polling and UI transcript delivery. |
+
+## Reasonable platform coverage
+
+| Document | Read it when |
+|---|---|
+| [Research consolidation](work/0008-reasonable-platform-coverage/00-research.md) | Deciding which Flutter platforms reuse the existing native session. |
+| [Implementation plan](work/0008-reasonable-platform-coverage/01-plan.md) | Implementing desktop bridges without changing the C ABI. |
+| [Acceptance criteria](work/0008-reasonable-platform-coverage/02-criteria.md) | Checking platform registration, provisioning and unsupported hosts. |
+| [Tasks](work/0008-reasonable-platform-coverage/03-tasks.md) | Ordering Dart, provisioning and per-OS plugin work. |
+| [Current gap](work/0008-reasonable-platform-coverage/research/current-gap.md) | Inspecting the existing Android and iOS bridges. |
+| [Desktop feasibility](work/0008-reasonable-platform-coverage/research/desktop.md) | Checking macOS, Windows and Linux audio and sherpa evidence. |
+| [Exclusions](work/0008-reasonable-platform-coverage/research/exclusions.md) | Confirming web and appliance targets stay unsupported. |
+| [Work state](work/0008-reasonable-platform-coverage/STATE.yaml) | Checking phase and recorded decisions. |
+| [Research review](work/0008-reasonable-platform-coverage/validation/research-review-01.md) | Inspect the independent source verdict. |
+| [Plan review](work/0008-reasonable-platform-coverage/validation/plan-review-01.md) | Inspect the first plan coverage verdict before confirmation. |
+| [Plan review confirmation](work/0008-reasonable-platform-coverage/validation/plan-review-02.md) | Inspect the patched-plan confirmation verdict. |
+| [Implement-ready handoff](work/0008-reasonable-platform-coverage/05-implement-ready.md) | Start implementation later; criteria are frozen and no task has begun. |
+
+## English VITS voice selection
+
+| Document | Read it when |
+|---|---|
+| [Research](work/0009-english-vits-voice-selection/00-research.md) | Reviewing English lexicon voice options and why VCTK was chosen. |
+| [Plan](work/0009-english-vits-voice-selection/01-plan.md) | Implementing catalog, speaker id and documentation updates. |
+| [Acceptance criteria](work/0009-english-vits-voice-selection/02-criteria.md) | Checking voice selection, persistence and documentation gates. |
+| [Tasks](work/0009-english-vits-voice-selection/03-tasks.md) | Ordering inventory, native, example and documentation work. |
+| [Work state](work/0009-english-vits-voice-selection/STATE.yaml) | Checking phase and recorded decisions. |
+| [Research review](work/0009-english-vits-voice-selection/validation/research-review-01.md) | Inspect the independent source verdict. |
+| [Plan review](work/0009-english-vits-voice-selection/validation/plan-review-01.md) | Inspect the first plan coverage verdict before confirmation. |
+| [Plan review confirmation](work/0009-english-vits-voice-selection/validation/plan-review-02.md) | Inspect the patched-plan confirmation verdict. |

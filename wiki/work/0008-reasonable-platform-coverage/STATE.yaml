@@ -1,0 +1,51 @@
+id: "0008-reasonable-platform-coverage"
+title: "Reasonable cross-platform coverage for the existing offline pipeline"
+route: full
+phase: implement
+round: 0
+verdict: null
+owner_agent: root
+created: "2026-09-20"
+updated: "2026-09-20"
+blockers: []
+followups:
+  - "Implementation is armed and frozen. No Group 1-5 task has started. Wait for an explicit implement request."
+decisions:
+  - action: scope
+    reason: "User requested an implementation plan for every supported platform that can be delivered with a reasonable implementation. Reuse the existing C ABI and Dart facade. Add a platform only when OS audio, native linking and Flutter plugin registration can follow the current Android/iOS pattern. Do not reopen frozen 0002/0004/0006/0007 criteria, redistribute models, commit or publish."
+  - action: supported-platforms
+    reason: "Define supported platforms as Android, iOS, macOS, Windows and Linux. The exclusions stream recommended Android and iOS only until desktop evidence existed; the desktop stream then showed all three desktop targets are conditionally reasonable. Include them in one work item, implement macOS first because this host can compile it, and treat Windows/Linux compile as a recorded gate rather than a silent pass."
+  - action: exclusions
+    reason: "Exclude Flutter web, watchOS, tvOS, Wear OS, Android TV, WASM, cloud speech and PCM-through-Dart. Fail those hosts with AgentErrorCode.unsupportedProfile."
+  - action: research-review-01-F-001
+    reason: "Accept IMPORTANT. Patch merged research: keep the recorded macOS universal2 digest from work 0002 provisioning research; leave Windows and Linux digests unresolved."
+  - action: research-review-01-F-002
+    reason: "Accept IMPORTANT. Retract UWP DeviceCapability as the Windows permission contract. Flutter Windows is a Win32 host; start maps capture-open denial to a typed failure."
+  - action: research-review-01-F-003
+    reason: "Accept NIT. Mark the PulseAudio doxygen URL unverified after the bot challenge and stop calling the API a simple-client stream."
+  - action: research-review-01-F-004
+    reason: "Accept NIT. Add the no-raw-PCM-in-logs constraint to merged research."
+  - action: plan-review-01-F-001
+    reason: "Accept BLOCKER. Patch the plan so desktop callback logs forbid raw PCM and verification searches log sites."
+  - action: plan-review-01-F-002
+    reason: "Accept BLOCKER. Bind macOS, Windows and Linux permission denial to start, return permissionDenied, and keep capture closed."
+  - action: plan-review-01-F-003
+    reason: "Accept IMPORTANT. Rollback now includes the tests and documentation this item adds."
+  - action: plan-review-01-F-004
+    reason: "Accept IMPORTANT. Add Windows capture-open and Linux portal or Pulse denial rows to the risk table and start contracts."
+  - action: plan-review-01-F-005
+    reason: "Accept IMPORTANT. Decide macOS uses CocoaPods plus the already-measured osx-universal2-shared dylibs. Reject the macos xcframework static bundle."
+  - action: plan-review-02
+    reason: "Accept confirmation PASS with no findings."
+  - action: user-confirm-scope
+    reason: "User confirmed desktop expansion to macOS, Windows and Linux, and accepted source-complete Windows/Linux plugins without a Flutter desktop build on this macOS checkout. Web remains excluded."
+  - action: freeze
+    reason: "Freeze AC-001 through AC-012 after plan-review-02 PASS and explicit user freeze authorization. Implementation is not started. No task may begin until a later implement request."
+escalations: []
+validation_results:
+  research_review_01: "PASS: research accuracy; four findings patched in place; no second research review required."
+  plan_review_01: "FAIL: AC-007 and AC-011 uncovered; plan patched in place; confirmation review required."
+  plan_review_02: "PASS: AC-001 through AC-012 covered; no findings."
+  freeze: "AC-001 through AC-012 frozen 2026-09-20; no implementation files created."
+  coordinator_wiki_command: "python3 tool/lint_wiki.py"
+  coordinator_wiki_output: "lint_wiki: clean (0 warning(s))."

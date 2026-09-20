@@ -1,0 +1,51 @@
+id: "0009-english-vits-voice-selection"
+title: "English VITS lexicon voice selection in the catalog and example"
+route: full
+phase: validate
+round: 2
+verdict: PASS
+owner_agent: root
+created: "2026-09-20"
+updated: "2026-09-20"
+
+blockers:
+  - id: F-001
+    from: validation/plan-review-01.md
+    severity: BLOCKER
+    status: closed
+    summary: "Plan omitted that a failed speaker setter keeps the previous id and the session."
+
+followups:
+  - summary: "Criteria are not frozen. No Group 1-5 task has started. Wait for an explicit freeze and implement request."
+    severity: IMPORTANT
+    owner: "unassigned"
+
+decisions:
+  - action: scope
+    reason: "User locked English only, no Hebrew, remain on VITS lexicon without Piper or eSpeak, expose the choice in the example, and include library documentation updates in the plan."
+  - action: voice-family
+    reason: "Add the lexicon-based VCTK multi-speaker English voice. Reject Piper Lessac and other data-dir voices in this item."
+  - round: 1
+    verdict: PASS
+    action: annotate-only
+    reason: "Research review F-001 NIT: drop the unsupported female label. Patched the official-voices claim to single-speaker LJS."
+  - round: 1
+    verdict: PASS
+    action: annotate-only
+    reason: "Research review F-002 NIT: split the INT8 claim so the official VITS page is cited only for VCTK INT8; LJS INT8 is attributed to this repository catalog."
+  - round: 1
+    verdict: FAIL
+    action: revise-plan
+    reason: "Plan review F-001 BLOCKER: AC-006 required preservation of the previous speaker id and session after a failed setter. Patched approach, step 4, shared decisions, verification and tasks 2.1-2.2."
+  - round: 2
+    verdict: PASS
+    action: annotate-only
+    reason: "Confirmation plan review PASS with no findings. Implementation is not started. Criteria remain unfrozen until an explicit implement request."
+
+escalations: []
+validation_results:
+  research_review_01: "PASS: research accuracy; two NIT wording patches applied; no second research review required."
+  plan_review_01: "FAIL: AC-006 uncovered; plan patched in place; confirmation review required."
+  plan_review_02: "PASS: AC-001 through AC-012 covered; no findings."
+  coordinator_wiki_command: "python3 tool/lint_wiki.py"
+  coordinator_wiki_output: "lint_wiki: clean (0 warning(s))."

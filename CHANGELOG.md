@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Rewrite the package README and pub.dev metadata around a complete on-device
+  speech-to-text and text-to-speech agent, with badges, topics, and an example
+  page.
 - Make the cross-origin TLS redirect regression portable across OpenSSL-backed
   CI runners by explicitly validating its generated loopback certificates.
 - Replace the example's required model path with a verified English speech

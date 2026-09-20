@@ -1,4 +1,4 @@
-/// Offline voice inference with explicit opt-in model preparation.
+/// On-device speech-to-text and text-to-speech with explicit model preparation.
 library;
 
 export 'src/agent.dart';

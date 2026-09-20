@@ -1,7 +1,23 @@
 name: flutter_local_voice_agent
-description: Offline native voice pipeline with locally supplied speech models, explicit lifecycle controls, and bounded audio transport.
+description: >-
+  Complete on-device speech-to-text and text-to-speech for Flutter.
+  One local voice agent handles microphone, recognition, reply, and playback.
 version: 0.1.0
+homepage: https://github.com/ortal83cohen/flutter_local_voice_agent
 repository: https://github.com/ortal83cohen/flutter_local_voice_agent
+issue_tracker: https://github.com/ortal83cohen/flutter_local_voice_agent/issues
+documentation: https://github.com/ortal83cohen/flutter_local_voice_agent/tree/main/doc
+topics:
+  - speech-to-text
+  - text-to-speech
+  - speech-recognition
+  - offline
+  - voice
+screenshots:
+  - description: >-
+      On-device Flutter voice agent: no cloud, microphone-to-speaker
+      speech-to-text and text-to-speech, one agent API.
+    path: image.png
 
 environment:
   sdk: ^3.13.0
