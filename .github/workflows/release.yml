@@ -36,7 +36,23 @@ jobs:
         run: bash tool/check.sh
       - name: Load occupied pub.dev versions
         run: |
-          python3 -c 'import json,urllib.request; json.dump(json.load(urllib.request.urlopen("https://pub.dev/api/packages/flutter_local_voice_agent", timeout=60)), open("occupied-pubdev-versions.json", "w"))'
+          python3 - <<'PY'
+          import json
+          import urllib.error
+          import urllib.request
+
+          url = "https://pub.dev/api/packages/flutter_local_voice_agent"
+          try:
+              with urllib.request.urlopen(url, timeout=60) as response:
+                  payload = json.load(response)
+          except urllib.error.HTTPError as error:
+              if error.code != 404:
+                  raise
+              print(f"Package is not published yet; treating {url} as empty occupancy.")
+              payload = {"versions": []}
+          with open("occupied-pubdev-versions.json", "w", encoding="utf-8") as handle:
+              json.dump(payload, handle)
+          PY
           echo "OCCUPIED_VERSIONS=$(python3 tool/occupied_pubdev_versions.py occupied-pubdev-versions.json)" >> "$GITHUB_ENV"
       - name: Bump patch version
         id: bump
