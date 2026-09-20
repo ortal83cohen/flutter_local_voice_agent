@@ -13,7 +13,12 @@
 /CLAUDE.local.md
 /.codex/
 /.gitignore
-.idea/
+/.idea/.gitignore
+/.idea/flutter_local_voice_agent.iml
+/.idea/markdown.xml
+/.idea/misc.xml
+/.idea/modules.xml
+/.idea/vcs.xml
 /.vscode/
 *.swp
 
