@@ -12,7 +12,7 @@ void main() {
     final controller = VoiceScreenController(
       storage: _EmptyStorage(),
       preparationFactory: (_, _, _) => throw StateError('not expected'),
-      sessionFactory: (_) => throw StateError('not expected'),
+      sessionFactory: (_, _) => throw StateError('not expected'),
     );
     await tester.pumpWidget(
       MaterialApp(home: VoiceScreen(controller: controller)),
@@ -24,11 +24,14 @@ void main() {
       findsOneWidget,
     );
     expect(find.text('English voice model'), findsOneWidget);
+    expect(find.text('Speaker'), findsNothing);
+    expect(find.textContaining('Three English options'), findsOneWidget);
+    expect(find.textContaining('VCTK is a speaker choice'), findsOneWidget);
     expect(find.byType(TextField), findsNothing);
-    expect(find.textContaining('fixed demo rules'), findsOneWidget);
-    expect(find.text('Files, sources, and licenses'), findsOneWidget);
     await tester.drag(find.byType(ListView), const Offset(0, -600));
     await tester.pump();
+    expect(find.textContaining('fixed demo rules'), findsOneWidget);
+    expect(find.text('Files, sources, and licenses'), findsOneWidget);
     final start = tester.widget<FilledButton>(
       find.byKey(const Key('start-button')),
     );
@@ -40,5 +43,5 @@ void main() {
 
 final class _EmptyStorage extends ExampleModelStorage {
   @override
-  Future<String?> readSelection() async => null;
+  Future<ExampleSelection?> readSelection() async => null;
 }

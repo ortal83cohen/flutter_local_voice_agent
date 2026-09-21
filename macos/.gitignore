@@ -1,0 +1,2 @@
+# Provisioned pinned sherpa-onnx / onnxruntime dylibs. Not committed.
+libs/*.dylib

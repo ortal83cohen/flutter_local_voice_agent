@@ -1,14 +1,30 @@
 id: "0003-pubdev-release-pipeline"
 title: "GitHub-triggered pub.dev release pipeline"
 route: full
-phase: implement
-round: 0
-verdict: null
+phase: done
+round: 2
+verdict: PASS
 owner_agent: "Codex"
 created: "2026-09-19"
-updated: "2026-09-19"
+updated: "2026-09-21"
 
 blockers: []
-followups: []
-decisions: []
+followups:
+  - "AC-006 dry-run still unproven on this dirty checkout (exit 65). Ignore rules for android/ios/example build trees were added."
+  - "No plan or implementation validation reports exist for this item."
+decisions:
+  - action: implement-gap-1.1
+    reason: "User authorized implementing open plans. Completed missing negative helper fixtures and pubignore platform-build exclusions. Workflows and docs were already present."
+  - action: late-validate-then-verify
+    reason: "User authorized any researched path. Run late plan-review then verify. Prove AC-006 on a Git-free snapshot, not the dirty-checkout exit 65."
+  - action: plan-review-01
+    reason: "Accept FAIL. Patch the plan in place for AC-001 stages, AC-002 dated changelog prepend, AC-003 occupancy failure, AC-006 payload exclusions, and AC-007 personal data. Then one confirmation plan review."
+  - action: plan-review-02
+    reason: "Accept PASS. Enter verify. Prove AC-006 on a Git-free snapshot, not the dirty-checkout exit 65."
+  - action: impl-review-01-F-001
+    reason: "Accept NIT as follow-up. example/test and Podfile.lock in the dry-run payload do not violate the named repository-only exclusions. Do not expand this item."
+  - action: impl-review-01-F-002
+    reason: "Accept NIT as follow-up. Occupancy still fails closed on malformed versions. Do not expand this item."
+  - action: impl-review-01
+    reason: "Accept PASS. Snapshot check.sh exit 0. Hosted GitHub and pub.dev publication remain [UNVERIFIED]. Close the item."
 escalations: []

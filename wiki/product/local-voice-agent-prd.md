@@ -3,14 +3,14 @@ id: local-voice-agent-prd
 title: Flutter Local Voice Agent - Technical PRD and Implementation Architecture
 status: draft
 owner: unassigned
-last_verified: 2026-09-20
+last_verified: 2026-09-21
 applies_to: ["lib/**", "example/**", "android/**", "ios/**"]
 summary: Researched, proposed architecture and implementation roadmap for a strictly offline Flutter voice agent.
 ---
 
 # Flutter Local Voice Agent: Technical PRD and Implementation Architecture
 
-**Status: proposed specification, not an implemented SDK.** Research date: 19 September 2026. Android and iOS are the primary targets. All API declarations, numerical budgets and project layouts below are proposals. Target-device performance, runtime behavior and compatibility remain **[UNVERIFIED]** until the specified experiments pass.
+**Status: proposed specification, not an implemented SDK.** Research date: 19 September 2026. This document originally named Android and iOS as the primary targets. Current plugin registration also includes macOS, Windows and Linux; see [reasonable platform coverage](reasonable-platform-coverage.md). All API declarations, numerical budgets and project layouts below are proposals. Target-device performance, runtime behavior and compatibility remain **[UNVERIFIED]** until the specified experiments pass. Parent 0002 VITS allocation, physical mobile qualification and clean consumer-install gates remain OPEN.
 
 At the original research date, this specification described a generic skeleton. The current native implementation and remaining qualification gates are tracked in [work item 0002](../work/0002-native-offline-pipeline/STATE.yaml); the [public facade](../../lib/flutter_local_voice_agent.dart) now exists. The declarations below remain specification proposals unless verified against current source.
 

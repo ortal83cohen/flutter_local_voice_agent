@@ -15,12 +15,17 @@ to configure.
 
 ![On-device Flutter voice agent: no cloud, microphone-to-speaker speech-to-text and text-to-speech](image.png)
 
+
 **Development preview.** Physical Android/iPhone qualification, voice quality,
 resource budgets, and binary/model redistribution review remain open. The VITS
 backend generates complete sentences before its PCM callback; the render queue
 is bounded, but upstream synthesis allocation is not yet proven to satisfy the
 hard duration/memory budget. Do not treat this preview as a production-qualified
 SDK.
+
+Please [let us know about any problems](https://github.com/ortal83cohen/flutter_webmcp/issues/new/choose)
+you encounter; we would be happy to improve the library together with the
+community.
 
 ## Features
 
@@ -44,13 +49,21 @@ SDK.
 |---|---|
 | Android | API 26+, arm64-v8a |
 | iOS | CocoaPods + AVAudioEngine; add `NSMicrophoneUsageDescription` |
-| Web | Unsupported |
-| macOS, Windows, Linux | Unsupported |
+| macOS | CocoaPods + AVAudioEngine; pinned v1.12.14 universal2 dylibs |
+| Windows | WASAPI; source-complete plugin; Flutter desktop build not run on this macOS checkout |
+| Linux | PulseAudio; source-complete plugin; Flutter desktop build not run on this macOS checkout |
+| Flutter web | Unsupported; fails with `unsupportedProfile` |
+| watchOS, tvOS, Wear OS, Android TV | Unsupported; fails with `unsupportedProfile` |
+| WASM, cloud speech, PCM-through-Dart | Unsupported; fails with `unsupportedProfile` |
 | Background / wake word | Unsupported |
 | Full duplex / barge-in | Unsupported |
 
-Requires Flutter 3.47.0 / Dart 3.13.0. Build verification and physical
-qualification are separate; see [capabilities](doc/capabilities.md).
+Requires Flutter 3.47.0 / Dart 3.13.0. The macOS example was built on this
+host (`flutter build macos --debug` exit 0). Windows and Linux are
+source-complete; Flutter desktop builds of those two hosts were not run on
+this macOS checkout. Parent 0002 VITS allocation, physical mobile
+qualification, and clean consumer-install gates remain OPEN. See
+[capabilities](doc/capabilities.md).
 
 ## Use
 
@@ -62,6 +75,7 @@ final agent = await LocalVoiceAgent.create(
     directory: '/app-private/models/english',
     manifestPath: '/app-private/models/english/manifest.json',
   ),
+  speakerId: 0,
   logic: (transcript) async => 'Hello. How are you?',
 );
 final subscription = agent.events.listen((event) {
@@ -75,6 +89,12 @@ await agent.stop();
 await subscription.cancel();
 await agent.dispose();
 ```
+
+`speakerId` defaults to 0. A ready session can change it with
+`setSpeakerId`; the next synthesized reply uses the new id. Speaker labels
+are integer ids. Negative ids fail before native create. An out-of-range id
+fails with unsupported-profile and leaves the previous id and the session
+in place.
 
 Manifest validation and model loading precede microphone activation. Start
 asks for microphone permission. A missing or corrupt asset, or a refused
@@ -101,21 +121,25 @@ other audio plugins in the host app.
 
 ## Models
 
-No model weights ship in the package. `VoiceModelCatalog.entries` lists two
-pinned English speech packs (compact INT8 and full precision) with hashes and
-source notices. `ModelPreparationManager` prepares a host-supplied trusted
-descriptor into a host-chosen private directory, with integrity checks,
-cancellation, and verified offline reuse. It returns a `LocalModelBundle` for
-`LocalVoiceAgent.create`.
+No model weights ship in the package. `VoiceModelCatalog.entries` lists three
+pinned English speech packs: LJS compact (INT8), LJS standard (full
+precision), and compact VCTK (109 speakers, integer ids 0 through 108), each
+with hashes and source notices. `ModelPreparationManager` prepares a
+host-supplied trusted descriptor into a host-chosen private directory, with
+integrity checks, cancellation, and verified offline reuse. It returns a
+`LocalModelBundle` for `LocalVoiceAgent.create`.
 
 See the [preparation guide](doc/model-preparation.md) and the
 [model catalog](doc/model-catalog.md). Advanced hosts can still construct
 [local packs](doc/models.md).
 
 The example downloads a selected verified pack on first use, then restores it
-offline. The packs use the same English voice at different precision levels.
-No Hebrew, other-language, physical-device performance, or voice-quality
-guarantee is implied.
+offline. The two LJS packs share one voice at different precision levels.
+VCTK is a speaker choice, not a language or quality ranking. Speaker labels
+are integer ids; this catalog does not invent names, gender, or accent.
+Piper, other languages, and physical-device quality remain outside this
+catalog. No Hebrew, other-language, physical-device performance, or
+voice-quality guarantee is implied.
 
 ## Setup
 
@@ -125,15 +149,18 @@ binaries and provisioning tools; a zero-warning package dry run does not
 establish a standalone consumer install. Native dependency packaging remains
 unfinished.
 
-From the repository root:
+From the repository root, provision the host you will build:
 
 ```sh
-python3 tool/provision_runtime.py android
-python3 tool/provision_runtime.py ios
+python3 tool/provision_runtime.py <android|ios|macos|windows|linux>
 flutter pub get
 ```
 
-These commands download SHA-256 pinned sherpa-onnx 1.12.14 build artifacts.
+Each key downloads or verifies a SHA-256 pinned sherpa-onnx v1.12.14
+archive. Desktop digests are macOS
+`7e0f7bec6b7a428e7594385f62ebb5c3fc9fadc863a12005302bfd67a45ee413`,
+Windows `78fa331bac4d20828a867b14283950727ce668fe751d1a792352b7e035b0ffe1`,
+and Linux `b898ed5d7b989192ac6c60b6c0076f9de2e89766930bf1e11738aacbf45f5ed8`.
 For a network-free build input step, pass `--archive /path/to/the/archive`.
 They are never invoked by the running application.
 
@@ -144,13 +171,14 @@ cd example
 flutter run
 ```
 
-Choose **English compact (INT8)** or **English standard (full precision)**,
-review the download size, then tap **Download**. Preparation reports progress
-and can be cancelled or retried. After the engine is ready, tap **Start**,
-allow the microphone, and try “hello”, “what is your name”, or “thank you”.
-These are fixed local demo replies, not a general-purpose LLM conversation.
+Choose **English compact (INT8)** (LJS), **English standard (full precision)**
+(LJS), or **English compact VCTK (INT8)** (109 speakers, ids 0-108), review
+the download size, then tap **Download**. Preparation reports progress and
+can be cancelled or retried. After the engine is ready, tap **Start**, allow
+the microphone, and try “hello”, “what is your name”, or “thank you”. These
+are fixed local demo replies, not a general-purpose LLM conversation.
 Interrupt and Stop are explicit controls. Later launches restore the selected
-installed pack without networking.
+installed pack and speaker id without networking.
 
 ```sh
 flutter test

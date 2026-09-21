@@ -12,13 +12,18 @@ example with `flutter run`. No model path, manifest or manual file copy is neede
    later launch, the selected installed model is revalidated and loaded offline.
 
 The example uses deterministic local replies to demonstrate speech recognition
-and synthesis. It is not a general-purpose chat model. Both choices use the same
-US English LJS voice, Silero VAD and streaming Zipformer recognizer:
+and synthesis. It is not a general-purpose chat model. All three options use
+Silero VAD and the same streaming Zipformer recognizer. The two LJS packs share
+one English voice at different precision levels. Compact VCTK is a speaker
+choice, not a language or quality ranking. Speaker labels are integer ids 0
+through 108; this catalog does not invent names, gender, or accent. Piper,
+other languages, and physical-device quality remain outside this catalog.
 
 | Configuration | Downloaded payload including notices | Purpose |
 |---|---:|---|
-| English compact (INT8) | 114,444,636 bytes (114.4 MB) | Smaller weights/download; default first choice |
-| English standard (full precision) | 383,741,867 bytes (383.7 MB) | Full-precision variant of the same models and voice |
+| English compact (INT8) | 114,444,636 bytes (114.4 MB) | Smaller LJS weights/download; default first choice |
+| English standard (full precision) | 383,741,867 bytes (383.7 MB) | Full-precision variant of the same LJS models and voice |
+| English compact VCTK (INT8) | 116,261,194 bytes (116.3 MB) | Compact English multi-speaker pack; 109 speakers, ids 0-108 |
 
 Stored payload sizes equal download sizes; a small generated manifest and saved
 selection are additional. These figures are not RAM estimates or quality/speed
@@ -29,23 +34,28 @@ abandoned stages can consume additional storage.
 ## Library catalog
 
 `VoiceModelCatalog.entries` exposes immutable `VoiceModelOption` entries with
-`id`, `title`, `description`, `language`, `descriptor`, `downloadBytes` and
-`allowedRedirectOrigins`. Pass the descriptor to `ModelPreparationManager` with
-an app-private root, `maxRedirects: 5` and the entry's redirect origins. Preparation
-returns an ordinary `LocalModelBundle`. See [preparation](model-preparation.md)
-for progress, cancellation and failure contracts.
+`id`, `title`, `description`, `language`, `speakerCount`, `descriptor`,
+`downloadBytes` and `allowedRedirectOrigins`. LJS options report speaker count
+1. Compact VCTK reports 109. Pass the descriptor to `ModelPreparationManager`
+with an app-private root, `maxRedirects: 5` and the entry's redirect origins.
+Preparation returns an ordinary `LocalModelBundle`. Hosts may pass a
+`speakerId` into `LocalVoiceAgent.create` (default 0) and change it later with
+`setSpeakerId`. See [preparation](model-preparation.md) for progress,
+cancellation and failure contracts.
 
 The static descriptors are reviewed source metadata, not a remotely fetched
 catalog. `tool/model_catalog_inventory.json` records the input inventory, and
-`tool/verify_catalog.dart OUTPUT_ROOT` explicitly downloads both packs, verifies
-them and tests zero-client offline reuse. It writes role paths for native tests
-into `OUTPUT_ROOT/verification.json`. This command transfers about 498 MB when
-both packs are absent; it is deliberately outside routine unit tests.
+`tool/verify_catalog.dart OUTPUT_ROOT` explicitly downloads all three packs,
+verifies them and tests zero-client offline reuse. It writes role paths for
+native tests into `OUTPUT_ROOT/verification.json`. This command transfers about
+614 MB when all three packs are absent; it is deliberately outside routine
+unit tests.
 
 ## Sources and notices
 
 - [Zipformer pinned revision](https://huggingface.co/csukuangfj/sherpa-onnx-streaming-zipformer-en-2023-06-26/tree/672fbf1b30579d6585301139bb363f42a0ad4a24).
 - [VITS LJS pinned revision](https://huggingface.co/csukuangfj/vits-ljs/tree/7ac337c834f318e45a34037cb3371cc3929187ff).
+- [VITS VCTK pinned revision](https://huggingface.co/csukuangfj/vits-vctk/tree/5d7d647d6ea0f6206544735d74b25d3877c0f9ca).
 - [Silero release source](https://github.com/k2-fsa/sherpa-onnx/releases/tag/asr-models), asset 271935959, content pinned by SHA-256; the release URL itself is mutable.
 - [Silero MIT notice](https://github.com/snakers4/silero-vad/blob/60b7ffa243625ebdc1070275a29f18c87843786a/LICENSE).
 

@@ -7,9 +7,13 @@ English is the initial fixture language, not an inference from the user's locale
 
 ## Example catalog and advanced local installation
 
-The example uses the [built-in catalog](model-catalog.md): select a speech
-configuration and explicitly download it. No path or manifest input is required.
-The rest of this guide describes advanced host-provided packs and offline imports.
+The example uses the [built-in catalog](model-catalog.md): select one of the
+three English speech configurations (LJS compact, LJS standard, or compact
+VCTK) and explicitly download it. No path or manifest input is required. VCTK
+is a speaker choice with integer ids 0 through 108, not a language or quality
+ranking. Piper, other languages and physical-device quality remain outside
+this catalog. The rest of this guide describes advanced host-provided packs
+and offline imports.
 
 ## Required roles
 
@@ -20,7 +24,7 @@ The rest of this guide describes advanced host-provided packs and offline import
 | decoder | decoder-epoch-99-avg-1-chunk-16-left-128.int8.onnx |
 | joiner | joiner-epoch-99-avg-1-chunk-16-left-128.int8.onnx |
 | asrTokens | Zipformer tokens.txt |
-| ttsModel | vits-ljs.onnx |
+| ttsModel | vits-ljs.onnx (LJS qualification fixture; catalog VCTK uses vits-vctk.int8.onnx) |
 | ttsTokens | VITS tokens.txt, distinct from ASR tokens |
 | ttsLexicon | VITS lexicon.txt |
 | license | Actual collected license texts and notices |
@@ -30,11 +34,15 @@ The ASR source archive is
 [sherpa-onnx-streaming-zipformer-en-2023-06-26](https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-streaming-zipformer-en-2023-06-26.tar.bz2).
 The VAD source is
 [Silero supplied by sherpa](https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/silero_vad.onnx).
-The TTS source is [csukuangfj/vits-ljs](https://huggingface.co/csukuangfj/vits-ljs).
-Pin the downloaded contents with hashes and preserve source revisions/notices.
-Source model-card license labels are not approval to redistribute an archive.
-This voice has a finite lexicon and may warn and omit unknown words. Test your
-actual response vocabulary; do not assume arbitrary text support.
+The TTS qualification fixture is [csukuangfj/vits-ljs](https://huggingface.co/csukuangfj/vits-ljs).
+Catalog compact VCTK uses [csukuangfj/vits-vctk](https://huggingface.co/csukuangfj/vits-vctk)
+INT8 at frozen revision 5d7d647d6ea0f6206544735d74b25d3877c0f9ca. Pin the
+downloaded contents with hashes and preserve source revisions/notices. Source
+model-card license labels are not approval to redistribute an archive. These
+voices have a finite lexicon and may warn and omit unknown words. Test your
+actual response vocabulary; do not assume arbitrary text support. Speaker
+labels on VCTK are integer ids 0 through 108; do not invent names, gender or
+accent. Piper remains outside this catalog.
 
 ## Manifest creation
 

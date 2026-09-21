@@ -235,13 +235,16 @@ void main() {
         VoiceModelCatalog.entries.last,
       );
       await _flush();
+      expect(session.disposeCalls, 1);
       final restore = harness.preparations.last;
+      expect(restore.option, VoiceModelCatalog.entries.last);
       expect(restore.allowNetwork, isFalse);
       restore.completeReady();
       await switchFuture;
 
       expect(session.disposeCalls, 1);
       expect(harness.controller.selected, VoiceModelCatalog.entries.last);
+      expect(harness.controller.speakerId, 0);
       expect(harness.controller.phase, ExampleSetupPhase.ready);
 
       await harness.controller.close();
@@ -288,6 +291,93 @@ void main() {
       await harness.controller.close();
     },
   );
+
+  test('LJS hides speakers and old catalog-id restore can start', () async {
+    final option = VoiceModelCatalog.entries.first;
+    final harness = _Harness(savedId: option.id, savedSpeakerId: 0);
+
+    final pending = harness.controller.initialize();
+    await _flush();
+    final preparation = harness.preparations.single;
+    expect(preparation.allowNetwork, isFalse);
+    expect(preparation.option, option);
+    preparation.completeReady();
+    await pending;
+
+    expect(option.speakerCount, 1);
+    expect(harness.controller.speakerIds, isEmpty);
+    expect(harness.controller.showsSpeakerControl, isFalse);
+    expect(harness.controller.speakerId, 0);
+    expect(harness.controller.phase, ExampleSetupPhase.ready);
+    expect(harness.controller.canStart, isTrue);
+
+    await harness.controller.close();
+  });
+
+  test('VCTK exposes speaker ids 0 through 108', () async {
+    final option = VoiceModelCatalog.entries.last;
+    final harness = _Harness(savedId: option.id);
+
+    final pending = harness.controller.initialize();
+    await _flush();
+    harness.preparations.single.completeReady();
+    await pending;
+
+    expect(option.speakerCount, 109);
+    expect(harness.controller.showsSpeakerControl, isTrue);
+    expect(harness.controller.speakerIds.first, 0);
+    expect(harness.controller.speakerIds.last, 108);
+    expect(harness.controller.speakerIds, hasLength(109));
+    expect(harness.controller.speakerIds.contains(109), isFalse);
+
+    await harness.controller.close();
+  });
+
+  test('VCTK Start is disabled when restored speaker id is 109', () async {
+    final option = VoiceModelCatalog.entries.last;
+    final harness = _Harness(savedId: option.id, savedSpeakerId: 109);
+
+    final pending = harness.controller.initialize();
+    await _flush();
+    harness.preparations.single.completeReady();
+    await pending;
+
+    expect(harness.controller.phase, ExampleSetupPhase.ready);
+    expect(harness.controller.hasSession, isTrue);
+    expect(harness.controller.speakerId, 109);
+    expect(harness.controller.canStart, isFalse);
+
+    await harness.controller.close();
+  });
+
+  test(
+    'live VCTK speaker change calls setter and does not prepare again',
+    () async {
+      final option = VoiceModelCatalog.entries.last;
+      final harness = _Harness(savedId: option.id, savedSpeakerId: 0);
+
+      final pending = harness.controller.initialize();
+      await _flush();
+      harness.preparations.single.completeReady();
+      await pending;
+
+      final session = harness.sessions.single;
+      final preparationCount = harness.preparations.length;
+      await harness.controller.setSpeakerId(7);
+
+      expect(session.setSpeakerIds, <int>[7]);
+      expect(harness.controller.speakerId, 7);
+      expect(harness.storage.writtenId, option.id);
+      expect(harness.storage.writtenSpeakerId, 7);
+      expect(harness.preparations, hasLength(preparationCount));
+      expect(harness.sessions, hasLength(1));
+      expect(session.disposeCalls, 0);
+      expect(harness.controller.phase, ExampleSetupPhase.ready);
+      expect(harness.controller.canStart, isTrue);
+
+      await harness.controller.close();
+    },
+  );
 }
 
 Future<void> _flush() => Future<void>.delayed(Duration.zero);
@@ -295,10 +385,12 @@ Future<void> _flush() => Future<void>.delayed(Duration.zero);
 final class _Harness {
   _Harness({
     String? savedId,
+    int savedSpeakerId = 0,
     int? availableBytes,
     bool installedCandidate = false,
   }) : storage = _FakeStorage(
          savedId: savedId,
+         savedSpeakerId: savedSpeakerId,
          availableBytesValue: availableBytes ?? 1 << 50,
          installedCandidate: installedCandidate,
        ) {
@@ -313,9 +405,10 @@ final class _Harness {
         preparations.add(preparation);
         return preparation;
       },
-      sessionFactory: (bundle) async {
+      sessionFactory: (bundle, speakerId) async {
         final session = _FakeSession();
         sessions.add(session);
+        createdSpeakerIds.add(speakerId);
         return session;
       },
     );
@@ -324,25 +417,33 @@ final class _Harness {
   final _FakeStorage storage;
   final List<_FakePreparation> preparations = <_FakePreparation>[];
   final List<_FakeSession> sessions = <_FakeSession>[];
+  final List<int> createdSpeakerIds = <int>[];
   late final VoiceScreenController controller;
 }
 
 final class _FakeStorage extends ExampleModelStorage {
   _FakeStorage({
     required this.savedId,
+    required this.savedSpeakerId,
     required this.availableBytesValue,
     required this.installedCandidate,
   });
 
   final String? savedId;
+  final int savedSpeakerId;
   final int availableBytesValue;
   final bool installedCandidate;
   int availableBytesCalls = 0;
   String? writtenId;
+  int? writtenSpeakerId;
   final List<String> deletedIds = <String>[];
 
   @override
-  Future<String?> readSelection() async => savedId;
+  Future<ExampleSelection?> readSelection() async {
+    final id = savedId;
+    if (id == null) return null;
+    return ExampleSelection(catalogId: id, speakerId: savedSpeakerId);
+  }
 
   @override
   Future<int> availableBytes() async {
@@ -359,8 +460,12 @@ final class _FakeStorage extends ExampleModelStorage {
       '/private/models/${option.id}';
 
   @override
-  Future<void> writeSelection(VoiceModelOption option) async {
+  Future<void> writeSelection(
+    VoiceModelOption option, {
+    int speakerId = 0,
+  }) async {
     writtenId = option.id;
+    writtenSpeakerId = speakerId;
   }
 
   @override
@@ -444,6 +549,7 @@ final class _FakePreparation implements ModelPreparation {
 final class _FakeSession implements ExampleVoiceSession {
   final StreamController<AgentEvent> _events = StreamController<AgentEvent>();
   final Completer<void> startCompleter = Completer<void>();
+  final List<int> setSpeakerIds = <int>[];
   int stopCalls = 0;
   int disposeCalls = 0;
 
@@ -465,5 +571,10 @@ final class _FakeSession implements ExampleVoiceSession {
   Future<void> dispose() async {
     disposeCalls++;
     await _events.close();
+  }
+
+  @override
+  Future<void> setSpeakerId(int speakerId) async {
+    setSpeakerIds.add(speakerId);
   }
 }

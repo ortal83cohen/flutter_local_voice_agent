@@ -6,7 +6,7 @@ round: 2
 verdict: FAIL
 owner_agent: root
 created: "2026-09-19"
-updated: "2026-09-20"
+updated: "2026-09-21"
 blockers:
   - "F3 / AC-004: VITS allocates an entire sentence before callback; hard synthesis allocation bound not established."
   - "AC-005 / AC-008: physical mobile offline, audio, lifecycle and performance qualification unavailable."
@@ -47,6 +47,8 @@ decisions:
     reason: "New implementation work; 0001 remains specification evidence only. No commit, publication or model redistribution authorized."
   - action: design
     reason: "Foreground half-duplex; native worker ownership; bounded PCM and events; generation gates; full duplex rejected until acoustic qualification."
+  - action: keep-fail
+    reason: "User authorized any researched path. Leave whole-item FAIL. Do not change AC-004, do not open impl-review-03, do not pick a new backend in this item. A successor item requires an explicit later request."
 escalations:
   - "Second whole-item implementation verdict remains FAIL: bounded VITS backend/profile design and physical Android/iPhone resources are required; surface unresolved gates to the user, do not run a third review loop."
 

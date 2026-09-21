@@ -13,6 +13,7 @@ typedef struct {
   const char *tts_model, *tts_tokens, *tts_lexicon;
   const char *llm_model; /* empty: Dart logic; requires optional build otherwise */
   int32_t input_rate; /* mono float32, 8000..192000, constant per session */
+  int32_t speaker_id; /* >= 0; default 0 */
 } FlvaConfig;
 /* Fixed-capacity UTF-8 messages. kind: state, partial, final, reply, error.
  * activity: idle/listening/recognizing/thinking/speaking. code is an error name.
@@ -22,6 +23,8 @@ typedef struct {
   char kind[16], activity[24], code[40], text[2048];
 } FlvaEvent;
 FlvaSession *flva_create(const FlvaConfig *, char *error, int32_t error_capacity);
+/* Next generate uses speaker_id. Out-of-range leaves the stored id and session. */
+int32_t flva_set_speaker_id(FlvaSession *, int32_t speaker_id, char *error, int32_t error_capacity);
 int32_t flva_output_rate(const FlvaSession *);
 int32_t flva_start(FlvaSession *);
 /* Interrupt invalidates output synchronously; worker reset is asynchronous. */

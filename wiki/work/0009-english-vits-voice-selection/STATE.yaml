@@ -1,12 +1,12 @@
 id: "0009-english-vits-voice-selection"
 title: "English VITS lexicon voice selection in the catalog and example"
 route: full
-phase: validate
-round: 2
+phase: done
+round: 1
 verdict: PASS
 owner_agent: root
 created: "2026-09-20"
-updated: "2026-09-20"
+updated: "2026-09-21"
 
 blockers:
   - id: F-001
@@ -16,11 +16,29 @@ blockers:
     summary: "Plan omitted that a failed speaker setter keeps the previous id and the session."
 
 followups:
-  - summary: "Criteria are not frozen. No Group 1-5 task has started. Wait for an explicit freeze and implement request."
+  - summary: "Group 5.1 verification record written. Waiting for impl-review-01."
     severity: IMPORTANT
-    owner: "unassigned"
+    owner: "root"
 
 decisions:
+  - action: freeze
+    reason: "User authorized implementation of all open plans. Freeze AC-001 through AC-012 after plan-review-02 PASS. No criterion added after freeze."
+  - action: implement-start
+    reason: "Start Group 1 inventory first. Do not reopen 0002, 0004, 0006 or 0008 frozen criteria. No commit or publication."
+  - action: inventory-1.1
+    reason: "Pinned VCTK INT8 at 5d7d647d6ea0f6206544735d74b25d3877c0f9ca. Pack en-us-vctk-zipformer-int8, speakerCount 109. No sid-to-name table; example stays on integer ids."
+  - action: implement-groups-1-4
+    reason: "Catalog, Dart/native/mobile speaker id, example persist/UI, and consumer/wiki docs landed. Group 5 verification artifact not yet written."
+  - action: start-verify
+    reason: "User authorized any researched path. Start Group 5: 04-verification.md then one impl-review. VCTK live generate remains an asset gate if files are absent."
+  - action: write-verification
+    reason: "04-verification.md records format, analyze, package and example tests, wiki lint, catalog verifier PASS for all three packs, and snapshot check.sh. Live VCTK generate is not claimed."
+  - action: impl-review-01-F-001
+    reason: "Accept NIT. Patch wiki/product/example-model-catalog.md so a missing speaker field falls back to 0 for every pack, and Start refusal is described only for an out-of-range saved VCTK id."
+  - action: impl-review-01-F-002
+    reason: "Accept NIT as follow-up. Do not expand native probe paths in this round. Controller tests still cover no-redownload speaker change."
+  - action: impl-review-01
+    reason: "Accept PASS. Move to document. No second implementation review."
   - action: scope
     reason: "User locked English only, no Hebrew, remain on VITS lexicon without Piper or eSpeak, expose the choice in the example, and include library documentation updates in the plan."
   - action: voice-family
@@ -49,3 +67,4 @@ validation_results:
   plan_review_02: "PASS: AC-001 through AC-012 covered; no findings."
   coordinator_wiki_command: "python3 tool/lint_wiki.py"
   coordinator_wiki_output: "lint_wiki: clean (0 warning(s))."
+  impl_review_01: "PASS: AC-001 through AC-012 met; two NIT findings; F-001 patched in product text; F-002 recorded as follow-up."

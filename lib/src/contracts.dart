@@ -18,6 +18,7 @@ abstract interface class NativeVoicePlatform {
   Future<int> create({
     required Map<String, String> paths,
     required String mode,
+    required int speakerId,
   });
 
   /// Starts native microphone and output ownership.
@@ -37,4 +38,7 @@ abstract interface class NativeVoicePlatform {
 
   /// Supplies a Dart-computed reply for [generation].
   Future<void> reply({required int generation, required String text});
+
+  /// Updates the speaker id used by the next synthesized reply.
+  Future<void> setSpeakerId(int speakerId);
 }

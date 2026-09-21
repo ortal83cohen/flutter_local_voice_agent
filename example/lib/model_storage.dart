@@ -13,6 +13,14 @@ final class ExampleStorageException implements Exception {
   String toString() => message;
 }
 
+/// Persisted catalog choice plus the integer speaker id for that pack.
+final class ExampleSelection {
+  const ExampleSelection({required this.catalogId, required this.speakerId});
+
+  final String catalogId;
+  final int speakerId;
+}
+
 class ExampleModelStorage {
   ExampleModelStorage({MethodChannel? channel})
     : _channel = channel ?? const MethodChannel(_channelName);
@@ -85,7 +93,7 @@ class ExampleModelStorage {
     }
   }
 
-  Future<String?> readSelection() async {
+  Future<ExampleSelection?> readSelection() async {
     final file = File(
       '${await rootDirectory()}${Platform.pathSeparator}$_selectionFile',
     );
@@ -95,7 +103,10 @@ class ExampleModelStorage {
       if (value is! Map || value['catalogId'] is! String) {
         throw const FormatException('Invalid selection document.');
       }
-      return value['catalogId'] as String;
+      return ExampleSelection(
+        catalogId: value['catalogId'] as String,
+        speakerId: _speakerIdFromDocument(value),
+      );
     } on FileSystemException {
       throw const ExampleStorageException(
         'The saved model selection could not be read. Choose a model to repair setup.',
@@ -107,7 +118,10 @@ class ExampleModelStorage {
     }
   }
 
-  Future<void> writeSelection(VoiceModelOption option) async {
+  Future<void> writeSelection(
+    VoiceModelOption option, {
+    int speakerId = 0,
+  }) async {
     _requireCatalogOption(option);
     final root = await rootDirectory();
     final destination = File('$root${Platform.pathSeparator}$_selectionFile');
@@ -116,7 +130,10 @@ class ExampleModelStorage {
     );
     try {
       await temporary.writeAsString(
-        jsonEncode(<String, String>{'catalogId': option.id}),
+        jsonEncode(<String, Object>{
+          'catalogId': option.id,
+          'speakerId': speakerId,
+        }),
         flush: true,
       );
       await temporary.rename(destination.path);
@@ -142,13 +159,26 @@ class ExampleModelStorage {
       if (await directory.exists()) await directory.delete(recursive: true);
       if (await selection.exists()) {
         final selected = await readSelection();
-        if (selected == option.id) await selection.delete();
+        if (selected?.catalogId == option.id) await selection.delete();
       }
     } on FileSystemException {
       throw const ExampleStorageException(
         'The damaged model copy could not be removed. Restart the app and try again.',
       );
     }
+  }
+
+  /// Absent speakerId is the LJS missing-field fallback (0). Out-of-range
+  /// non-negative ids are retained so Start can refuse them later.
+  int _speakerIdFromDocument(Map<dynamic, dynamic> value) {
+    if (!value.containsKey('speakerId')) {
+      return 0;
+    }
+    final speakerId = value['speakerId'];
+    if (speakerId is! int || speakerId < 0) {
+      throw const FormatException('Invalid selection document.');
+    }
+    return speakerId;
   }
 
   void _requireCatalogOption(VoiceModelOption option) {

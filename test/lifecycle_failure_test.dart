@@ -16,6 +16,7 @@ class FailingPlatform implements NativeVoicePlatform {
   Future<int> create({
     required Map<String, String> paths,
     required String mode,
+    required int speakerId,
   }) async => 22050;
   @override
   Future<void> start() async => check('start');
@@ -31,6 +32,8 @@ class FailingPlatform implements NativeVoicePlatform {
   Future<void> dispose() async => check('dispose');
   @override
   Future<void> reply({required int generation, required String text}) async {}
+  @override
+  Future<void> setSpeakerId(int speakerId) async {}
   @override
   Future<List<Map<String, Object?>>> poll() async {
     final result = next;

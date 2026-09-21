@@ -6,11 +6,11 @@ After this change, a push to `main` can run the repository's checks, create the 
 
 ## Approach
 
-Add a repository check entrypoint that mirrors the existing commands documented in `AGENTS.md` and includes the deterministic native test suite and package dry-run. Add focused shell and Python helpers for patch version selection and hosted-version occupancy, with fixture tests covering successful and rejected inputs. Add three GitHub workflows: checks, release, and publish.
+Add a repository check entrypoint whose named stages are wiki lint, package and example dependency resolution, formatting, analysis, package tests, example tests, the deterministic native test suite, and package dry-run. Add focused shell and Python helpers for patch version selection and hosted-version occupancy, with fixture tests covering successful and rejected inputs. The patch helper shall increment the patch version and prepend a dated changelog entry. Occupancy lookup shall choose the next unoccupied patch and shall fail when occupancy data is malformed or unavailable. Add three GitHub workflows: checks, release, and publish.
 
 The release job will use a repository-scoped `RELEASE_GITHUB_TOKEN`, validate the package before changing files, skip versions already reported by pub.dev, commit only the package version and changelog, and push an annotated `vX.Y.Z` tag. The publish job will resolve public dependencies before requesting the temporary OIDC token, then run a dry run and publication on matching tags.
 
-Update the changelog and wiki index with the release-pipeline contract and its external operator gates. No credentials, model assets, or hosted configuration will be added to the repository.
+Update the changelog and wiki index with the release-pipeline contract and its external operator gates. No credentials, model assets, personal data, or hosted configuration will be added to the repository. The package dry-run shall list a payload that excludes repository-only wiki, tests, tools, CI, caches, lockfiles, and native test assets.
 
 ## Why this approach
 
@@ -20,7 +20,7 @@ The direct three-workflow design is selected because it is the established shape
 
 1. Record the repository and reference-pipeline findings, freeze independently checkable acceptance criteria, and define the task ownership.
 2. Add deterministic version and pub.dev occupancy helpers with negative fixture coverage.
-3. Add the package check entrypoint and three GitHub workflows adapted to this plugin's package, example, wiki, and native checks.
+3. Add the package check entrypoint with the named stages above, and three GitHub workflows adapted to this plugin's package, example, wiki, and native checks.
 4. Update release-facing documentation and the changelog, then run the local checks and package dry run.
 5. Review the diff and validation evidence, then push the authorized changes to GitHub and inspect the resulting workflow state if authentication permits.
 
@@ -32,6 +32,9 @@ The direct three-workflow design is selected because it is the established shape
 - `RELEASE_GITHUB_TOKEN` is required for the release commit and tag; its value is never logged or stored.
 - pub.dev publication uses GitHub OIDC with `id-token: write`; no pub.dev secret is stored in GitHub.
 - Deterministic native tests are required; model-dependent tests remain optional and are not silently represented as CI coverage.
+- The patch helper increments only the patch component and prepends a dated changelog heading for that version.
+- Occupancy queries that return malformed JSON, non-numeric versions, or an unavailable host fail instead of guessing the next version.
+- The published payload excludes wiki, tests, tools, CI, caches, lockfiles, and native test assets. Those paths stay in the repository.
 
 ## Risks
 
@@ -55,4 +58,4 @@ Disable the release and publish workflows or revert the pipeline commit. A relea
 
 ## Verification approach
 
-Run the package check entrypoint, the helper fixture tests, the wiki linter, and `dart pub publish --dry-run`. Inspect the exact diff and both staged and unstaged state. Verify workflow YAML structure locally. After the user-authorized push, inspect the GitHub workflow runs and pub.dev version only if credentials and connectivity permit; report unavailable external gates as unverified.
+Run the package check entrypoint, the helper fixture tests, and the package dry-run. Confirm the dry-run payload omits wiki, tests, tools, CI, caches, lockfiles, and native test assets. Inspect the exact diff and both staged and unstaged state. Verify workflow YAML structure locally. After the user-authorized push, inspect the GitHub workflow runs and pub.dev version only if credentials and connectivity permit; report unavailable external gates as unverified. Do not print credentials, model assets, or personal data.

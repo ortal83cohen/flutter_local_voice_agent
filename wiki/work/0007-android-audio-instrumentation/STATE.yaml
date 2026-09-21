@@ -1,13 +1,22 @@
 id: "0007-android-audio-instrumentation"
 title: "Instrument Android audio and ASR flow"
 route: full
-phase: verify
-round: 0
-verdict: null
+phase: done
+round: 2
+verdict: PASS
 owner_agent: "Codex"
 created: "2026-09-20"
-updated: "2026-09-20"
+updated: "2026-09-21"
 blockers: []
-followups: []
-decisions: []
+followups:
+  - "Device/transcript behavior remains [UNVERIFIED]; flutter devices showed no Android or iPhone on 2026-09-21."
+decisions:
+  - action: close-partial-verify
+    reason: "User authorized any researched path. Close verify with honest device [UNVERIFIED] gates. AC-005 already allows recording an environment blocker. Do not wait for hardware."
+  - action: refresh-verification
+    reason: "Replaced the stale SDK-cache blocker with FVM 3.47.0 command output. Format, analyze, 73 tests and wiki lint exited 0. flutter devices still has no Android. Launch one impl-review."
+  - action: impl-review-01
+    reason: "Accept FAIL. F-001 and F-002 are implementation defects. Patch capture finite/non-finite fields and native publish logs for kind, sequence, generation, activity and text length. Then one confirmation review."
+  - action: impl-review-02
+    reason: "Accept PASS. Previous blockers did not recur. Device transcript remains [UNVERIFIED]. Close the item."
 escalations: []

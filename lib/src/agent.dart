@@ -15,7 +15,12 @@ typedef LocalReplyLogic = Future<String> Function(String transcript);
 
 /// Owns one bounded, half-duplex local voice session.
 final class LocalVoiceAgent {
-  LocalVoiceAgent._(this._native, this._logic, this.outputRate);
+  LocalVoiceAgent._(
+    this._native,
+    this._logic,
+    this.outputRate,
+    this._speakerId,
+  );
 
   /// Validates assets and creates the inactive native session.
   static Future<LocalVoiceAgent> create({
@@ -25,6 +30,7 @@ final class LocalVoiceAgent {
     ConversationMode mode = ConversationMode.halfDuplex,
     LocalModelStore? modelStore,
     NativeVoicePlatform? nativePlatform,
+    int speakerId = 0,
   }) async {
     if (mode == ConversationMode.fullDuplexRequired) {
       throw const AgentFailure(
@@ -33,6 +39,14 @@ final class LocalVoiceAgent {
         fatal: false,
       );
     }
+    if (speakerId < 0) {
+      throw const AgentFailure(
+        AgentErrorCode.unsupportedProfile,
+        'Speaker id must be greater than or equal to zero.',
+        fatal: false,
+      );
+    }
+    _refuseUnsupportedHost();
     final checked = await (modelStore ?? const FileModelStore()).validate(
       models,
     );
@@ -56,7 +70,12 @@ final class LocalVoiceAgent {
       final agent = LocalVoiceAgent._(
         native,
         useLocalLlm ? null : (logic ?? ((text) async => 'You said: $text')),
-        await native.create(paths: paths, mode: 'halfDuplex'),
+        await native.create(
+          paths: paths,
+          mode: 'halfDuplex',
+          speakerId: speakerId,
+        ),
+        speakerId,
       );
       agent._events = BoundedEventStream<AgentEvent>(
         capacity: 32,
@@ -78,6 +97,13 @@ final class LocalVoiceAgent {
         },
       );
       return agent;
+    } on MissingPluginException catch (error) {
+      throw AgentFailure(
+        AgentErrorCode.unsupportedProfile,
+        error.message ??
+            'The native voice plugin is not registered on this host.',
+        fatal: false,
+      );
     } on PlatformException catch (error) {
       throw _platformFailure(error);
     }
@@ -106,6 +132,10 @@ final class LocalVoiceAgent {
 
   /// Native output sample rate.
   final int outputRate;
+
+  /// Last speaker id accepted by create or a successful setter.
+  int get speakerId => _speakerId;
+  int _speakerId;
 
   /// Current lifecycle state.
   AgentLifecycle lifecycle = AgentLifecycle.ready;
@@ -172,6 +202,24 @@ final class LocalVoiceAgent {
     } on PlatformException catch (e) {
       throw _platformFailure(e);
     }
+  }
+
+  /// Updates the speaker id used by the next synthesized reply.
+  Future<void> setSpeakerId(int speakerId) async {
+    _live();
+    if (speakerId < 0) {
+      throw const AgentFailure(
+        AgentErrorCode.unsupportedProfile,
+        'Speaker id must be greater than or equal to zero.',
+        fatal: false,
+      );
+    }
+    try {
+      await _native.setSpeakerId(speakerId);
+    } on PlatformException catch (error) {
+      throw _platformFailure(error);
+    }
+    _speakerId = speakerId;
   }
 
   /// Interrupts native work and invalidates late replies.
@@ -495,6 +543,32 @@ final class LocalVoiceAgent {
   }
 }
 
+/// Refuses Flutter web and any default target that cannot host the native session.
+void _refuseUnsupportedHost() {
+  if (kIsWeb) {
+    throw const AgentFailure(
+      AgentErrorCode.unsupportedProfile,
+      'Flutter web is not a supported platform for the native offline voice pipeline.',
+      fatal: false,
+    );
+  }
+  final supported = switch (defaultTargetPlatform) {
+    TargetPlatform.android => true,
+    TargetPlatform.iOS => true,
+    TargetPlatform.macOS => true,
+    TargetPlatform.windows => true,
+    TargetPlatform.linux => true,
+    TargetPlatform.fuchsia => false,
+  };
+  if (!supported) {
+    throw AgentFailure(
+      AgentErrorCode.unsupportedProfile,
+      '${defaultTargetPlatform.name} is not a supported platform for the native offline voice pipeline.',
+      fatal: false,
+    );
+  }
+}
+
 TurnActivity? _activity(String v) => switch (v) {
   'idle' => TurnActivity.idle,
   'listening' => TurnActivity.listening,
@@ -572,11 +646,13 @@ final class MethodChannelVoicePlatform implements NativeVoicePlatform {
   Future<int> create({
     required Map<String, String> paths,
     required String mode,
+    required int speakerId,
   }) async {
     final rate = objectMap(
       await _channel.invokeMethod<Object?>('create', {
         'paths': paths,
         'mode': mode,
+        'speakerId': speakerId,
       }),
     )['outputRate'];
     if (rate is! int || rate <= 0) {
@@ -608,4 +684,7 @@ final class MethodChannelVoicePlatform implements NativeVoicePlatform {
   Future<void> start() => _channel.invokeMethod<void>('start');
   @override
   Future<void> stop() => _channel.invokeMethod<void>('stop');
+  @override
+  Future<void> setSpeakerId(int speakerId) =>
+      _channel.invokeMethod<void>('setSpeakerId', {'speakerId': speakerId});
 }

@@ -183,6 +183,7 @@ final class _ReplyPlatform implements NativeVoicePlatform {
   Future<int> create({
     required Map<String, String> paths,
     required String mode,
+    required int speakerId,
   }) async => 24000;
 
   @override
@@ -210,4 +211,7 @@ final class _ReplyPlatform implements NativeVoicePlatform {
 
   @override
   Future<void> stop() async {}
+
+  @override
+  Future<void> setSpeakerId(int speakerId) async {}
 }

@@ -23,6 +23,7 @@ abstract interface class ExampleVoiceSession {
   Future<void> interrupt();
   Future<void> stop();
   Future<void> dispose();
+  Future<void> setSpeakerId(int speakerId);
 }
 
 final class LocalAgentSession implements ExampleVoiceSession {
@@ -40,6 +41,8 @@ final class LocalAgentSession implements ExampleVoiceSession {
   Future<void> stop() => _agent.stop();
   @override
   Future<void> dispose() => _agent.dispose();
+  @override
+  Future<void> setSpeakerId(int speakerId) => _agent.setSpeakerId(speakerId);
 }
 
 typedef PreparationFactory = ModelPreparation Function(
@@ -49,6 +52,7 @@ typedef PreparationFactory = ModelPreparation Function(
 );
 typedef VoiceSessionFactory = Future<ExampleVoiceSession> Function(
   LocalModelBundle bundle,
+  int speakerId,
 );
 typedef ProgressTimerFactory = Timer Function(
   Duration duration,
@@ -87,8 +91,12 @@ final class VoiceScreenController extends ChangeNotifier {
       );
       return manager.prepare(option.descriptor);
     },
-    sessionFactory: (bundle) async => LocalAgentSession(
-      await LocalVoiceAgent.create(models: bundle, logic: fixedDemoReply),
+    sessionFactory: (bundle, speakerId) async => LocalAgentSession(
+      await LocalVoiceAgent.create(
+        models: bundle,
+        logic: fixedDemoReply,
+        speakerId: speakerId,
+      ),
     ),
   );
 
@@ -102,6 +110,7 @@ final class VoiceScreenController extends ChangeNotifier {
   final ProgressTimerFactory _progressTimerFactory;
 
   VoiceModelOption? selected;
+  int speakerId = 0;
   ExampleSetupPhase phase = ExampleSetupPhase.starting;
   ModelPreparationProgress? progress;
   String status = 'Checking saved model setup…';
@@ -118,8 +127,25 @@ final class VoiceScreenController extends ChangeNotifier {
   bool _resumeRequested = false;
   int _epoch = 0;
   int _busySerial = 0;
+  final Map<String, int> _speakerByCatalogId = <String, int>{};
 
-  bool get canStart => phase == ExampleSetupPhase.ready && _session != null;
+  bool get canStart {
+    final option = selected;
+    return phase == ExampleSetupPhase.ready &&
+        _session != null &&
+        option != null &&
+        speakerId >= 0 &&
+        speakerId < option.speakerCount;
+  }
+
+  /// Empty for LJS (`speakerCount == 1`). VCTK exposes `0` through `108`.
+  List<int> get speakerIds {
+    final count = selected?.speakerCount ?? 0;
+    if (count <= 1) return const <int>[];
+    return List<int>.generate(count, (index) => index);
+  }
+
+  bool get showsSpeakerControl => speakerIds.isNotEmpty;
   bool get canPrepare =>
       selected != null && !operationBusy && phase != ExampleSetupPhase.ready;
   bool get canCancel => _preparation != null && operationBusy;
@@ -133,25 +159,29 @@ final class VoiceScreenController extends ChangeNotifier {
     status = 'Checking saved model setup…';
     _notify();
     try {
-      final id = await storage.readSelection();
+      final selection = await storage.readSelection();
       if (!_current(epoch)) return;
-      if (id == null) {
+      if (selection == null) {
         selected = catalog.isEmpty ? null : catalog.first;
+        speakerId = 0;
         phase = ExampleSetupPhase.needsDownload;
         status = catalog.isEmpty
             ? 'No downloadable model is available in this build.'
             : 'Choose an English voice model, then download it.';
         return;
       }
-      final restored = _optionById(id);
+      final restored = _optionById(selection.catalogId);
       if (restored == null) {
         selected = catalog.isEmpty ? null : catalog.first;
+        speakerId = 0;
         phase = ExampleSetupPhase.needsDownload;
         status = 'The saved model is no longer in this catalog. Choose another model.';
         allowRepairRemoval = false;
         return;
       }
       selected = restored;
+      speakerId = selection.speakerId;
+      _speakerByCatalogId[selection.catalogId] = selection.speakerId;
       await _prepareSelected(epoch: epoch, allowNetwork: false);
     } on ExampleStorageException catch (error) {
       if (_current(epoch)) {
@@ -176,6 +206,7 @@ final class VoiceScreenController extends ChangeNotifier {
       await _disposeSession();
       if (!_current(epoch)) return;
       selected = option;
+      speakerId = _speakerByCatalogId[option.id] ?? 0;
       progress = null;
       allowRepairRemoval = false;
       await _prepareSelected(epoch: epoch, allowNetwork: false);
@@ -250,7 +281,7 @@ final class VoiceScreenController extends ChangeNotifier {
       phase = ExampleSetupPhase.creatingSession;
       status = 'Starting the on-device speech engine…';
       _notify();
-      final session = await sessionFactory(bundle);
+      final session = await sessionFactory(bundle, speakerId);
       if (!_current(epoch)) {
         await session.dispose();
         return;
@@ -265,7 +296,8 @@ final class VoiceScreenController extends ChangeNotifier {
           _notify();
         },
       );
-      await storage.writeSelection(option);
+      await storage.writeSelection(option, speakerId: speakerId);
+      _speakerByCatalogId[option.id] = speakerId;
       if (!_current(epoch)) {
         await _disposeSession();
         return;
@@ -314,6 +346,38 @@ final class VoiceScreenController extends ChangeNotifier {
       allowRepairRemoval = !allowNetwork;
       _notify();
     }
+  }
+
+  /// Applies a live speaker change on a ready session without preparing again.
+  Future<void> setSpeakerId(int id) async {
+    final option = selected;
+    if (_disposed || option == null || operationBusy || id == speakerId) {
+      return;
+    }
+    if (id < 0 || id >= option.speakerCount) {
+      return;
+    }
+    final session = _session;
+    if (phase == ExampleSetupPhase.ready && session != null) {
+      try {
+        await session.setSpeakerId(id);
+      } on Object {
+        return;
+      }
+      if (_disposed) return;
+      speakerId = id;
+      _speakerByCatalogId[option.id] = id;
+      try {
+        await storage.writeSelection(option, speakerId: id);
+      } on ExampleStorageException {
+        // Keep the live id even if offline persistence fails.
+      }
+      _notify();
+      return;
+    }
+    speakerId = id;
+    _speakerByCatalogId[option.id] = id;
+    _notify();
   }
 
   void cancelPreparation() {

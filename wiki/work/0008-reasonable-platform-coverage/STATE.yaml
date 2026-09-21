@@ -1,16 +1,32 @@
 id: "0008-reasonable-platform-coverage"
 title: "Reasonable cross-platform coverage for the existing offline pipeline"
 route: full
-phase: implement
-round: 0
-verdict: null
+phase: done
+round: 2
+verdict: PASS
 owner_agent: root
 created: "2026-09-20"
-updated: "2026-09-20"
+updated: "2026-09-21"
 blockers: []
 followups:
-  - "Implementation is armed and frozen. No Group 1-5 task has started. Wait for an explicit implement request."
+  - "Implementation started after explicit user request to implement all open plans. Group 1 task 1.1 is first."
 decisions:
+  - action: implement-start
+    reason: "User authorized implementation of all open plans. Start task 1.1 only in the first step. Do not pre-create desktop folders or change pubspec.yaml in that step. No commit or publication."
+  - action: task-1.1
+    reason: "Dart host guard refuses web and fuchsia with unsupportedProfile before validate or native create. MissingPluginException on create maps to the same code. platform_refusal_test.dart and agent_test.dart passed."
+  - action: start-verify
+    reason: "User authorized any researched path. Groups 1-5 claimed done. Enter verify: write 04-verification.md and one impl-review. Do not claim Windows/Linux Flutter builds or 0002 gates closed."
+  - action: write-verification
+    reason: "04-verification.md records format, analyze, tests, provision tests, macOS debug build, snapshot check.sh, and source review. Windows/Linux Flutter builds and live macOS permission deny remain [UNVERIFIED]. 0002 blockers stay open."
+  - action: impl-review-01
+    reason: "Accept FAIL. F-001 BLOCKER is an implementation defect on AC-007. Return to implement. No third implementation review after the confirmation round."
+  - action: impl-review-01-F-001
+    reason: "Accept BLOCKER. Add a native unit test of the macOS authorization-status table and a Dart bridge test that permissionDenied does not start capture. Wire the macOS plugin through flva_mic_start_decision."
+  - action: impl-review-01-F-002
+    reason: "Accept NIT. Update the INDEX implement-ready line so it no longer says implementation has not begun."
+  - action: impl-review-02
+    reason: "Accept PASS. Previous F-001 did not recur. Move to document. No third implementation review."
   - action: scope
     reason: "User requested an implementation plan for every supported platform that can be delivered with a reasonable implementation. Reuse the existing C ABI and Dart facade. Add a platform only when OS audio, native linking and Flutter plugin registration can follow the current Android/iOS pattern. Do not reopen frozen 0002/0004/0006/0007 criteria, redistribute models, commit or publish."
   - action: supported-platforms
@@ -47,5 +63,7 @@ validation_results:
   plan_review_01: "FAIL: AC-007 and AC-011 uncovered; plan patched in place; confirmation review required."
   plan_review_02: "PASS: AC-001 through AC-012 covered; no findings."
   freeze: "AC-001 through AC-012 frozen 2026-09-20; no implementation files created."
+  impl_review_01: "FAIL: AC-007 unmet; F-001 BLOCKER and F-002 NIT."
+  impl_review_02: "PASS: AC-001 through AC-012 met; previous F-001 did not recur; no findings."
   coordinator_wiki_command: "python3 tool/lint_wiki.py"
   coordinator_wiki_output: "lint_wiki: clean (0 warning(s))."

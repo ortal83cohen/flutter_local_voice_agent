@@ -3,7 +3,7 @@ id: index
 title: Wiki index
 status: active
 owner: unassigned
-last_verified: 2026-09-20
+last_verified: 2026-09-21
 applies_to: ["**"]
 summary: Router for the whole wiki. One line per document, stating when to read it.
 ---
@@ -84,6 +84,14 @@ to this index when they are created.
 |---|---|
 | [Pub.dev release pipeline](product/pubdev-release-pipeline.md) | Configuring checks, release tagging, or GitHub OIDC publication. |
 | [Pipeline work item](work/0003-pubdev-release-pipeline/00-research.md) | Reviewing the research, criteria, tasks, and external release gates. |
+| [Plan](work/0003-pubdev-release-pipeline/01-plan.md) | Implementing the check entrypoint, bump helpers and GitHub workflows. |
+| [Acceptance criteria](work/0003-pubdev-release-pipeline/02-criteria.md) | Checking pipeline stages, occupancy and payload exclusions. |
+| [Tasks](work/0003-pubdev-release-pipeline/03-tasks.md) | Ordering helper, workflow and documentation work. |
+| [Work state](work/0003-pubdev-release-pipeline/STATE.yaml) | Checking phase and recorded decisions. |
+| [Plan review](work/0003-pubdev-release-pipeline/validation/plan-review-01.md) | Inspect the first late plan-coverage verdict. |
+| [Plan review confirmation](work/0003-pubdev-release-pipeline/validation/plan-review-02.md) | Inspect the confirmation verdict after the plan coverage patch. |
+| [Verification](work/0003-pubdev-release-pipeline/04-verification.md) | Inspect the Git-free snapshot check and dry-run evidence. |
+| [Implementation review](work/0003-pubdev-release-pipeline/validation/impl-review-01.md) | Inspect the independent pipeline implementation verdict. |
 
 ## Implementation handoff evidence
 
@@ -141,15 +149,25 @@ to this index when they are created.
 | [STATE.yaml](work/0006-example-model-catalog/STATE.yaml) | Implement or review the real picker/download/offline example flow. |
 | [Catalog plan review](work/0006-example-model-catalog/validation/plan-review-01.md) | Inspect plan coverage and reviewed-snapshot boundary. |
 | [Catalog research review](work/0006-example-model-catalog/validation/research-review-01.md) | Inspect independent model-byte, source and platform evidence. |
-| [Example catalog product](product/example-model-catalog.md) | Understand the implemented selection/download journey and qualification boundaries. |
+| [Example catalog product](product/example-model-catalog.md) | Understand the implemented selection/download journey, VCTK speaker control and qualification boundaries. |
 | [Catalog architecture decision](adr/0003-example-model-catalog.md) | Inspect trusted catalog, bounded CDN redirects and example storage design. |
+| [Voice-selection architecture decision](adr/0004-english-vits-voice-selection.md) | Inspect VCTK plus integer speaker id as the English lexicon voice choice. |
 | [Example catalog verification](work/0006-example-model-catalog/04-verification.md) | Inspect real downloads, engine execution, final checks and mobile boundaries. |
 | [Catalog implementation review](work/0006-example-model-catalog/validation/impl-review-01.md) | Inspect independent per-criterion findings and executed negative checks. |
 | [Catalog delivery](work/0006-example-model-catalog/05-delivery.md) | Use the completed example and understand remaining release qualification gates. |
 
 ## Android audio diagnostics
 
-| [Android audio instrumentation](work/0007-android-audio-instrumentation/00-research.md) | Trace Android capture, native recognition, Dart polling and UI transcript delivery. |
+| Document | Read it when |
+|---|---|
+| [Research](work/0007-android-audio-instrumentation/00-research.md) | Trace Android capture, native recognition, Dart polling and UI transcript delivery. |
+| [Plan](work/0007-android-audio-instrumentation/01-plan.md) | Implementing diagnostic logs without changing recognition behavior. |
+| [Acceptance criteria](work/0007-android-audio-instrumentation/02-criteria.md) | Checking log coverage and the device-evidence boundary. |
+| [Tasks](work/0007-android-audio-instrumentation/03-tasks.md) | Ordering Android, native and Dart log work. |
+| [Work state](work/0007-android-audio-instrumentation/STATE.yaml) | Checking phase and recorded decisions. |
+| [Verification](work/0007-android-audio-instrumentation/04-verification.md) | Inspect the recorded format, analyze, test and device-blocker output. |
+| [Implementation review](work/0007-android-audio-instrumentation/validation/impl-review-01.md) | Inspect the first independent implementation verdict. |
+| [Implementation review confirmation](work/0007-android-audio-instrumentation/validation/impl-review-02.md) | Inspect the confirmation verdict after the log-field repair. |
 
 ## Reasonable platform coverage
 
@@ -166,7 +184,11 @@ to this index when they are created.
 | [Research review](work/0008-reasonable-platform-coverage/validation/research-review-01.md) | Inspect the independent source verdict. |
 | [Plan review](work/0008-reasonable-platform-coverage/validation/plan-review-01.md) | Inspect the first plan coverage verdict before confirmation. |
 | [Plan review confirmation](work/0008-reasonable-platform-coverage/validation/plan-review-02.md) | Inspect the patched-plan confirmation verdict. |
-| [Implement-ready handoff](work/0008-reasonable-platform-coverage/05-implement-ready.md) | Start implementation later; criteria are frozen and no task has begun. |
+| [Implement-ready handoff](work/0008-reasonable-platform-coverage/05-implement-ready.md) | Read the pre-implementation freeze handoff. Implementation has started. |
+| [Implementation review](work/0008-reasonable-platform-coverage/validation/impl-review-01.md) | Inspect the first independent implementation verdict. |
+| [Implementation review confirmation](work/0008-reasonable-platform-coverage/validation/impl-review-02.md) | Inspect the confirmation verdict after the AC-007 test repair. |
+| [Verification](work/0008-reasonable-platform-coverage/04-verification.md) | Inspect the recorded desktop, provision and unsupported-host checks. |
+| [Platform coverage product](product/reasonable-platform-coverage.md) | Checking supported hosts, exclusions, provisioning and the compile-evidence boundary. |
 
 ## English VITS voice selection
 
@@ -180,3 +202,8 @@ to this index when they are created.
 | [Research review](work/0009-english-vits-voice-selection/validation/research-review-01.md) | Inspect the independent source verdict. |
 | [Plan review](work/0009-english-vits-voice-selection/validation/plan-review-01.md) | Inspect the first plan coverage verdict before confirmation. |
 | [Plan review confirmation](work/0009-english-vits-voice-selection/validation/plan-review-02.md) | Inspect the patched-plan confirmation verdict. |
+| [Implementation review](work/0009-english-vits-voice-selection/validation/impl-review-01.md) | Inspect the independent implementation verdict. |
+| [Verification](work/0009-english-vits-voice-selection/04-verification.md) | Inspect the recorded catalog, speaker-id and documentation checks. |
+| [Example catalog product](product/example-model-catalog.md) | Understand the VCTK speaker control and integer ids on the implemented catalog. |
+| [Catalog architecture decision](adr/0003-example-model-catalog.md) | Read the earlier trusted-catalog and storage decision; it was not superseded. |
+| [Voice-selection architecture decision](adr/0004-english-vits-voice-selection.md) | Reviewing why VCTK plus integer speaker id is the English lexicon voice choice. |

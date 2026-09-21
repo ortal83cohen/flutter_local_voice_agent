@@ -63,7 +63,7 @@ class FlutterLocalVoiceAgentPlugin : FlutterPlugin, MethodChannel.MethodCallHand
     private fun submit(result: MethodChannel.Result?, block: () -> Any?) {
         try { control.execute {
             try { val value=block(); main.post { result?.success(value) } }
-            catch(e: Exception) { main.post { result?.error(if(e is SecurityException) "permissionDenied" else "audioUnavailable",e.message,null) } }
+            catch(e: Exception) { main.post { result?.error(when { e is SecurityException -> "permissionDenied"; e.message == "unsupportedProfile" -> "unsupportedProfile"; else -> "audioUnavailable" },e.message,null) } }
         } } catch(e: java.util.concurrent.RejectedExecutionException) { result?.error("capacityExceeded","Control queue is full",null) }
     }
     private fun log(message: String) = Log.i("FLVA", message)
@@ -83,7 +83,8 @@ class FlutterLocalVoiceAgentPlugin : FlutterPlugin, MethodChannel.MethodCallHand
                     require(call.argument<String>("mode") != "fullDuplexRequired"){"Full duplex is not qualified"}
                     val p=call.argument<Map<String,String>>("paths") ?: error("Missing model paths")
                     val keys=arrayOf("vad","encoder","decoder","joiner","asrTokens","ttsModel","ttsTokens","ttsLexicon","llmModel")
-                    handle=nativeCreate(keys.map {p[it] ?: ""}.toTypedArray())
+                    val speakerId=(call.argument<Number>("speakerId") ?: 0).toInt()
+                    handle=nativeCreate(keys.map {p[it] ?: ""}.toTypedArray(), speakerId)
                     mapOf("outputRate" to nativeRate(handle))
                 }
                 "start" -> { check(handle!=0L); log("start requested handle=$handle"); startAudio(); null }
@@ -102,6 +103,12 @@ class FlutterLocalVoiceAgentPlugin : FlutterPlugin, MethodChannel.MethodCallHand
                     }; if (events.isNotEmpty()) log("poll events=${events.size} kinds=${events.joinToString(",") { it["kind"].toString() }}"); events
                 }
                 "dispose" -> { stopAudio();if(handle!=0L){nativeDestroy(handle);handle=0};null }
+                "setSpeakerId" -> {
+                    check(handle!=0L)
+                    val speakerId=(call.argument<Number>("speakerId") ?: 0).toInt()
+                    check(nativeSetSpeakerId(handle, speakerId)==1){"unsupportedProfile"}
+                    null
+                }
                 else -> throw IllegalArgumentException("Unknown command")
             }
         }
@@ -135,13 +142,27 @@ class FlutterLocalVoiceAgentPlugin : FlutterPlugin, MethodChannel.MethodCallHand
                 while(active) {
                     val n=try { rec.read(pcm,0,pcm.size,AudioRecord.READ_BLOCKING) } catch(_:Exception) { if(active)suspendAudio("permissionOrCaptureLost");break }
                     if(n<=0){if(active)suspendAudio("captureFailed");break}
-                    var peak=0f; var sum=0.0
-                    for(i in 0 until n) { val v=kotlin.math.abs(pcm[i]); if(v>peak) peak=v; sum += v.toDouble() }
+                    var peak=0f; var sum=0.0; var finite=0; var nonFinite=0
+                    for(i in 0 until n) {
+                        val sample=pcm[i]
+                        if(sample.isFinite()) {
+                            finite++
+                            val v=kotlin.math.abs(sample)
+                            if(v>peak) peak=v
+                            sum += v.toDouble()
+                        } else {
+                            nonFinite++
+                        }
+                    }
                     capturedFrames += n; captureReads++
                     floats.position(0);floats.put(pcm,0,n)
                     val pushed=nativePush(h,bytes,n); if(pushed==1) pushedFrames += n
                     val now=SystemClock.elapsedRealtime()
-                    if(captureReads==1L || now-lastCaptureLog>=1000L) { lastCaptureLog=now; log("capture reads=$captureReads frames=$capturedFrames pushed=$pushedFrames lastFrames=$n meanAbs=${sum/n} peak=$peak pushResult=$pushed") }
+                    if(captureReads==1L || now-lastCaptureLog>=1000L) {
+                        lastCaptureLog=now
+                        val mean=if(finite>0) sum/finite else 0.0
+                        log("capture reads=$captureReads frames=$capturedFrames pushed=$pushedFrames lastFrames=$n finite=$finite nonFinite=$nonFinite meanAbs=$mean peak=$peak pushResult=$pushed")
+                    }
                 }
             },"flva-capture").also {it.start()}
             renderThread=Thread({
@@ -186,7 +207,8 @@ class FlutterLocalVoiceAgentPlugin : FlutterPlugin, MethodChannel.MethodCallHand
     override fun onActivityStopped(a:Activity){}
     override fun onActivitySaveInstanceState(a:Activity,b:Bundle){}
     override fun onActivityDestroyed(a:Activity){}
-    private external fun nativeCreate(paths:Array<String>):Long
+    private external fun nativeCreate(paths:Array<String>, speakerId:Int):Long
+    private external fun nativeSetSpeakerId(h:Long, speakerId:Int):Int
     private external fun nativeRate(h:Long):Int
     private external fun nativeStart(h:Long):Int
     private external fun nativeStop(h:Long)

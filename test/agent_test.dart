@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:crypto/crypto.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_local_voice_agent/flutter_local_voice_agent.dart';
 import 'package:flutter_local_voice_agent/src/bounded_stream.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -233,6 +234,124 @@ void main() {
       await stream.close();
     },
   );
+
+  test('create without speaker id reaches native with speaker id 0', () async {
+    final root = await fixtureFixture();
+    addTearDown(() => root.delete(recursive: true));
+    final native = _FakePlatform();
+    final agent = await LocalVoiceAgent.create(
+      models: LocalModelBundle(
+        directory: root.path,
+        manifestPath: '${root.path}/manifest.json',
+      ),
+      nativePlatform: native,
+    );
+    expect(native.created, isTrue);
+    expect(native.createSpeakerId, 0);
+    expect(agent.speakerId, 0);
+    await agent.dispose();
+  });
+
+  test('create with negative speaker id fails before native create', () async {
+    final native = _FakePlatform();
+    await expectLater(
+      LocalVoiceAgent.create(
+        models: const LocalModelBundle(
+          directory: '/missing',
+          manifestPath: '/missing/manifest.json',
+        ),
+        nativePlatform: native,
+        speakerId: -1,
+      ),
+      throwsA(
+        isA<AgentFailure>()
+            .having(
+              (failure) => failure.code,
+              'code',
+              AgentErrorCode.unsupportedProfile,
+            )
+            .having((failure) => failure.fatal, 'fatal', isFalse),
+      ),
+    );
+    expect(native.created, isFalse);
+  });
+
+  test('successful setter calls native with the new speaker id', () async {
+    final root = await fixtureFixture();
+    addTearDown(() => root.delete(recursive: true));
+    final native = _FakePlatform();
+    final agent = await LocalVoiceAgent.create(
+      models: LocalModelBundle(
+        directory: root.path,
+        manifestPath: '${root.path}/manifest.json',
+      ),
+      nativePlatform: native,
+    );
+    await agent.setSpeakerId(7);
+    expect(native.setSpeakerIds, <int>[7]);
+    expect(agent.speakerId, 7);
+    await agent.dispose();
+  });
+
+  test('negative setter fails without calling native', () async {
+    final root = await fixtureFixture();
+    addTearDown(() => root.delete(recursive: true));
+    final native = _FakePlatform();
+    final agent = await LocalVoiceAgent.create(
+      models: LocalModelBundle(
+        directory: root.path,
+        manifestPath: '${root.path}/manifest.json',
+      ),
+      nativePlatform: native,
+    );
+    await expectLater(
+      agent.setSpeakerId(-1),
+      throwsA(
+        isA<AgentFailure>().having(
+          (failure) => failure.code,
+          'code',
+          AgentErrorCode.unsupportedProfile,
+        ),
+      ),
+    );
+    expect(native.setSpeakerIds, isEmpty);
+    expect(agent.speakerId, 0);
+    expect(native.disposed, isFalse);
+    await agent.dispose();
+  });
+
+  test('failed setter keeps the previous speaker id and the session', () async {
+    final root = await fixtureFixture();
+    addTearDown(() => root.delete(recursive: true));
+    final native = _FakePlatform();
+    final agent = await LocalVoiceAgent.create(
+      models: LocalModelBundle(
+        directory: root.path,
+        manifestPath: '${root.path}/manifest.json',
+      ),
+      nativePlatform: native,
+      speakerId: 3,
+    );
+    expect(agent.speakerId, 3);
+    native.setSpeakerIdError = PlatformException(
+      code: 'unsupportedProfile',
+      message: 'Speaker id is out of range.',
+    );
+    await expectLater(
+      agent.setSpeakerId(109),
+      throwsA(
+        isA<AgentFailure>().having(
+          (failure) => failure.code,
+          'code',
+          AgentErrorCode.unsupportedProfile,
+        ),
+      ),
+    );
+    expect(agent.speakerId, 3);
+    expect(native.disposed, isFalse);
+    expect(agent.lifecycle, isNot(AgentLifecycle.disposed));
+    await agent.dispose();
+  });
 }
 
 Future<Directory> fixtureFixture() async {
@@ -271,25 +390,32 @@ Future<Directory> fixtureFixture() async {
 
 final class _FakePlatform implements NativeVoicePlatform {
   bool created = false;
+  bool disposed = false;
   int startCalls = 0;
   int disposeCalls = 0;
+  int? createSpeakerId;
+  Object? setSpeakerIdError;
   Completer<void>? startGate;
   Completer<List<Map<String, Object?>>>? pollGate;
   Map<String, String> paths = <String, String>{};
   List<Map<String, Object?>> next = <Map<String, Object?>>[];
   final List<String> replies = <String>[];
+  final List<int> setSpeakerIds = <int>[];
   @override
   Future<int> create({
     required Map<String, String> paths,
     required String mode,
+    required int speakerId,
   }) async {
     created = true;
+    createSpeakerId = speakerId;
     this.paths = paths;
     return 24000;
   }
 
   @override
   Future<void> dispose() async {
+    disposed = true;
     disposeCalls++;
   }
 
@@ -316,4 +442,12 @@ final class _FakePlatform implements NativeVoicePlatform {
 
   @override
   Future<void> stop() async {}
+
+  @override
+  Future<void> setSpeakerId(int speakerId) async {
+    if (setSpeakerIdError != null) {
+      throw setSpeakerIdError!;
+    }
+    setSpeakerIds.add(speakerId);
+  }
 }

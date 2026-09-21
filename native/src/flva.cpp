@@ -77,6 +77,7 @@ class Session {
   ~Session() { shutdown(); destroy_engines(); }
 
   bool initialize(std::string* error) {
+    if (config_.speaker_id < 0) { *error = "unsupportedProfile"; return false; }
     if (config_.input_rate < 8000 || config_.input_rate > 192000 || !config_.vad || !config_.encoder ||
         !config_.decoder || !config_.joiner || !config_.asr_tokens || !config_.tts_model ||
         !config_.tts_tokens || !config_.tts_lexicon) { *error = "invalidAsset"; return false; }
@@ -115,6 +116,8 @@ class Session {
     if (!vad_ || !recognizer_ || !stream_ || !tts_) { *error = "invalidAsset"; destroy_engines(); return false; }
     output_rate_ = SherpaOnnxOfflineTtsSampleRate(tts_);
     if (output_rate_ <= 0 || output_rate_ > 192000) { *error = "unsupportedProfile"; destroy_engines(); return false; }
+    if (config_.speaker_id >= tts_speaker_count()) { *error = "unsupportedProfile"; destroy_engines(); return false; }
+    speaker_id_.store(config_.speaker_id, std::memory_order_relaxed);
     output_.reset(new SpscRing<RenderFrame>(static_cast<size_t>(output_rate_) * kOutputMs / 1000));
     worker_ = std::thread(&Session::run, this);
     std::unique_lock<std::mutex> ready(work_mutex_);
@@ -177,6 +180,12 @@ class Session {
     reply_ = text; reply_generation_ = generation; awaited_reply_ = 0;
     publish("reply", "thinking", "", text, generation); wake(); return 1;
   }
+  int32_t set_speaker_id(int32_t speaker_id, std::string* error) {
+    if (!tts_) { if (error) *error = "unsupportedProfile"; return 0; }
+    if (speaker_id < 0 || speaker_id >= tts_speaker_count()) { if (error) *error = "unsupportedProfile"; return 0; }
+    speaker_id_.store(speaker_id, std::memory_order_release);
+    return 1;
+  }
   int poll(FlvaEvent* event) {
     if (!event) return 0;
     std::lock_guard<std::mutex> lock(events_mutex_);
@@ -191,6 +200,12 @@ class Session {
   }
 
  private:
+  // Sherpa reports 0 for single-speaker VITS; only sid 0 is valid in that case.
+  int32_t tts_speaker_count() const {
+    if (!tts_) return 0;
+    const int32_t raw = SherpaOnnxOfflineTtsNumSpeakers(tts_);
+    return raw > 0 ? raw : 1;
+  }
   void destroy_engines() {
     if (stream_) SherpaOnnxDestroyOnlineStream(stream_); stream_ = nullptr;
     if (recognizer_) SherpaOnnxDestroyOnlineRecognizer(recognizer_); recognizer_ = nullptr;
@@ -205,7 +220,13 @@ class Session {
       for(int i=0;i<event_count_;++i) {
         auto& previous=events_[(event_read_+i)%kEventCapacity];
         if(previous.generation==generation && std::strcmp(previous.kind,"partial")==0) {
-          copy_text(previous.text,sizeof(previous.text),text);return;
+          copy_text(previous.text,sizeof(previous.text),text);
+          FLVA_NATIVE_LOG(
+              "event kind=%s sequence=%llu generation=%llu activity=%s textLength=%zu",
+              previous.kind, static_cast<unsigned long long>(previous.sequence),
+              static_cast<unsigned long long>(previous.generation), previous.activity,
+              strnlen(previous.text, sizeof(previous.text)));
+          return;
         }
       }
     }
@@ -217,6 +238,11 @@ class Session {
     event.sequence = ++sequence_; event.generation = generation; copy_text(event.kind, sizeof(event.kind), kind);
     copy_text(event.activity, sizeof(event.activity), activity); copy_text(event.code, sizeof(event.code), code);
     copy_text(event.text, sizeof(event.text), text); event_write_ = (event_write_ + 1) % kEventCapacity; ++event_count_;
+    FLVA_NATIVE_LOG(
+        "event kind=%s sequence=%llu generation=%llu activity=%s textLength=%zu",
+        event.kind, static_cast<unsigned long long>(event.sequence),
+        static_cast<unsigned long long>(event.generation), event.activity,
+        strnlen(event.text, sizeof(event.text)));
   }
   void reset_turn() {
     SherpaOnnxVoiceActivityDetectorReset(vad_);
@@ -279,7 +305,7 @@ class Session {
                 now != partial_)) {
       partial_ = now;
     }
-    if(before!=partial_){publish("partial","recognizing","",partial_.c_str(),generation); FLVA_NATIVE_LOG("asr partial generation=%llu length=%zu", static_cast<unsigned long long>(generation), partial_.size());}
+    if(before!=partial_){publish("partial","recognizing","",partial_.c_str(),generation);}
   }
   void finish_transcript(uint64_t generation) {
     capture_admission_.store(false);in_speech_=false;
@@ -290,7 +316,6 @@ class Session {
     if(partial_.empty()){generation_.fetch_add(1);return;}
     {std::lock_guard<std::mutex> lock(command_mutex_);awaited_reply_=generation;}
     publish("final","thinking","",partial_.c_str(),generation);
-    FLVA_NATIVE_LOG("asr final generation=%llu length=%zu", static_cast<unsigned long long>(generation), partial_.size());
 #ifdef FLVA_ENABLE_LLM
     if(llm_) {
       try {
@@ -326,11 +351,13 @@ class Session {
   }
   void synthesize_reply(uint64_t generation, const std::string& text) {
     if (generation != generation_.load() || cancelled_.load()) return;
+    // Snapshot the id so an in-flight utterance keeps the speaker it started with.
+    const int32_t speaker_id = speaker_id_.load(std::memory_order_acquire);
     SynthesisContext context{this, generation};
     // The engine returns owned audio even when its callback cooperatively
     // cancels. RAII releases it on every exit path.
     OwnedGeneratedAudio audio(SherpaOnnxOfflineTtsGenerateWithCallbackWithArg(
-        tts_, text.c_str(), 0, 1.0f, &Session::tts_callback, &context));
+        tts_, text.c_str(), speaker_id, 1.0f, &Session::tts_callback, &context));
     if (!audio) {
       if (generation == generation_.load() && !cancelled_.load()) publish("error", "idle", "inferenceFailed", "", generation);
       generation_.fetch_add(1);return;
@@ -400,6 +427,7 @@ class Session {
   const SherpaOnnxOnlineRecognizer* recognizer_ = nullptr;
   const SherpaOnnxOnlineStream* stream_ = nullptr;
   const SherpaOnnxOfflineTts* tts_ = nullptr;
+  std::atomic<int32_t> speaker_id_{0};
   int output_rate_ = kVadRate;
   std::thread worker_; std::mutex work_mutex_; std::condition_variable work_cv_;
   std::atomic<bool> started_{false}, capture_admission_{false}, closed_{false}, quitting_{false}, cancelled_{false}, discontinuity_{false}, event_overflow_{false};
@@ -418,12 +446,21 @@ struct FlvaSession { Session impl; explicit FlvaSession(const FlvaConfig& config
 extern "C" FlvaSession* flva_create(const FlvaConfig* config, char* error, int32_t error_capacity) {
   if (error && error_capacity > 0) error[0] = '\0';
   if(!config || config->input_rate<8000 || config->input_rate>192000) {if(error&&error_capacity>0)copy_text(error,error_capacity,"invalidAsset");return nullptr;}
+  if (config->speaker_id < 0) { if (error && error_capacity > 0) copy_text(error, error_capacity, "unsupportedProfile"); return nullptr; }
   try {
   std::unique_ptr<FlvaSession> session(new FlvaSession(*config)); std::string reason;
   if (!session->impl.initialize(&reason)) { if (error) copy_text(error, error_capacity, reason.c_str()); return nullptr; }
   return session.release();
   }catch(const std::exception& e){if(error&&error_capacity>0)copy_text(error,error_capacity,e.what());return nullptr;}
   catch(...){if(error&&error_capacity>0)copy_text(error,error_capacity,"inferenceFailed");return nullptr;}
+}
+extern "C" int32_t flva_set_speaker_id(FlvaSession* session, int32_t speaker_id, char* error, int32_t error_capacity) {
+  if (error && error_capacity > 0) error[0] = '\0';
+  if (!session) { if (error && error_capacity > 0) copy_text(error, error_capacity, "unsupportedProfile"); return 0; }
+  std::string reason;
+  const int32_t ok = session->impl.set_speaker_id(speaker_id, &reason);
+  if (!ok && error && error_capacity > 0) copy_text(error, error_capacity, reason.c_str());
+  return ok;
 }
 extern "C" int32_t flva_output_rate(const FlvaSession* session) { return session ? session->impl.output_rate() : 0; }
 extern "C" int32_t flva_start(FlvaSession* session) { return session ? session->impl.start() : 0; }

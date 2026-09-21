@@ -6,7 +6,7 @@ round: 1
 verdict: CONDITIONAL
 owner_agent: root
 created: "2026-09-20"
-updated: "2026-09-20"
+updated: "2026-09-21"
 blockers: []
 followups:
   - "Work0006 delivers pinned asset revisions, source/notices, exact sizes and catalog UX; physical device qualification remains open."
@@ -28,6 +28,8 @@ decisions:
     reason: "Accept planning coverage. Repair the sole report-schema finding by appending required sections to research-review-01 without changing its verdict; coordinator checks follow. No second validator round is needed for this format correction."
   - action: retain-draft-plan
     reason: "Documentation request is delivered; implementation plan remains draft until listed asset, API and packaging decisions close. No runtime task or acceptance criterion is marked complete."
+  - action: keep-draft-after-path-research
+    reason: "User authorized any researched path. Do not freeze: three catalog packs, unmanaged native packaging, and missing devices still contradict a freeze of the draft one-bundle plus device gates."
   - action: workflow
     reason: "Follow wiki/conventions/workflow.md directly; no feature skill file was found in repository agent configuration. Stop at reviewed planning for this documentation-only request."
 escalations: []

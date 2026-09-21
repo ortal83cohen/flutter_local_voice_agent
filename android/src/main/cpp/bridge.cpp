@@ -22,13 +22,13 @@ static jstring java_string(JNIEnv *e,const char *p) {
 }
 static FlvaSession *session(jlong h) { return reinterpret_cast<FlvaSession *>(h); }
 extern "C" JNIEXPORT jlong JNICALL
-Java_dev_localvoice_flutter_1local_1voice_1agent_FlutterLocalVoiceAgentPlugin_nativeCreate(JNIEnv *e, jobject, jobjectArray a) {
+Java_dev_localvoice_flutter_1local_1voice_1agent_FlutterLocalVoiceAgentPlugin_nativeCreate(JNIEnv *e, jobject, jobjectArray a, jint speakerId) {
   std::vector<std::string> v;
   for (int i=0;i<9;++i) {
     auto s=static_cast<jstring>(e->GetObjectArrayElement(a,i));
     v.emplace_back(utf8(e,s)); e->DeleteLocalRef(s);
   }
-  FlvaConfig c{v[0].c_str(),v[1].c_str(),v[2].c_str(),v[3].c_str(),v[4].c_str(),v[5].c_str(),v[6].c_str(),v[7].c_str(),v[8].c_str(),16000};
+  FlvaConfig c{v[0].c_str(),v[1].c_str(),v[2].c_str(),v[3].c_str(),v[4].c_str(),v[5].c_str(),v[6].c_str(),v[7].c_str(),v[8].c_str(),16000,speakerId};
   char error[2048]{}; auto *s=flva_create(&c,error,sizeof(error));
   if (!s) e->ThrowNew(e->FindClass("java/lang/IllegalStateException"),error);
   return reinterpret_cast<jlong>(s);
@@ -41,6 +41,12 @@ extern "C" JNIEXPORT void JNICALL
 Java_dev_localvoice_flutter_1local_1voice_1agent_FlutterLocalVoiceAgentPlugin_nativeStop(JNIEnv *,jobject,jlong h){flva_stop(session(h));}
 extern "C" JNIEXPORT void JNICALL
 Java_dev_localvoice_flutter_1local_1voice_1agent_FlutterLocalVoiceAgentPlugin_nativeDestroy(JNIEnv *,jobject,jlong h){flva_destroy(session(h));}
+extern "C" JNIEXPORT jint JNICALL
+Java_dev_localvoice_flutter_1local_1voice_1agent_FlutterLocalVoiceAgentPlugin_nativeSetSpeakerId(JNIEnv *e,jobject,jlong h,jint speakerId){
+  char error[2048]{}; auto result=flva_set_speaker_id(session(h),speakerId,error,sizeof(error));
+  if(!result) e->ThrowNew(e->FindClass("java/lang/IllegalStateException"),error);
+  return result;
+}
 extern "C" JNIEXPORT jlong JNICALL
 Java_dev_localvoice_flutter_1local_1voice_1agent_FlutterLocalVoiceAgentPlugin_nativeInterrupt(JNIEnv *,jobject,jlong h){return flva_interrupt(session(h));}
 extern "C" JNIEXPORT jint JNICALL

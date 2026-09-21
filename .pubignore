@@ -37,6 +37,18 @@ secrets/
 /example/.dart_tool/
 /example/pubspec.lock
 
+# Generated platform build trees (not plugin source)
+/android/build/
+/android/.gradle/
+/android/.cxx/
+/ios/build/
+/ios/Pods/
+/ios/.symlinks/
+/example/android/build/
+/example/android/.cxx/
+/example/android/.kotlin/
+/example/ios/build/
+
 # Other generated caches and local files
 __pycache__/
 *.py[cod]

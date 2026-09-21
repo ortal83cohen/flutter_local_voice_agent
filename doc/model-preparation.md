@@ -4,9 +4,13 @@ The preparation API is an infrastructure layer for hosts that already have a
 trusted model descriptor and a persistent, application-private directory. It
 returns the same `LocalModelBundle` used by `LocalVoiceAgent.create`.
 
-The companion `VoiceModelCatalog` supplies two pinned English configurations.
-The example discovers private storage and provides selection/download controls;
-see [the catalog guide](model-catalog.md). The core still accepts arbitrary
+The companion `VoiceModelCatalog` supplies three pinned English
+configurations: LJS compact, LJS standard, and compact VCTK (109 speakers,
+integer ids 0-108). VCTK is a speaker choice, not a language or quality
+ranking. Speaker labels are integer ids. Piper, other languages and
+physical-device quality remain outside this catalog. The example discovers
+private storage and provides selection/download controls; see
+[the catalog guide](model-catalog.md). The core still accepts arbitrary
 host-trusted compatible descriptors and does not install native libraries.
 Physical model qualification remains unfinished.
 

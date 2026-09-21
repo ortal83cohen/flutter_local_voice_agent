@@ -68,18 +68,22 @@ private storage, cache reuse, corruption recovery, low capacity and late
 lifecycle completions. Run `sh tool/check.sh` for the combined checks.
 
 For real publisher bytes, run `dart run tool/verify_catalog.dart /absolute/temp/output`.
-This downloads both catalog configurations (about 498 MB combined), verifies
-all declared bytes and manifests, then retries with a client factory that
-throws to prove offline reuse. Its verification.json records installed role
-paths for the native smoke command described above. Network access and disk
-space are required; this is separate from ordinary unit tests.
+This downloads all three English catalog configurations — LJS compact, LJS
+standard, and compact VCTK (109 speakers, integer ids 0-108) — about 614 MB
+combined, verifies all declared bytes and manifests, then retries with a
+client factory that throws to prove offline reuse. VCTK is a speaker choice,
+not a language or quality ranking. Piper, other languages and physical-device
+quality remain outside this catalog. Its verification.json records installed
+role paths for the native smoke command described above. Network access and
+disk space are required; this is separate from ordinary unit tests.
 
 In the provisioned example, select a catalog entry, tap Download and prepare,
-then Start once ready. No directory entry or model copying is required. Verify
-cancel/retry, model switching and a force-stop/relaunch with device networking
-disabled. Restore networking after the test. See [the catalog guide](model-catalog.md)
-for source, size, storage and recovery details. Advanced host-managed local
-packs remain supported by the library as described in [models](models.md).
+then Start once ready. On VCTK, speaker labels are integer ids 0 through 108.
+No directory entry or model copying is required. Verify cancel/retry, model
+switching and a force-stop/relaunch with device networking disabled. Restore
+networking after the test. See [the catalog guide](model-catalog.md) for
+source, size, storage and recovery details. Advanced host-managed local packs
+remain supported by the library as described in [models](models.md).
 
 ## Required device protocol (still open)
 

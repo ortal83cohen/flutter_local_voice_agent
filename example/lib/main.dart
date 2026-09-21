@@ -90,7 +90,7 @@ class _VoiceScreenState extends State<VoiceScreen> with WidgetsBindingObserver {
             ),
             const SizedBox(height: 8),
             const Text(
-              'Download once, then speech recognition and playback run offline. Listening pauses while a reply plays.',
+              'Three English options are available. The LJS packs differ by precision. VCTK is a speaker choice by integer id. Download once, then speech recognition and playback run offline. Listening pauses while a reply plays.',
             ),
             const SizedBox(height: 20),
             DropdownButtonFormField<VoiceModelOption>(
@@ -115,6 +115,32 @@ class _VoiceScreenState extends State<VoiceScreen> with WidgetsBindingObserver {
                   ? null
                   : (option) => unawaited(controller.select(option)),
             ),
+            if (controller.showsSpeakerControl) ...[
+              const SizedBox(height: 12),
+              DropdownButtonFormField<int>(
+                key: ValueKey(
+                  'speaker-picker-${selected?.id ?? 'none'}-${controller.speakerId}',
+                ),
+                initialValue:
+                    controller.speakerIds.contains(controller.speakerId)
+                    ? controller.speakerId
+                    : null,
+                isExpanded: true,
+                decoration: const InputDecoration(labelText: 'Speaker'),
+                items: controller.speakerIds
+                    .map(
+                      (id) => DropdownMenuItem(value: id, child: Text('$id')),
+                    )
+                    .toList(),
+                onChanged: controller.operationBusy
+                    ? null
+                    : (id) {
+                        if (id != null) {
+                          unawaited(controller.setSpeakerId(id));
+                        }
+                      },
+              ),
+            ],
             if (selected != null) ...[
               const SizedBox(height: 12),
               Card.filled(

@@ -26,7 +26,45 @@ static bool check(bool condition, const char* name) {
 }
 
 static FlvaConfig config(const Assets& a, int rate = 16000) {
-  return {a.vad, a.encoder, a.decoder, a.joiner, a.tokens, a.tts_model, a.tts_tokens, a.tts_lexicon, "", rate};
+  FlvaConfig c{};
+  c.vad = a.vad; c.encoder = a.encoder; c.decoder = a.decoder; c.joiner = a.joiner;
+  c.asr_tokens = a.tokens; c.tts_model = a.tts_model; c.tts_tokens = a.tts_tokens;
+  c.tts_lexicon = a.tts_lexicon; c.llm_model = ""; c.input_rate = rate;
+  return c;
+}
+
+static bool file_exists(const char* path) {
+  if (!path || !path[0]) return false;
+  FILE* file = std::fopen(path, "rb");
+  if (!file) return false;
+  std::fclose(file);
+  return true;
+}
+
+static std::string sibling_file(const char* path, const char* name) {
+  std::string directory = path ? path : "";
+  const auto slash = directory.find_last_of("/\\");
+  if (slash == std::string::npos) return name;
+  return directory.substr(0, slash + 1) + name;
+}
+
+// Host inventory locations used by catalog/qualification fixtures. Absence is a
+// catalog-asset gate, not a silent pass of the multi-speaker setter.
+static const char* find_vctk_tts(const char* argv_tts) {
+  if (argv_tts && std::strstr(argv_tts, "vctk")) return argv_tts;
+  static std::string sibling_int8;
+  static std::string sibling_full;
+  sibling_int8 = sibling_file(argv_tts, "vits-vctk.int8.onnx");
+  sibling_full = sibling_file(argv_tts, "vits-vctk.onnx");
+  const char* candidates[] = {
+    sibling_int8.c_str(),
+    sibling_full.c_str(),
+    "/private/tmp/flva-qualification/models/vits-vctk.int8.onnx",
+    "/private/tmp/flva-qualification/models/vits-vctk.onnx",
+    "/private/tmp/flva-catalog-installed/en-us-vctk-zipformer-int8/tts/vits-vctk.int8.onnx",
+  };
+  for (const char* path : candidates) if (file_exists(path)) return path;
+  return nullptr;
 }
 
 static FlvaSession* create(const Assets& a) {
@@ -94,8 +132,32 @@ int main(int argc, char** argv) {
   FlvaConfig bad_rate = config(a, 7999); std::memset(error, 0, sizeof(error));
   check(flva_create(&bad_rate, error, sizeof(error)) == nullptr && std::strcmp(error, "invalidAsset") == 0, "invalid input rate rejected");
 
+  int expected = 19;
+  FlvaConfig negative_speaker = config(a); negative_speaker.speaker_id = -1; std::memset(error, 0, sizeof(error));
+  check(flva_create(&negative_speaker, error, sizeof(error)) == nullptr && std::strcmp(error, "unsupportedProfile") == 0,
+        "create speaker_id -1 rejected");
+  ++expected;
+  FlvaConfig huge_speaker = config(a); huge_speaker.speaker_id = 100000; std::memset(error, 0, sizeof(error));
+  check(flva_create(&huge_speaker, error, sizeof(error)) == nullptr && std::strcmp(error, "unsupportedProfile") == 0,
+        "create speaker_id 100000 rejected");
+  ++expected;
+  FlvaConfig speaker_one = config(a); speaker_one.speaker_id = 1; std::memset(error, 0, sizeof(error));
+  FlvaSession* multi = flva_create(&speaker_one, error, sizeof(error));
+  if (multi) {
+    flva_destroy(multi);
+  } else {
+    check(std::strcmp(error, "unsupportedProfile") == 0, "create speaker_id 1 rejected on single-speaker TTS");
+    ++expected;
+  }
+
   FlvaSession* s = create(a);
   if (!check(s != nullptr, "actual engine create")) return 1;
+  std::memset(error, 0, sizeof(error));
+  check(flva_set_speaker_id(s, 100000, error, sizeof(error)) == 0 && std::strcmp(error, "unsupportedProfile") == 0,
+        "setter out of range rejected");
+  ++expected;
+  check(flva_output_rate(s) > 0, "failed setter leaves stored id and usable session");
+  ++expected;
   check(flva_start(s) == 1 && flva_start(s) == 1, "double start idempotent");
   const uint64_t old = flva_interrupt(s);
   std::array<float, 512> silence{};
@@ -141,6 +203,24 @@ int main(int argc, char** argv) {
   check(all_silent, "cancelled generation renders silence");
   flva_stop(s); flva_stop(s); flva_destroy(s);
   check(true, "double stop and destroy after active worker");
+
+  bool vctk_setter_ran = false;
+  const char* vctk_tts = find_vctk_tts(a.tts_model);
+  if (vctk_tts) {
+    Assets vctk = a;
+    vctk.tts_model = vctk_tts;
+    FlvaSession* vs = create(vctk);
+    std::memset(error, 0, sizeof(error));
+    check(vs != nullptr && flva_set_speaker_id(vs, 7, error, sizeof(error)) == 1 && error[0] == '\0',
+          "VCTK setter non-zero id");
+    ++expected;
+    vctk_setter_ran = true;
+    if (vs) flva_destroy(vs);
+  } else {
+    std::printf("SKIP VCTK setter non-zero id: catalog-asset gate (VCTK TTS not in host inventory)\n");
+  }
+
   std::printf("PASSED %d checks\n", passed);
-  return passed == 19 ? 0 : 1;
+  if (!vctk_setter_ran) std::printf("VCTK setter success skipped: catalog-asset gate, not a silent pass\n");
+  return passed == expected ? 0 : 1;
 }

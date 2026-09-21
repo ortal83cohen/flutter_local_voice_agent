@@ -1,0 +1,3 @@
+# Provisioned pinned sherpa-onnx / onnxruntime shared objects. Not committed.
+libs/*.so
+libs/*.so.*

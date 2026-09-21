@@ -1,4 +1,5 @@
 #include "flva.h"
+#include <array>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
@@ -16,7 +17,10 @@ struct WavHeader {
 // mono 16 kHz PCM16 WAV. It has no fake-engine mode.
 int main(int argc, char** argv) {
   if (argc != 10) { std::fprintf(stderr, "usage: smoke vad encoder decoder joiner tokens tts-model tts-tokens tts-lexicon pcm16k.wav\n"); return 64; }
-  FlvaConfig c{argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7], argv[8], "", 16000};
+  FlvaConfig c{};
+  c.vad = argv[1]; c.encoder = argv[2]; c.decoder = argv[3]; c.joiner = argv[4];
+  c.asr_tokens = argv[5]; c.tts_model = argv[6]; c.tts_tokens = argv[7];
+  c.tts_lexicon = argv[8]; c.llm_model = ""; c.input_rate = 16000;
   char error[40]; FlvaSession* s = flva_create(&c, error, sizeof(error));
   if (!s) { std::fprintf(stderr, "create: %s\n", error); return 1; }
   FILE* f = std::fopen(argv[9], "rb"); if (!f) { flva_destroy(s); return 2; }

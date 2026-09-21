@@ -17,6 +17,7 @@
       "id": "en-us-ljs-zipformer-int8",
       "version": "zipformer-672fbf1-vits-7ac337c",
       "label": "English compact (INT8)",
+      "speakerCount": 1,
       "totalBytes": 114444636,
       "files": [
         {"entry":{"role":"vad","path":"vad/silero_vad.onnx","bytes":643854,"sha256":"9e2449e1087496d8d4caba907f23e0bd3f78d91fa552479bb9c23ac09cbb1fd6","source":"https://github.com/k2-fsa/sherpa-onnx/releases/tag/asr-models#asset-silero_vad.onnx-id-271935959","license":"licenses/silero-vad-LICENSE"},"uri":"https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/silero_vad.onnx"},
@@ -37,6 +38,7 @@
       "id": "en-us-ljs-zipformer-standard",
       "version": "zipformer-672fbf1-vits-7ac337c",
       "label": "English standard (full precision)",
+      "speakerCount": 1,
       "totalBytes": 383741867,
       "inheritsCommonFilesFrom": "en-us-ljs-zipformer-int8",
       "replacements": [
@@ -44,6 +46,20 @@
         {"role":"decoder","path":"asr/decoder.onnx","bytes":2092621,"sha256":"7bf787f90b194b307e5a4ad6a34fadb4e748304c35f78a8d66358a05b13ee6ef","source":"https://huggingface.co/csukuangfj/sherpa-onnx-streaming-zipformer-en-2023-06-26/tree/672fbf1b30579d6585301139bb363f42a0ad4a24","license":"licenses/zipformer-README.md","uri":"https://huggingface.co/csukuangfj/sherpa-onnx-streaming-zipformer-en-2023-06-26/resolve/672fbf1b30579d6585301139bb363f42a0ad4a24/decoder-epoch-99-avg-1-chunk-16-left-128.onnx"},
         {"role":"joiner","path":"asr/joiner.onnx","bytes":1026405,"sha256":"210591f72b3c56b8364f85f345dca240bc2b4c00632848f4aa923630d5639d3b","source":"https://huggingface.co/csukuangfj/sherpa-onnx-streaming-zipformer-en-2023-06-26/tree/672fbf1b30579d6585301139bb363f42a0ad4a24","license":"licenses/zipformer-README.md","uri":"https://huggingface.co/csukuangfj/sherpa-onnx-streaming-zipformer-en-2023-06-26/resolve/672fbf1b30579d6585301139bb363f42a0ad4a24/joiner-epoch-99-avg-1-chunk-16-left-128.onnx"},
         {"role":"ttsModel","path":"tts/vits-ljs.onnx","bytes":114124456,"sha256":"5bbd273797a9ecf8d94bd6ec02ad16cb41cbb85f055ad98d528ced3e44c9b31a","source":"https://huggingface.co/csukuangfj/vits-ljs/tree/7ac337c834f318e45a34037cb3371cc3929187ff","license":"licenses/vits-ljs-README.md","uri":"https://huggingface.co/csukuangfj/vits-ljs/resolve/7ac337c834f318e45a34037cb3371cc3929187ff/vits-ljs.onnx"}
+      ]
+    },
+    {
+      "id": "en-us-vctk-zipformer-int8",
+      "version": "zipformer-672fbf1-vits-5d7d647",
+      "label": "English compact VCTK (INT8)",
+      "speakerCount": 109,
+      "totalBytes": 116261194,
+      "inheritsCommonFilesFrom": "en-us-ljs-zipformer-int8",
+      "replacements": [
+        {"role":"ttsModel","path":"tts/vits-vctk.int8.onnx","bytes":39240108,"sha256":"fce6a16ccab9a99910fe60d6d3c95163ff98cd9043dcfc223371a1f208ffaafd","source":"https://huggingface.co/csukuangfj/vits-vctk/tree/5d7d647d6ea0f6206544735d74b25d3877c0f9ca","license":"licenses/vits-vctk-README.md","uri":"https://huggingface.co/csukuangfj/vits-vctk/resolve/5d7d647d6ea0f6206544735d74b25d3877c0f9ca/vits-vctk.int8.onnx"},
+        {"role":"ttsTokens","path":"tts/tokens.txt","bytes":1084,"sha256":"5fee2c6b238d712287f2ecb08f34a8a8b413bcb7390862ef6fb6fd6f0f8d3a17","source":"https://huggingface.co/csukuangfj/vits-vctk/tree/5d7d647d6ea0f6206544735d74b25d3877c0f9ca","license":"licenses/vits-vctk-README.md","uri":"https://huggingface.co/csukuangfj/vits-vctk/raw/5d7d647d6ea0f6206544735d74b25d3877c0f9ca/tokens.txt"},
+        {"role":"ttsLexicon","path":"tts/lexicon.txt","bytes":3708181,"sha256":"bdccfc6da71c45c48e2e0056fcf0aab760577c5f959f6c1b5eb3e3e916fd5a0e","source":"https://huggingface.co/csukuangfj/vits-vctk/tree/5d7d647d6ea0f6206544735d74b25d3877c0f9ca","license":"licenses/vits-vctk-README.md","uri":"https://huggingface.co/csukuangfj/vits-vctk/raw/5d7d647d6ea0f6206544735d74b25d3877c0f9ca/lexicon.txt"},
+        {"role":"license","path":"licenses/vits-vctk-README.md","bytes":536,"sha256":"a3780082ea5c79b5fa0e159efea06c26569bf27bcbdb19aec545af766aaf8f37","source":"https://huggingface.co/csukuangfj/vits-vctk/blob/5d7d647d6ea0f6206544735d74b25d3877c0f9ca/README.md","license":"licenses/apache-2.0.txt","uri":"https://huggingface.co/csukuangfj/vits-vctk/raw/5d7d647d6ea0f6206544735d74b25d3877c0f9ca/README.md"}
       ]
     }
   ]

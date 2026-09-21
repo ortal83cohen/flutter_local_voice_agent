@@ -16,32 +16,32 @@ All tasks are not started. Criteria AC-001 through AC-012 are frozen. Do not beg
 
 | # | Task | Satisfies | Files owned | Parallel | Done when |
 |---|---|---|---|---|---|
-| 1.1 | Add a default-target guard so create refuses Flutter web and other non-native hosts with unsupportedProfile before native create, and add tests for that refusal plus the existing full-duplex refusal. | AC-001 | lib/src/agent.dart, test/platform_refusal_test.dart | | Tests fail if native create is invoked on an excluded target; format and analyze pass. Status: not started. |
+| 1.1 | Add a default-target guard so create refuses Flutter web and other non-native hosts with unsupportedProfile before native create, and add tests for that refusal plus the existing full-duplex refusal. | AC-001 | lib/src/agent.dart, test/platform_refusal_test.dart | | Tests fail if native create is invoked on an excluded target; format and analyze pass. Status: done 2026-09-21. |
 
 ### Group 2 — Registration and provisioning
 
 | # | Task | Satisfies | Files owned | Parallel | Done when |
 |---|---|---|---|---|---|
-| 2.1 | Declare macos, windows and linux plugin classes in the package manifest without adding web, and extend the provisioning script with pinned official v1.12.14 desktop archives, measured SHA-256 digests and install layouts. Add a mismatch test or checked invocation. | AC-002, AC-003, AC-004 | pubspec.yaml, tool/provision_runtime.py, tool/test_provision_runtime.py | | Manifest lists five platforms and no web; a bad digest copies nothing; a matching digest installs the expected libraries. Status: not started. |
+| 2.1 | Declare macos, windows and linux plugin classes in the package manifest without adding web, and extend the provisioning script with pinned official v1.12.14 desktop archives, measured SHA-256 digests and install layouts. Add a mismatch test or checked invocation. | AC-002, AC-003, AC-004 | pubspec.yaml, tool/provision_runtime.py, tool/test_provision_runtime.py | | Manifest lists five platforms and no web; a bad digest copies nothing; a matching digest installs the expected libraries. Status: done 2026-09-21. |
 
 ### Group 3 — macOS plugin and host build
 
 | # | Task | Satisfies | Files owned | Parallel | Done when |
 |---|---|---|---|---|---|
-| 3.1 | Add the macOS CocoaPods plugin that compiles shared native sources, vendors the pinned universal2 dylibs, owns AVAudioEngine push and render, fails start with permissionDenied without opening capture when permission is denied, suspends on deactivate and default-device change, logs no raw PCM, and generates the example macOS host with microphone usage text. Build the example on this host. | AC-005, AC-006, AC-007, AC-011, AC-012 | macos/, example/macos/ | | Source review shows no PCM on the channel or in logs; denied start cannot start capture; documented macOS build exits 0. Status: not started. |
+| 3.1 | Add the macOS CocoaPods plugin that compiles shared native sources, vendors the pinned universal2 dylibs, owns AVAudioEngine push and render, fails start with permissionDenied without opening capture when permission is denied, suspends on deactivate and default-device change, logs no raw PCM, and generates the example macOS host with microphone usage text. Build the example on this host. | AC-005, AC-006, AC-007, AC-011, AC-012 | macos/, example/macos/ | | Source review shows no PCM on the channel or in logs; denied start cannot start capture; documented macOS build exits 0. Status: done 2026-09-21. flutter build macos --debug exit 0. Physical deny-prompt [UNVERIFIED]. |
 
 ### Group 4 — Windows and Linux plugins
 
 | # | Task | Satisfies | Files owned | Parallel | Done when |
 |---|---|---|---|---|---|
-| 4.1 | Add the Windows plugin with CMake imported sherpa linkage, WASAPI capture and render, the shared method names, and invalidation mapped to audioUnavailable or routeChanged. Generate example/windows sources only. Do not require a Windows Flutter build on this checkout. | AC-008, AC-011, AC-012 | windows/, example/windows/ | `[P]` | Source review shows flva_push and flva_render on audio threads and no PCM channel payload. Status: not started. |
-| 4.2 | Add the Linux plugin with CMake imported sherpa linkage, PulseAudio record and playback, the shared method names, and server or default-device loss mapped to audioUnavailable or routeChanged. Generate example/linux sources only. Do not require a Linux Flutter build on this checkout. | AC-009, AC-011, AC-012 | linux/, example/linux/ | `[P]` | Source review shows flva_push and flva_render on audio threads and no PCM channel payload. Status: not started. |
+| 4.1 | Add the Windows plugin with CMake imported sherpa linkage, WASAPI capture and render, the shared method names, and invalidation mapped to audioUnavailable or routeChanged. Generate example/windows sources only. Do not require a Windows Flutter build on this checkout. | AC-008, AC-011, AC-012 | windows/, example/windows/ | `[P]` | Source review shows flva_push and flva_render on audio threads and no PCM channel payload. Status: source done 2026-09-21. Windows Flutter build [UNVERIFIED] on this macOS checkout. |
+| 4.2 | Add the Linux plugin with CMake imported sherpa linkage, PulseAudio record and playback, the shared method names, and server or default-device loss mapped to audioUnavailable or routeChanged. Generate example/linux sources only. Do not require a Linux Flutter build on this checkout. | AC-009, AC-011, AC-012 | linux/, example/linux/ | `[P]` | Source review shows flva_push and flva_render on audio threads and no PCM channel payload. Status: source done 2026-09-21. Linux Flutter build [UNVERIFIED] on this macOS checkout. |
 
 ### Group 5 — Parent-gate honesty and docs
 
 | # | Task | Satisfies | Files owned | Parallel | Done when |
 |---|---|---|---|---|---|
-| 5.1 | Update capability and setup documentation to list the five supported platforms, excluded targets, provisioning commands and the compile-evidence boundary. Confirm Android and iOS bridges are unchanged in intent and that 0002 blockers remain open. | AC-010 | doc/capabilities.md, README.md, analysis_options.yaml, example/analysis_options.yaml, wiki/INDEX.md, wiki/product files touched by this item | | Documentation names the five platforms and the open parent gates; android and ios plugin files are not rewritten except for unavoidable shared-manifest fallout owned by 2.1. Status: not started. |
+| 5.1 | Update capability and setup documentation to list the five supported platforms, excluded targets, provisioning commands and the compile-evidence boundary. Confirm Android and iOS bridges are unchanged in intent and that 0002 blockers remain open. | AC-010 | doc/capabilities.md, README.md, analysis_options.yaml, example/analysis_options.yaml, wiki/INDEX.md, wiki/product files touched by this item | | Documentation names the five platforms and the open parent gates; android and ios plugin files are not rewritten except for unavoidable shared-manifest fallout owned by 2.1. Status: done 2026-09-21. |
 
 ## Serialised files
 

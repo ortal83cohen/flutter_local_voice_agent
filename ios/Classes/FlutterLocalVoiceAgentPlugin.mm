@@ -69,15 +69,29 @@
     FlvaConfig c{};
     c.vad=[p[@"vad"] UTF8String];c.encoder=[p[@"encoder"] UTF8String];c.decoder=[p[@"decoder"] UTF8String];c.joiner=[p[@"joiner"] UTF8String];c.asr_tokens=[p[@"asrTokens"] UTF8String];
     c.tts_model=[p[@"ttsModel"] UTF8String];c.tts_tokens=[p[@"ttsTokens"] UTF8String];c.tts_lexicon=[p[@"ttsLexicon"] UTF8String];c.llm_model=[p[@"llmModel"] UTF8String];c.input_rate=_inputRate;
+    c.speaker_id=[args[@"speakerId"] intValue];
     char message[2048]{};_session=flva_create(&c,message,sizeof(message));
     [audio setActive:NO error:nil];
-    if(!_session)return [self error:@"inferenceFailed" message:[NSString stringWithUTF8String:message]];
+    if(!_session){
+      NSString *nativeMessage=[NSString stringWithUTF8String:message];
+      if([nativeMessage isEqualToString:@"unsupportedProfile"])return [self error:@"unsupportedProfile" message:nativeMessage];
+      return [self error:@"inferenceFailed" message:nativeMessage];
+    }
     return @{@"outputRate":@(flva_output_rate(_session))};
   }
   if([method isEqualToString:@"dispose"]){[self stopAudio];if(_session){flva_destroy(_session);_session=nullptr;}return nil;}
   if([method isEqualToString:@"stop"]){[self stopAudio];if(_session)flva_stop(_session);return nil;}
   if(!_session)return [self error:@"invalidState" message:@"Create a session first"];
   if([method isEqualToString:@"start"])return [self startAudio];
+  if([method isEqualToString:@"setSpeakerId"]){
+    char message[2048]{};
+    if(!flva_set_speaker_id(_session,[args[@"speakerId"] intValue],message,sizeof(message))){
+      NSString *nativeMessage=[NSString stringWithUTF8String:message];
+      if([nativeMessage isEqualToString:@"unsupportedProfile"])return [self error:@"unsupportedProfile" message:nativeMessage];
+      return [self error:@"audioUnavailable" message:nativeMessage];
+    }
+    return nil;
+  }
   if([method isEqualToString:@"interrupt"]){return @(flva_interrupt(_session));}
   if([method isEqualToString:@"reply"]){if(!flva_reply(_session,[args[@"generation"] unsignedLongLongValue],[args[@"text"] UTF8String]))return [self error:@"invalidState" message:@"Stale or oversized reply"];return nil;}
   if([method isEqualToString:@"poll"]){

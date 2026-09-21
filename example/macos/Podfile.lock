@@ -1,0 +1,22 @@
+PODS:
+  - flutter_local_voice_agent (0.1.0):
+    - FlutterMacOS
+  - FlutterMacOS (1.0.0)
+
+DEPENDENCIES:
+  - flutter_local_voice_agent (from `Flutter/ephemeral/.symlinks/plugins/flutter_local_voice_agent/macos`)
+  - FlutterMacOS (from `Flutter/ephemeral`)
+
+EXTERNAL SOURCES:
+  flutter_local_voice_agent:
+    :path: Flutter/ephemeral/.symlinks/plugins/flutter_local_voice_agent/macos
+  FlutterMacOS:
+    :path: Flutter/ephemeral
+
+SPEC CHECKSUMS:
+  flutter_local_voice_agent: 80198adfd57ccc991b5db104ca0b88fc6bc16e42
+  FlutterMacOS: c232990155153907050900a2e175c7773903ba4e
+
+PODFILE CHECKSUM: 1e95c36afbfd1cb6423ceca4de7a8e1b256fb6ac
+
+COCOAPODS: 1.16.2
