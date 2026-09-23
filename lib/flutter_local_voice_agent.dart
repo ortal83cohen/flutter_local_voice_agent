@@ -8,3 +8,7 @@ export 'src/model_preparation.dart';
 export 'src/models.dart';
 
 export 'src/model_catalog.dart';
+export 'src/web_backend.dart'
+    show registerWebProfileDefaults, registerWebSessionBackend;
+export 'src/web_model_store.dart'
+    show WebAssetReader, WebAssetWriter, WebModelStore, registerWebModelStore;

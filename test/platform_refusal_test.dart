@@ -9,6 +9,7 @@ import 'package:flutter_test/flutter_test.dart';
 void main() {
   tearDown(() {
     debugDefaultTargetPlatformOverride = null;
+    debugOverrideIsWeb = null;
   });
 
   test('excluded target is refused before native create', () async {
@@ -16,6 +17,7 @@ void main() {
     final root = await fixtureFixture();
     addTearDown(() => root.delete(recursive: true));
     final native = _FakePlatform();
+    final web = _CountingWebBackend();
     await expectLater(
       LocalVoiceAgent.create(
         models: LocalModelBundle(
@@ -23,6 +25,7 @@ void main() {
           manifestPath: '${root.path}/manifest.json',
         ),
         nativePlatform: native,
+        sessionBackend: web,
       ),
       throwsA(
         isA<AgentFailure>().having(
@@ -33,6 +36,7 @@ void main() {
       ),
     );
     expect(native.created, isFalse);
+    expect(web.createCount, 0);
   });
 
   test('full duplex is rejected before platform create', () async {
@@ -114,6 +118,37 @@ final class _FakePlatform implements NativeVoicePlatform {
   }) async {
     created = true;
     return 24000;
+  }
+
+  @override
+  Future<void> dispose() async {}
+
+  @override
+  Future<void> interrupt() async {}
+
+  @override
+  Future<List<Map<String, Object?>>> poll() async => <Map<String, Object?>>[];
+
+  @override
+  Future<void> reply({required int generation, required String text}) async {}
+
+  @override
+  Future<void> start() async {}
+
+  @override
+  Future<void> stop() async {}
+
+  @override
+  Future<void> setSpeakerId(int speakerId) async {}
+}
+
+final class _CountingWebBackend implements VoiceSessionBackend {
+  int createCount = 0;
+
+  @override
+  Future<int> ensureCreated() async {
+    createCount++;
+    return 16000;
   }
 
   @override

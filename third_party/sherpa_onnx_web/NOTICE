@@ -1,0 +1,18 @@
+sherpa-onnx WebAssembly runtime
+Copyright 2022-2026 Xiaomi Corporation
+
+This package vendors official sherpa-onnx 1.13.8 Flutter web WASM assets
+from the sherpa_onnx_web 1.13.8 distribution:
+
+- assets/sherpa_onnx_web/sherpa-onnx-wasm-web.wasm
+- assets/sherpa_onnx_web/sherpa-onnx-wasm-web.js
+- assets/sherpa_onnx_web/sherpa-onnx-asr.js
+- assets/sherpa_onnx_web/sherpa-onnx-tts.js
+- assets/sherpa_onnx_web/sherpa-onnx-vad.js
+
+Source archive: https://pub.dev/api/archives/sherpa_onnx_web-1.13.8.tar.gz
+Archive SHA-256: e25a3813eb080636280b23dd4b0098252902675158b66dceda1efba061adf5d7
+License: Apache License 2.0 (see LICENSE in this directory)
+
+This package does not depend on the pub.dev sherpa_onnx or sherpa_onnx_web
+plugins. Those plugins are not registered here.

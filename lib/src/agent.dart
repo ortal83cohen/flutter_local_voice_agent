@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
@@ -9,6 +8,12 @@ import 'bounded_stream.dart';
 import 'contracts.dart';
 import 'model_store.dart';
 import 'models.dart';
+import 'native_paths_stub.dart' if (dart.library.io) 'native_paths_io.dart';
+import 'web_defaults.dart';
+
+/// Test-only host override. When true, create takes the web session path.
+@visibleForTesting
+bool? debugOverrideIsWeb;
 
 /// Computes a reply from a finalized transcript.
 typedef LocalReplyLogic = Future<String> Function(String transcript);
@@ -16,13 +21,13 @@ typedef LocalReplyLogic = Future<String> Function(String transcript);
 /// Owns one bounded, half-duplex local voice session.
 final class LocalVoiceAgent {
   LocalVoiceAgent._(
-    this._native,
+    this._session,
     this._logic,
     this.outputRate,
     this._speakerId,
   );
 
-  /// Validates assets and creates the inactive native session.
+  /// Validates assets and creates the inactive session.
   static Future<LocalVoiceAgent> create({
     required LocalModelBundle models,
     LocalReplyLogic? logic,
@@ -30,6 +35,7 @@ final class LocalVoiceAgent {
     ConversationMode mode = ConversationMode.halfDuplex,
     LocalModelStore? modelStore,
     NativeVoicePlatform? nativePlatform,
+    VoiceSessionBackend? sessionBackend,
     int speakerId = 0,
   }) async {
     if (mode == ConversationMode.fullDuplexRequired) {
@@ -46,17 +52,21 @@ final class LocalVoiceAgent {
         fatal: false,
       );
     }
-    _refuseUnsupportedHost();
+    if (_isWebHost()) {
+      return _createWeb(
+        models: models,
+        logic: logic,
+        useLocalLlm: useLocalLlm,
+        modelStore: modelStore,
+        sessionBackend: sessionBackend,
+        speakerId: speakerId,
+      );
+    }
+    _refuseUnsupportedNativeHost();
     final checked = await (modelStore ?? const FileModelStore()).validate(
       models,
     );
-    final root = await Directory(models.directory).resolveSymbolicLinks();
-    final paths = <String, String>{
-      for (final entry in checked.files.where(
-        (entry) => entry.role != 'license',
-      ))
-        entry.role: '$root${Platform.pathSeparator}${entry.path}',
-    };
+    final paths = await nativeModelPathMap(checked, models);
     if (useLocalLlm && !paths.containsKey('llmModel')) {
       throw const AgentFailure(
         AgentErrorCode.missingAsset,
@@ -67,36 +77,19 @@ final class LocalVoiceAgent {
     if (!useLocalLlm) paths.remove('llmModel');
     final native = nativePlatform ?? MethodChannelVoicePlatform();
     try {
-      final agent = LocalVoiceAgent._(
-        native,
-        useLocalLlm ? null : (logic ?? ((text) async => 'You said: $text')),
-        await native.create(
-          paths: paths,
-          mode: 'halfDuplex',
-          speakerId: speakerId,
-        ),
-        speakerId,
+      final outputRate = await native.create(
+        paths: paths,
+        mode: 'halfDuplex',
+        speakerId: speakerId,
       );
-      agent._events = BoundedEventStream<AgentEvent>(
-        capacity: 32,
-        terminalValue: () => AgentEvent(
-          sequence: ++agent._eventSequence,
-          generation: agent._generation,
-          kind: AgentEventKind.fault,
-          lifecycle: AgentLifecycle.failed,
-          activity: TurnActivity.idle,
-          failure: capacityFailure(),
-        ),
-        onOverflow: () async {
-          agent.lifecycle = AgentLifecycle.failed;
-          agent._started = false;
-          agent._invalidate();
-          try {
-            await native.stop();
-          } catch (_) {}
-        },
+      return await _bindSession(
+        session: _NativeSessionBackend(native, outputRate),
+        logic: useLocalLlm
+            ? null
+            : (logic ?? ((text) async => 'You said: $text')),
+        outputRate: outputRate,
+        speakerId: speakerId,
       );
-      return agent;
     } on MissingPluginException catch (error) {
       throw AgentFailure(
         AgentErrorCode.unsupportedProfile,
@@ -109,7 +102,77 @@ final class LocalVoiceAgent {
     }
   }
 
-  final NativeVoicePlatform _native;
+  static Future<LocalVoiceAgent> _createWeb({
+    required LocalModelBundle models,
+    required LocalReplyLogic? logic,
+    required bool useLocalLlm,
+    required LocalModelStore? modelStore,
+    required VoiceSessionBackend? sessionBackend,
+    required int speakerId,
+  }) async {
+    if (useLocalLlm) {
+      throw const AgentFailure(
+        AgentErrorCode.unsupportedProfile,
+        'Local LLM is not supported on Flutter web.',
+        fatal: false,
+      );
+    }
+    final store =
+        modelStore ?? webModelStoreDefault?.call() ?? const FileModelStore();
+    webCreateBundle = models;
+    try {
+      await store.validate(models);
+      await webWasmGuard?.call();
+      final backend = sessionBackend ?? webSessionBackendDefault?.call();
+      if (backend == null) {
+        throw const AgentFailure(
+          AgentErrorCode.unsupportedProfile,
+          'The web session backend is not registered.',
+          fatal: false,
+        );
+      }
+      final outputRate = await backend.ensureCreated();
+      return await _bindSession(
+        session: backend,
+        logic: logic ?? ((text) async => 'You said: $text'),
+        outputRate: outputRate,
+        speakerId: speakerId,
+      );
+    } finally {
+      webCreateBundle = null;
+    }
+  }
+
+  static Future<LocalVoiceAgent> _bindSession({
+    required VoiceSessionBackend session,
+    required LocalReplyLogic? logic,
+    required int outputRate,
+    required int speakerId,
+  }) async {
+    final agent = LocalVoiceAgent._(session, logic, outputRate, speakerId);
+    agent._events = BoundedEventStream<AgentEvent>(
+      capacity: 32,
+      terminalValue: () => AgentEvent(
+        sequence: ++agent._eventSequence,
+        generation: agent._generation,
+        kind: AgentEventKind.fault,
+        lifecycle: AgentLifecycle.failed,
+        activity: TurnActivity.idle,
+        failure: capacityFailure(),
+      ),
+      onOverflow: () async {
+        agent.lifecycle = AgentLifecycle.failed;
+        agent._started = false;
+        agent._invalidate();
+        try {
+          await session.stop();
+        } catch (_) {}
+      },
+    );
+    return agent;
+  }
+
+  final VoiceSessionBackend _session;
   final LocalReplyLogic? _logic;
   late BoundedEventStream<AgentEvent> _events;
   Future<void>? _startFuture;
@@ -187,9 +250,9 @@ final class LocalVoiceAgent {
 
   Future<void> _start(int epoch) async {
     try {
-      await _native.start();
+      await _session.start();
       if (_disposed || epoch != _epoch) {
-        await _native.stop();
+        await _session.stop();
         return;
       }
       _started = true;
@@ -215,7 +278,7 @@ final class LocalVoiceAgent {
       );
     }
     try {
-      await _native.setSpeakerId(speakerId);
+      await _session.setSpeakerId(speakerId);
     } on PlatformException catch (error) {
       throw _platformFailure(error);
     }
@@ -228,7 +291,7 @@ final class LocalVoiceAgent {
     _advanceGeneration();
     activity = TurnActivity.interrupting;
     try {
-      await _native.interrupt();
+      await _session.interrupt();
     } on PlatformException catch (error) {
       throw _platformFailure(error);
     }
@@ -259,7 +322,7 @@ final class LocalVoiceAgent {
     lifecycle = AgentLifecycle.stopping;
     _invalidate();
     try {
-      await _native.stop();
+      await _session.stop();
     } on PlatformException catch (error) {
       lifecycle = AgentLifecycle.failed;
       throw _platformFailure(error);
@@ -294,7 +357,7 @@ final class LocalVoiceAgent {
     _disposing = true;
     _invalidate();
     try {
-      await _native.dispose();
+      await _session.dispose();
       _disposed = true;
       _started = false;
       lifecycle = AgentLifecycle.disposed;
@@ -326,7 +389,7 @@ final class LocalVoiceAgent {
     if (_polling || _disposed || !_started || epoch != _epoch) return;
     _polling = true;
     try {
-      final values = await _native.poll();
+      final values = await _session.poll();
       if (values.isNotEmpty) {
         debugPrint(
           'FLVA poll events=${values.length} kinds=${values.map((value) => value['kind']).join(',')}',
@@ -460,7 +523,7 @@ final class LocalVoiceAgent {
         .then((result) async {
           _validateLogicReply(result);
           if (!_disposed && generation == _generation) {
-            await _native.reply(generation: generation, text: result);
+            await _session.reply(generation: generation, text: result);
           }
         })
         .catchError((Object e, StackTrace _) {
@@ -510,7 +573,7 @@ final class LocalVoiceAgent {
 
   Future<void> _backgroundInterrupt() async {
     try {
-      await _native.interrupt();
+      await _session.interrupt();
     } on PlatformException catch (error) {
       _fatal(_platformFailure(error));
     } catch (error) {
@@ -522,7 +585,7 @@ final class LocalVoiceAgent {
 
   Future<void> _backgroundStop() async {
     try {
-      await _native.stop();
+      await _session.stop();
     } on PlatformException catch (error) {
       _emit(_platformFailure(error));
     } catch (error) {
@@ -543,15 +606,10 @@ final class LocalVoiceAgent {
   }
 }
 
-/// Refuses Flutter web and any default target that cannot host the native session.
-void _refuseUnsupportedHost() {
-  if (kIsWeb) {
-    throw const AgentFailure(
-      AgentErrorCode.unsupportedProfile,
-      'Flutter web is not a supported platform for the native offline voice pipeline.',
-      fatal: false,
-    );
-  }
+bool _isWebHost() => debugOverrideIsWeb ?? kIsWeb;
+
+/// Refuses fuchsia and any other non-native non-web target.
+void _refuseUnsupportedNativeHost() {
   final supported = switch (defaultTargetPlatform) {
     TargetPlatform.android => true,
     TargetPlatform.iOS => true,
@@ -567,6 +625,38 @@ void _refuseUnsupportedHost() {
       fatal: false,
     );
   }
+}
+
+final class _NativeSessionBackend implements VoiceSessionBackend {
+  _NativeSessionBackend(this._native, this._outputRate);
+
+  final NativeVoicePlatform _native;
+  final int _outputRate;
+
+  @override
+  Future<int> ensureCreated() async => _outputRate;
+
+  @override
+  Future<void> start() => _native.start();
+
+  @override
+  Future<void> stop() => _native.stop();
+
+  @override
+  Future<void> interrupt() => _native.interrupt();
+
+  @override
+  Future<void> dispose() => _native.dispose();
+
+  @override
+  Future<List<Map<String, Object?>>> poll() => _native.poll();
+
+  @override
+  Future<void> reply({required int generation, required String text}) =>
+      _native.reply(generation: generation, text: text);
+
+  @override
+  Future<void> setSpeakerId(int speakerId) => _native.setSpeakerId(speakerId);
 }
 
 TurnActivity? _activity(String v) => switch (v) {

@@ -1,5 +1,8 @@
 include: package:flutter_lints/flutter.yaml
 
+# Web-conditional libraries under lib/ are analyzed. The exclude list only
+# drops generated or host-project trees, not the Flutter web session code.
+
 analyzer:
   exclude:
     - build/**

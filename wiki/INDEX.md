@@ -3,7 +3,7 @@ id: index
 title: Wiki index
 status: active
 owner: unassigned
-last_verified: 2026-09-21
+last_verified: 2026-09-22
 applies_to: ["**"]
 summary: Router for the whole wiki. One line per document, stating when to read it.
 ---
@@ -189,6 +189,26 @@ to this index when they are created.
 | [Implementation review confirmation](work/0008-reasonable-platform-coverage/validation/impl-review-02.md) | Inspect the confirmation verdict after the AC-007 test repair. |
 | [Verification](work/0008-reasonable-platform-coverage/04-verification.md) | Inspect the recorded desktop, provision and unsupported-host checks. |
 | [Platform coverage product](product/reasonable-platform-coverage.md) | Checking supported hosts, exclusions, provisioning and the compile-evidence boundary. |
+
+## Flutter web offline profile
+
+| Document | Read it when |
+|---|---|
+| [Research consolidation](work/0010-flutter-web-offline-profile/00-research.md) | Deciding whether Flutter web can keep the offline sherpa contract. |
+| [Implementation plan](work/0010-flutter-web-offline-profile/01-plan.md) | Implementing the web session backend without changing flva.h. |
+| [Acceptance criteria](work/0010-flutter-web-offline-profile/02-criteria.md) | Checking web compile, WASM pin, half-duplex and native honesty. |
+| [Tasks](work/0010-flutter-web-offline-profile/03-tasks.md) | Ordering the dart:io split, WASM backend, example and docs. |
+| [Upstream sherpa web](work/0010-flutter-web-offline-profile/research/upstream-sherpa-web.md) | Inspecting official WASM and Flutter web demos. |
+| [Local gap](work/0010-flutter-web-offline-profile/research/local-gap.md) | Inspecting dart:io, the web refusal and plugin-collision risk. |
+| [Rejected alternatives](work/0010-flutter-web-offline-profile/research/rejected-alternatives.md) | Checking why Web Speech, whisper and flva-to-WASM were rejected. |
+| [Work state](work/0010-flutter-web-offline-profile/STATE.yaml) | Checking phase, decisions and the validation gate. |
+| [Research review](work/0010-flutter-web-offline-profile/validation/research-review-01.md) | Inspect the independent source verdict. |
+| [Plan review](work/0010-flutter-web-offline-profile/validation/plan-review-01.md) | Inspect the first plan coverage verdict before confirmation. |
+| [Plan review confirmation](work/0010-flutter-web-offline-profile/validation/plan-review-02.md) | Inspect the patched-plan confirmation verdict. |
+| [Implementation verification](work/0010-flutter-web-offline-profile/04-verification.md) | Inspect pasted format, analyze, tests, web build and the unverified live paths. |
+| [Implementation review 1](work/0010-flutter-web-offline-profile/validation/impl-review-01.md) | Inspect the independent PASS, per-criterion evidence and retained unverified live paths. |
+| [Product proposal](product/flutter-web-offline-profile.md) | Reading the active web profile limits. Browser microphone and compact-pack WASM load stay unverified. |
+| [Web architecture decision](adr/0005-flutter-web-offline-profile.md) | Reviewing the accepted WASM-backend exception to native PCM ownership. |
 
 ## English VITS voice selection
 

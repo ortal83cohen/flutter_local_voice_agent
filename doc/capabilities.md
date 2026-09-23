@@ -2,8 +2,9 @@
 
 | Capability | Implementation / limit |
 |---|---|
-| Supported native hosts | Android, iOS, macOS, Windows, Linux |
-| Excluded hosts | Flutter web, watchOS, tvOS, Wear OS, Android TV, WASM, cloud speech, PCM-through-Dart. Those fail with `unsupportedProfile` before native create |
+| Supported native hosts | Android, iOS, macOS, Windows, Linux on flva.h and sherpa-onnx v1.12.14 |
+| Flutter web profile | Separate session behind LocalVoiceAgent. Vendored sherpa-onnx 1.13.8 WASM, Silero VAD, one non-streaming offline recognizer, compact VITS. PCM stays inside the web backend. Create does not download. useLocalLlm and full duplex are `unsupportedProfile`. Browser microphone-to-speaker and compact-catalog WASM load remain [UNVERIFIED] |
+| Excluded hosts | watchOS, tvOS, Wear OS, Android TV, fuchsia, cloud speech, Web Speech, PCM-through-Dart on the facade. Those fail with `unsupportedProfile` before native create |
 | Android / iOS bridges | Unchanged in intent: native audio ownership, shared method names, PCM stays off the Dart channel |
 | Runtime provisioning | Build-time `python3 tool/provision_runtime.py` with one of android, ios, macos, windows or linux against pinned sherpa-onnx v1.12.14 archives. Plugin create does not download runtimes |
 | Compile evidence | macOS example was built on this host (`flutter build macos --debug` exit 0). Windows and Linux plugins are source-complete; Flutter desktop builds of those two hosts were not run on this macOS checkout |
@@ -12,7 +13,7 @@
 | Explicit model preparation | Host-trusted HTTPS descriptor and private root; streaming integrity, cancellation and verified offline reuse; redirects require explicit bounded exact-origin policy |
 | Example model catalog | Three pinned English speech packs: LJS compact, LJS standard, and compact VCTK (109 speakers, integer ids 0-108). VCTK is a speaker choice, not a language or quality ranking. Piper, other languages and physical-device quality remain outside this catalog. Selection, download, cancel/retry and private offline reuse |
 | VAD | Silero, 512-sample windows at 16 kHz |
-| STT | sherpa streaming transducer; revisable partials, finalized replies |
+| STT | Native: sherpa streaming transducer with revisable partials. Web: VAD plus one non-streaming offline recognizer; streaming Zipformer on Flutter web is out of scope |
 | Logic | Host-supplied deterministic Dart function; optional native GGUF adapter |
 | TTS text input | Nonempty valid Unicode, no NUL, at most 240 scalars / 960 UTF-8 bytes; complete reply input |
 | TTS PCM | Sentence callback feeds bounded playback; no sub-sentence streaming claim |
@@ -42,16 +43,17 @@ is the only intended qualification route.
 
 ## Platforms
 
-Supported hosts are Android, iOS, macOS, Windows and Linux. Android remains
+Supported native hosts are Android, iOS, macOS, Windows and Linux. Android remains
 API 26+ arm64-v8a. iOS remains CocoaPods plus AVAudioEngine with
 `NSMicrophoneUsageDescription`. macOS uses CocoaPods plus AVAudioEngine and
 the pinned osx-universal2-shared runtime. Windows uses WASAPI and the pinned
 win-x64-shared runtime. Linux uses PulseAudio and the pinned linux-x64-shared
 runtime.
 
-Flutter web, watchOS, tvOS, Wear OS, Android TV, WASM, cloud speech and
-PCM-through-Dart are excluded. `LocalVoiceAgent.create` on those targets fails
-with `unsupportedProfile` and does not invoke native create.
+Flutter web is a separate WASM profile, not a native flva host. watchOS, tvOS,
+Wear OS, Android TV, fuchsia, cloud speech and PCM-through-Dart on the facade
+remain excluded. Those targets fail with `unsupportedProfile` and do not
+invoke native create.
 
 Android and iOS plugin bridges stay the existing native-audio owners. This
 coverage item does not retune mobile sample rates, add Android ABIs, enable

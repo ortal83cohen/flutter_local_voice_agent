@@ -12,6 +12,35 @@ abstract interface class LocalModelStore {
   });
 }
 
+/// Internal session operations. The web backend owns devices itself.
+///
+/// This is not a method-channel contract and must not carry PCM samples.
+abstract interface class VoiceSessionBackend {
+  /// Completes session construction and returns the output sample rate.
+  Future<int> ensureCreated();
+
+  /// Starts capture and output ownership for this session.
+  Future<void> start();
+
+  /// Stops capture and output ownership.
+  Future<void> stop();
+
+  /// Invalidates current work and flushes in-flight generation.
+  Future<void> interrupt();
+
+  /// Releases session resources.
+  Future<void> dispose();
+
+  /// Polls at most 32 session events.
+  Future<List<Map<String, Object?>>> poll();
+
+  /// Supplies a Dart-computed reply for [generation].
+  Future<void> reply({required int generation, required String text});
+
+  /// Updates the speaker id used by the next synthesized reply.
+  Future<void> setSpeakerId(int speakerId);
+}
+
 /// Boundary for the native method channel. No audio crosses this interface.
 abstract interface class NativeVoicePlatform {
   /// Creates an inactive native session and returns its output sample rate.

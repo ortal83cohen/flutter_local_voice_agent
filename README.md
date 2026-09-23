@@ -29,14 +29,16 @@ community.
 
 ## Features
 
-- **Speech-to-text (STT / ASR):** streaming Zipformer recognition with revisable
-  partial transcripts and a finalized result per turn
+- **Speech-to-text (STT / ASR):** native hosts use streaming Zipformer with
+  revisable partials; Flutter web uses Silero VAD plus one non-streaming
+  offline recognizer
 - **Text-to-speech (TTS):** VITS speech synthesis and native playback from a
   local reply
 - **Voice activity detection (VAD):** Silero, 512-sample windows at 16 kHz
 - **One agent API:** `create`, `start`, `interrupt`, `stop`, `dispose`
-- **Offline inference:** creation and recognition stay on-device; audio never
-  travels through Dart platform messages
+- **Offline inference:** creation and recognition stay on-device; native audio
+  never travels through Dart platform messages. Flutter web keeps PCM inside
+  the web backend only
 - **Explicit model preparation:** download a trusted pack over HTTPS, verify
   hashes, cancel or retry, then reuse it offline
 - **Typed events:** lifecycle, activity, transcript, reply, and failure
@@ -52,9 +54,9 @@ community.
 | macOS | CocoaPods + AVAudioEngine; pinned v1.12.14 universal2 dylibs |
 | Windows | WASAPI; source-complete plugin; Flutter desktop build not run on this macOS checkout |
 | Linux | PulseAudio; source-complete plugin; Flutter desktop build not run on this macOS checkout |
-| Flutter web | Unsupported; fails with `unsupportedProfile` |
+| Flutter web | Separate WASM profile: Silero VAD, offline recognizer, compact VITS; no `sherpa_onnx` or `record` dependency. Browser microphone session and compact-pack WASM load are [UNVERIFIED] |
 | watchOS, tvOS, Wear OS, Android TV | Unsupported; fails with `unsupportedProfile` |
-| WASM, cloud speech, PCM-through-Dart | Unsupported; fails with `unsupportedProfile` |
+| Cloud speech, Web Speech, PCM-through-Dart on the facade | Unsupported; fails with `unsupportedProfile` |
 | Background / wake word | Unsupported |
 | Full duplex / barge-in | Unsupported |
 

@@ -3,9 +3,9 @@ id: reasonable-platform-coverage
 title: Reasonable platform coverage
 status: active
 owner: root
-last_verified: 2026-09-21
+last_verified: 2026-09-22
 applies_to: ["pubspec.yaml", "doc/capabilities.md", "README.md", "macos/**", "windows/**", "linux/**"]
-summary: Five native hosts, excluded targets, pinned v1.12.14 provisioning and the compile-evidence boundary; parent 0002 gates stay open.
+summary: Five native hosts stay on flva; Flutter web is a separate WASM profile; parent 0002 gates stay open.
 ---
 
 # Reasonable platform coverage
@@ -16,8 +16,10 @@ names and Dart public types stay the same. Android and iOS bridges remain the
 existing native-audio owners; this item does not retune mobile rates, add
 Android ABIs, enable iOS Swift Package Manager, or change the iOS session mode.
 
-Excluded targets are Flutter web, watchOS, tvOS, Wear OS, Android TV, WASM,
-cloud speech and PCM-through-Dart. Those hosts fail with
+Flutter web is a separate session profile that vendors sherpa-onnx 1.13.8
+WASM. It does not load flva.h and does not change native audio ownership.
+Excluded targets remain watchOS, tvOS, Wear OS, Android TV, fuchsia, cloud
+speech and PCM-through-Dart on the facade. Those hosts fail with
 `AgentErrorCode.unsupportedProfile` before native create.
 
 ## Provisioning

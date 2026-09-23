@@ -1,5 +1,8 @@
 include: package:flutter_lints/flutter.yaml
 
+# example/lib web-conditional storage and preparation are analyzed with the
+# rest of the example. The exclude list drops generated host trees only.
+
 analyzer:
   exclude:
     - build/**

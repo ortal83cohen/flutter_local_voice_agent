@@ -15,4 +15,15 @@ Choose **English compact (INT8)** or **English standard (full precision)**,
 review the download size, then tap **Download**. Later launches restore the
 installed pack without networking.
 
+On Flutter web the example lists only the compact English pack. Start stays
+disabled until that pack validates. Create does not download. Native hosts
+keep dart:io storage.
+
+```sh
+cd example
+flutter build web
+```
+
+A browser microphone-to-speaker session is not claimed here.
+
 See the package README for provisioning, permissions, and current limits.

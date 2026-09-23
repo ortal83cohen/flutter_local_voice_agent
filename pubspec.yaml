@@ -26,7 +26,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  flutter_web_plugins:
+    sdk: flutter
   crypto: ^3.0.6
+  web: ^1.1.0
 
 dev_dependencies:
   flutter_test:
@@ -47,3 +50,12 @@ flutter:
         pluginClass: FlutterLocalVoiceAgentPlugin
       linux:
         pluginClass: FlutterLocalVoiceAgentPlugin
+      web:
+        pluginClass: FlutterLocalVoiceAgentWeb
+        fileName: flutter_local_voice_agent_web.dart
+  assets:
+    - assets/sherpa_onnx_web/sherpa-onnx-wasm-web.wasm
+    - assets/sherpa_onnx_web/sherpa-onnx-wasm-web.js
+    - assets/sherpa_onnx_web/sherpa-onnx-asr.js
+    - assets/sherpa_onnx_web/sherpa-onnx-tts.js
+    - assets/sherpa_onnx_web/sherpa-onnx-vad.js

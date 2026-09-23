@@ -1,0 +1,106 @@
+# Work item state. The only mutable file in a work item folder.
+
+id: "0010-flutter-web-offline-profile"
+title: "Flutter web offline voice profile using sherpa-onnx WASM"
+route: full
+phase: done
+round: 2
+verdict: PASS
+owner_agent: root
+created: "2026-09-22"
+updated: "2026-09-22"
+
+blockers: []
+
+followups:
+  - summary: "Whether this repository's compact Zipformer plus VITS files load in sherpa-onnx 1.13.8 WASM remains [UNVERIFIED]. The host had no local pack. A rejected construct is invalidAsset."
+    severity: IMPORTANT
+    owner: "unassigned"
+  - summary: "Browser microphone-to-speaker session has not been run. Recorded [UNVERIFIED] in 04-verification.md. The user will check after this item finishes."
+    severity: IMPORTANT
+    owner: "unassigned"
+
+decisions:
+  - action: scope
+    reason: "User asked for a full wiki implementation plan, not a canvas. Route is /feature. Do not implement in this step."
+  - action: runtime
+    reason: "Do not reuse flva.h in the browser. Use official sherpa-onnx WASM with a web-owned session behind the existing LocalVoiceAgent facade."
+  - action: no-transitive-sherpa-plugin
+    reason: "Do not depend on the pub.dev sherpa_onnx plugin. It transitively registers native sherpa packages and would collide with libflva on Android, iOS and desktop."
+  - action: no-record-plugin
+    reason: "Do not add package record as a library dependency. Capture through package web getUserMedia so mobile hosts do not register a second microphone plugin."
+  - action: first-asr
+    reason: "First web slice uses Silero VAD plus a non-streaming offline recognizer. Official Flutter web demos cover that path. Streaming Zipformer on Flutter web stays a follow-up."
+  - action: first-catalog
+    reason: "First web example qualifies only the compact English pack. Full-precision LJS and optional llama.cpp stay out of the first slice."
+  - action: pcm-exception
+    reason: "PCM may exist inside the web backend only. The Dart facade and method channel still do not accept microphone or playback samples. Native hosts keep ADR 0001."
+  - action: parent-gates
+    reason: "Work 0002 VITS allocation, physical mobile qualification and clean consumer-install stay open. This item does not close them."
+  - action: user-authorize-pipeline
+    reason: "User authorized validation, then implement, then verify, then document. Do not commit, push, or publish unless the user explicitly asks."
+  - action: research-review-01
+    reason: "Accept PASS. Four findings recorded. No second research review: the verdict was PASS and the patches are source citations, not a change of approach."
+  - action: research-review-01-F-001
+    reason: "Accept IMPORTANT. Patch research to record FileModelStore's runtime 1.12.14 lock. Decide that the web store accepts that same catalog runtime string. The 1.13.8 pin applies only to the WASM engine digest."
+  - action: research-review-01-F-002
+    reason: "Accept NIT. Cite MDN getUserMedia for the secure-context constraint. Leave the user-gesture half [UNVERIFIED]."
+  - action: research-review-01-F-003
+    reason: "Accept NIT. Update llama_cpp_flutter evidence from 0.7.0 to 0.8.0. Out of first-slice scope."
+  - action: research-review-01-F-004
+    reason: "Accept NIT. Retract the combined-binary packaging cause. Mark that clause [UNVERIFIED] against the cited build page."
+  - action: plan-review-01
+    reason: "Accept FAIL. AC-004, AC-005, AC-010 and AC-013 were uncovered. Patch the plan and tasks in place. Run one confirmation review."
+  - action: plan-review-01-F-001
+    reason: "Accept BLOCKER. Name sherpa_onnx_web as forbidden. The web plugin key must point at this package's own implementation. Keep the five native keys."
+  - action: plan-review-01-F-002
+    reason: "Accept BLOCKER. Bind a WASM digest mismatch to invalidAsset, load or copy nothing, and do not request the microphone."
+  - action: plan-review-01-F-003
+    reason: "Accept BLOCKER. Microphone denial returns permissionDenied and starts neither capture nor playback."
+  - action: plan-review-01-F-004
+    reason: "Accept BLOCKER. Interrupt during web speaking flushes playback, invalidates the generation, does not emit cancelled audio, and returns to listening while start remains active, or idle if the session is not started. Native interrupt stays unchanged."
+  - action: plan-review-01-F-005
+    reason: "Accept IMPORTANT. Add package web as a direct library dependency in task 2.1, the owner of pubspec.yaml. It is not already available."
+  - action: plan-review-01-F-006
+    reason: "Accept IMPORTANT. Web model store accepts manifest runtime 1.12.14. It does not require 1.13.8. Native FileModelStore keeps requiring 1.12.14."
+  - action: plan-review-01-F-007
+    reason: "Accept IMPORTANT. On web, LocalModelBundle.directory is an origin-private store prefix or a bundled-asset prefix. manifestPath is the store-relative or asset-relative manifest key using the same file name as native. The compact pack uses the existing catalog identifier as that prefix."
+  - action: plan-review-01-F-008
+    reason: "Accept IMPORTANT. Task 1.1 owns compile stubs and import barrels only. Task 2.2 owns a separate production web model-store library. Those files are exclusive."
+  - action: plan-review-01-F-009
+    reason: "Accept IMPORTANT. Rollback supersedes the web architecture decision if this item accepted it. Do not delete the ADR."
+  - action: plan-review-02
+    reason: "Accept PASS. AC-001 through AC-018 are covered. No recurrence of round-01 findings. No third plan review."
+  - action: plan-review-02-F-001
+    reason: "Accept IMPORTANT. Web create keeps the optional modelStore argument. Omitted default on web uses an internal hook. Group 1's stub default is missingAsset. Task 2.2 assigns the production store to that hook. Task 3.1 imports that library so the assignment is live before create."
+  - action: freeze
+    reason: "Freeze AC-001 through AC-018 on 2026-09-22 after research-review-01 PASS, plan-review-02 PASS, and recorded decisions for every finding. Enter implement. Start Group 1 task 1.1 only. No commit or publication."
+  - action: task-1.1
+    reason: "Conditional dart:io split, VoiceSessionBackend seam, web create path, fuchsia refusal retained. dart format, dart analyze --fatal-infos --fatal-warnings, flutter analyze, and flutter test all passed. Web-conditional libraries have no dart:io import. No commit or publication."
+  - action: task-2.1
+    reason: "Vendored official sherpa-onnx 1.13.8 WASM assets with SHA-256 pins and Apache-2.0 NOTICE. pubspec.yaml adds package web and this package's web registrant. No sherpa_onnx, sherpa_onnx_web, or record dependency. No ONNX catalog weights. Mismatch create path does not open the backend. flutter test passed 89 tests."
+  - action: task-2.2
+    reason: "WebModelStore hash-checks compact packs, accepts runtime 1.12.14, maps missing and tampered files to missingAsset and invalidAsset, and is the omitted web create default after registerWebModelStore."
+  - action: task-3.1
+    reason: "Official 1.13.8 JS wrappers load in a dedicated worker. Silero VAD, one offline recognizer and VITS are constructed from the validated compact pack. getUserMedia captures 16 kHz mono. VITS plays through Web Audio. Compact-catalog WASM load and a live browser session remain [UNVERIFIED]."
+  - action: task-4.1
+    reason: "Example web storage uses an origin-private store and lists only the compact catalog pack. Native example storage stays on dart:io. Start stays disabled without a validated pack. flutter build web exited 0."
+  - action: task-5.1
+    reason: "Capabilities, README, analysis notes, platform coverage, product record and ADR 0005 name web as a separate WASM profile. Native plugins were not rewritten. 0002 blockers remain OPEN."
+  - action: compact-catalog-spike-deferred
+    reason: "User had no local compact pack. Do not silently swap models. Record the load path [UNVERIFIED]."
+  - action: browser-session-deferred
+    reason: "User will run a browser microphone session after the remaining pipeline finishes. Record [UNVERIFIED]."
+  - action: impl-review-01
+    reason: "Accept PASS. No findings. Residual risks are the two recorded [UNVERIFIED] live paths and the open 0002 blockers. No confirmation review."
+  - action: document
+    reason: "Capabilities, README, analysis notes, platform coverage, product record, ADR 0005 and INDEX name web as a separate WASM profile. STATE phase done. No commit or publication."
+
+escalations: []
+
+validation_results:
+  research_review_01: "PASS: four findings; F-001 IMPORTANT patched; three NITs patched; no second research review."
+  plan_review_01: "FAIL: AC-004, AC-005, AC-010, AC-013 uncovered; plan and tasks patched; confirmation review required."
+  plan_review_02: "PASS: AC-001 through AC-018 covered; F-001 IMPORTANT patched in place; no third review."
+  freeze: "AC-001 through AC-018 frozen 2026-09-22 by coordinating agent (root)."
+  impl_review_01: "PASS: AC-001 through AC-018 met; no findings; compact-catalog WASM load and browser microphone session remain [UNVERIFIED]; 0002 blockers stay OPEN."

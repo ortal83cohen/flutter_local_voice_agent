@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_voice_agent/flutter_local_voice_agent.dart';
 
+import 'example_web_preparation_stub.dart'
+    if (dart.library.js_interop) 'example_web_preparation.dart';
 import 'model_storage.dart';
 
 enum ExampleSetupPhase {
@@ -74,31 +76,57 @@ final class VoiceScreenController extends ChangeNotifier {
            ((duration, callback) =>
                Timer.periodic(duration, (_) => callback()));
 
-  factory VoiceScreenController.production() => VoiceScreenController(
-    storage: ExampleModelStorage(),
-    preparationFactory: (option, root, allowNetwork) {
-      final manager = ModelPreparationManager(
-        rootDirectory: root,
-        maxRedirects: allowNetwork ? 5 : 0,
-        allowedRedirectOrigins: allowNetwork
-            ? option.allowedRedirectOrigins
-            : const <Uri>[],
-        httpClientFactory: allowNetwork
-            ? null
-            : () => throw StateError(
-                'Offline restoration attempted to access the network.',
-              ),
-      );
-      return manager.prepare(option.descriptor);
-    },
-    sessionFactory: (bundle, speakerId) async => LocalAgentSession(
-      await LocalVoiceAgent.create(
-        models: bundle,
-        logic: fixedDemoReply,
-        speakerId: speakerId,
+  factory VoiceScreenController.production() {
+    if (kIsWeb) {
+      return _webProduction();
+    }
+    return VoiceScreenController(
+      storage: ExampleModelStorage(),
+      preparationFactory: (option, root, allowNetwork) {
+        final manager = ModelPreparationManager(
+          rootDirectory: root,
+          maxRedirects: allowNetwork ? 5 : 0,
+          allowedRedirectOrigins: allowNetwork
+              ? option.allowedRedirectOrigins
+              : const <Uri>[],
+          httpClientFactory: allowNetwork
+              ? null
+              : () => throw StateError(
+                  'Offline restoration attempted to access the network.',
+                ),
+        );
+        return manager.prepare(option.descriptor);
+      },
+      sessionFactory: (bundle, speakerId) async => LocalAgentSession(
+        await LocalVoiceAgent.create(
+          models: bundle,
+          logic: fixedDemoReply,
+          speakerId: speakerId,
+        ),
       ),
-    ),
-  );
+    );
+  }
+
+  static VoiceScreenController _webProduction() {
+    final storage = ExampleModelStorage();
+    registerWebProfileDefaults(reader: storage);
+    return VoiceScreenController(
+      storage: storage,
+      catalog: <VoiceModelOption>[VoiceModelCatalog.entries.first],
+      preparationFactory: (option, root, allowNetwork) => ExampleWebPreparation(
+        storage: storage,
+        option: option,
+        allowNetwork: allowNetwork,
+      ),
+      sessionFactory: (bundle, speakerId) async => LocalAgentSession(
+        await LocalVoiceAgent.create(
+          models: bundle,
+          logic: fixedDemoReply,
+          speakerId: speakerId,
+        ),
+      ),
+    );
+  }
 
   static const diskMarginBytes = 10 * 1024 * 1024;
   static const _progressInterval = Duration(milliseconds: 120);
@@ -220,6 +248,9 @@ final class VoiceScreenController extends ChangeNotifier {
     final epoch = ++_epoch;
     final busy = _beginBusy();
     final option = selected!;
+    debugPrint(
+      'FLVA example download start id=${option.id} bytes=${option.downloadBytes}',
+    );
     allowRepairRemoval = false;
     progress = null;
     _notify();
@@ -242,6 +273,9 @@ final class VoiceScreenController extends ChangeNotifier {
       }
       await _prepareSelected(epoch: epoch, allowNetwork: true);
     } on ExampleStorageException catch (error) {
+      debugPrint(
+        'FLVA example download storage failed message=${error.message}',
+      );
       if (_current(epoch)) {
         phase = ExampleSetupPhase.failed;
         status = error.message;
@@ -265,6 +299,9 @@ final class VoiceScreenController extends ChangeNotifier {
         : 'Verifying the saved model without network access…';
     _notify();
 
+    debugPrint(
+      'FLVA example prepare start id=${option.id} allowNetwork=$allowNetwork root=$root',
+    );
     final operation = preparationFactory(option, root, allowNetwork);
     _preparation = operation;
     _updateProgress(operation.progress);
@@ -281,7 +318,11 @@ final class VoiceScreenController extends ChangeNotifier {
       phase = ExampleSetupPhase.creatingSession;
       status = 'Starting the on-device speech engine…';
       _notify();
+      debugPrint(
+        'FLVA example session create start prefix=${bundle.directory} speakerId=$speakerId',
+      );
       final session = await sessionFactory(bundle, speakerId);
+      debugPrint('FLVA example session create ready');
       if (!_current(epoch)) {
         await session.dispose();
         return;
@@ -289,7 +330,8 @@ final class VoiceScreenController extends ChangeNotifier {
       _session = session;
       _events = session.events.listen(
         _handleAgentEvent,
-        onError: (Object _) {
+        onError: (Object error) {
+          debugPrint('FLVA example session event error $error');
           if (_disposed) return;
           phase = ExampleSetupPhase.failed;
           status = 'The local speech session stopped unexpectedly. Prepare the model again.';
@@ -307,6 +349,9 @@ final class VoiceScreenController extends ChangeNotifier {
       status = 'Ready. Tap Start and allow microphone access.';
       _notify();
     } on ModelPreparationFailure catch (error) {
+      debugPrint(
+        'FLVA example prepare failed code=${error.code.name} message=${error.message}',
+      );
       if (!_current(epoch)) return;
       _preparation = null;
       _stopProgressTimer();
@@ -329,20 +374,32 @@ final class VoiceScreenController extends ChangeNotifier {
       }
       _notify();
     } on ExampleStorageException catch (error) {
+      debugPrint('FLVA example storage failed message=${error.message}');
       if (!_current(epoch)) return;
       await _disposeSession();
       if (!_current(epoch)) return;
       phase = ExampleSetupPhase.failed;
       status = error.message;
       _notify();
-    } on Object {
+    } on AgentFailure catch (error) {
+      debugPrint(
+        'FLVA example agent failed code=${error.code.name} message=${error.message}',
+      );
       if (!_current(epoch)) return;
       _preparation = null;
       _stopProgressTimer();
       phase = ExampleSetupPhase.failed;
-      status = allowNetwork
-          ? 'The model could not be prepared. Check the connection and retry.'
-          : 'The saved model is missing or damaged. Download it again to repair setup.';
+      status = error.message;
+      _notify();
+    } on Object catch (error, stack) {
+      debugPrint(
+        'FLVA example unexpected ${error.runtimeType}: $error\n$stack',
+      );
+      if (!_current(epoch)) return;
+      _preparation = null;
+      _stopProgressTimer();
+      phase = ExampleSetupPhase.failed;
+      status = allowNetwork ? 'The model could not be prepared. $error' : 'The saved model is missing or damaged. Download it again to repair setup.';
       allowRepairRemoval = !allowNetwork;
       _notify();
     }
@@ -420,6 +477,7 @@ final class VoiceScreenController extends ChangeNotifier {
     (session) => session.start(),
     success: 'Listening. Say “hello”, “what is your name?”, or “thank you”.',
     stopAfterStaleCompletion: true,
+    overwriteStatus: false,
   );
 
   Future<void> interrupt() => _runSession(
@@ -436,6 +494,7 @@ final class VoiceScreenController extends ChangeNotifier {
     Future<void> Function(ExampleVoiceSession session) operation, {
     required String success,
     bool stopAfterStaleCompletion = false,
+    bool overwriteStatus = true,
   }) async {
     final session = _session;
     if (_disposed || operationBusy || session == null) return;
@@ -449,7 +508,9 @@ final class VoiceScreenController extends ChangeNotifier {
         await session.stop();
         return;
       }
-      if (_current(epoch) && identical(_session, session)) status = success;
+      if (_current(epoch) && identical(_session, session) && overwriteStatus) {
+        status = success;
+      }
     } on Object {
       if (_current(epoch) && identical(_session, session)) {
         status = 'The local speech action failed. Check microphone access and try again.';
@@ -542,7 +603,10 @@ final class VoiceScreenController extends ChangeNotifier {
         break;
       case ModelPreparationPhase.downloading:
         phase = ExampleSetupPhase.downloading;
-        status = 'Downloading verified model files…';
+        final path = value.currentPath;
+        status = path == null || path.isEmpty
+            ? 'Downloading verified model files…'
+            : 'Downloading $path…';
         break;
       case ModelPreparationPhase.verifying:
         phase = ExampleSetupPhase.verifying;
@@ -623,7 +687,7 @@ String _preparationMessage(
   ModelPreparationErrorCode.network =>
     offlineRestore
         ? 'The saved model is missing or damaged. Download it again to repair setup.'
-        : 'The download failed. Check the connection and tap retry.',
+        : failure.message,
   ModelPreparationErrorCode.integrity => 'A model file failed verification. Remove the damaged copy, then download it again.',
   ModelPreparationErrorCode.storage =>
     'The model could not be stored. Free device space, then retry.',
