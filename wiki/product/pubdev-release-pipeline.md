@@ -3,7 +3,7 @@ id: pubdev-release-pipeline
 title: Pub.dev release pipeline
 status: active
 owner: unassigned
-last_verified: 2026-09-19
+last_verified: 2026-10-02
 applies_to: [".github/workflows/**", "tool/**", "pubspec.yaml", "CHANGELOG.md"]
 summary: GitHub checks, main-branch release tagging, and OIDC publication contract for pub.dev.
 ---
@@ -11,6 +11,8 @@ summary: GitHub checks, main-branch release tagging, and OIDC publication contra
 # Pub.dev release pipeline
 
 The repository uses three GitHub Actions workflows. `checks.yml` runs the local package check suite on pushes and pull requests. `release.yml` runs on `main`, verifies the package, selects the next patch version that is not occupied on pub.dev, updates the package changelog, and pushes an annotated semantic version tag. `publish.yml` runs only for semantic version tags and publishes through GitHub OIDC.
+
+The patch helper prepends a dated heading for the new patch. When `CHANGELOG.md` contains a `## Unreleased` section, that section's notes become the new heading's body and the section is removed. A missing or empty Unreleased section keeps the placeholder line `Automated patch release from main.` A second Unreleased heading fails the helper.
 
 Before the first release, an operator must create the repository secret `RELEASE_GITHUB_TOKEN` with narrowly scoped contents write permission and ensure branch protection allows it to update `main`. The pub.dev package settings must enable GitHub Actions publishing for repository `ortal83cohen/flutter_local_voice_agent` with tag pattern `v{{version}}`. These hosted settings are external gates and are not proved by local checks.
 

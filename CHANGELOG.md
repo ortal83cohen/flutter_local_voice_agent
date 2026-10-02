@@ -2,42 +2,32 @@
 
 ## 0.1.5 - 2026-09-24
 
-- Automated patch release from main.
-
-## 0.1.4 - 2026-09-23
-
-- Automated patch release from main.
-
-## 0.1.3 - 2026-09-21
-
-- Automated patch release from main.
-
-## 0.1.2 - 2026-09-20
-
-- Automated patch release from main.
-
-## 0.1.1 - 2026-09-20
-
-- Automated patch release from main.
-
-## Unreleased
-
 - Rewrite the package README and pub.dev metadata around a complete on-device
   speech-to-text and text-to-speech agent, with badges, topics, and an example
   page.
+
+## 0.1.4 - 2026-09-23
+
 - Make the cross-origin TLS redirect regression portable across OpenSSL-backed
   CI runners by explicitly validating its generated loopback certificates.
+
+## 0.1.3 - 2026-09-21
+
 - Replace the example's required model path with a verified English speech
   catalog, explicit downloads, progress/cancel/retry and private offline reuse.
 - Export compact/full-precision model descriptors with pinned hashes and notices;
   add opt-in bounded HTTPS redirects restricted to exact publisher origins.
 - Add example storage/backup handling, lifecycle and catalog transport regressions.
 
+## 0.1.2 - 2026-09-20
+
 - Add explicit host-configured HTTPS model preparation with trusted descriptor
   verification, staged immutable installation, cancellation, progress snapshots
   and offline reuse. Existing local creation and model-store APIs stay offline.
 - Add controlled real-TLS installer tests; general library storage discovery,
   automatic cleanup and physical-device setup qualification remain open.
+
+## 0.1.1 - 2026-09-20
 
 - Reject invalid Unicode and empty/NUL logic replies before synthesis, with
   recoverable typed errors and exhaustive native scalar regression coverage.

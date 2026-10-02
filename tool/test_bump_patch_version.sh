@@ -42,3 +42,62 @@ echo '# Changelog' > "$tmp/occupied/CHANGELOG.md"; echo '' >> "$tmp/occupied/CHA
 [ "$(OCCUPIED_VERSIONS='1.2.4' RELEASE_DATE=2026-09-19 "$root/tool/bump_patch_version.sh" "$tmp/occupied")" = 1.2.5 ]
 grep -q '^version: 1.2.5$' "$tmp/occupied/pubspec.yaml"; grep -q '^## 1.2.5 - 2026-09-19$' "$tmp/occupied/CHANGELOG.md"
 echo 'PASS occupied candidate skipped'
+
+mkdir "$tmp/promote"
+echo 'name: fixture' > "$tmp/promote/pubspec.yaml"; echo 'version: 1.2.3' >> "$tmp/promote/pubspec.yaml"
+cat > "$tmp/promote/CHANGELOG.md" <<'EOF'
+# Changelog
+
+## 1.2.3 - 2026-09-01
+
+- Older note.
+
+## Unreleased
+
+- First promoted note
+  continues on the next line.
+
+- Second promoted note.
+EOF
+[ "$(RELEASE_DATE=2026-09-19 "$root/tool/bump_patch_version.sh" "$tmp/promote")" = 1.2.4 ]
+grep -q '^## 1.2.4 - 2026-09-19$' "$tmp/promote/CHANGELOG.md"
+grep -q '^- First promoted note$' "$tmp/promote/CHANGELOG.md"
+grep -q '^  continues on the next line.$' "$tmp/promote/CHANGELOG.md"
+grep -q '^- Second promoted note.$' "$tmp/promote/CHANGELOG.md"
+grep -q '^- Older note.$' "$tmp/promote/CHANGELOG.md"
+if grep -q '^## Unreleased' "$tmp/promote/CHANGELOG.md"; then exit 1; fi
+if grep -q 'Automated patch release from main.' "$tmp/promote/CHANGELOG.md"; then exit 1; fi
+echo 'PASS unreleased notes promoted'
+
+mkdir "$tmp/empty_unreleased"
+echo 'name: fixture' > "$tmp/empty_unreleased/pubspec.yaml"; echo 'version: 1.2.3' >> "$tmp/empty_unreleased/pubspec.yaml"
+cat > "$tmp/empty_unreleased/CHANGELOG.md" <<'EOF'
+# Changelog
+
+## Unreleased
+
+## 1.2.3 - 2026-09-01
+
+- Older note.
+EOF
+[ "$(RELEASE_DATE=2026-09-19 "$root/tool/bump_patch_version.sh" "$tmp/empty_unreleased")" = 1.2.4 ]
+grep -q '^- Automated patch release from main.$' "$tmp/empty_unreleased/CHANGELOG.md"
+grep -q '^- Older note.$' "$tmp/empty_unreleased/CHANGELOG.md"
+if grep -q '^## Unreleased' "$tmp/empty_unreleased/CHANGELOG.md"; then exit 1; fi
+echo 'PASS empty unreleased keeps placeholder'
+
+mkdir "$tmp/duplicate_unreleased"
+echo 'name: fixture' > "$tmp/duplicate_unreleased/pubspec.yaml"; echo 'version: 1.2.3' >> "$tmp/duplicate_unreleased/pubspec.yaml"
+cat > "$tmp/duplicate_unreleased/CHANGELOG.md" <<'EOF'
+# Changelog
+
+## Unreleased
+
+- One.
+
+## Unreleased
+
+- Two.
+EOF
+if "$root/tool/bump_patch_version.sh" "$tmp/duplicate_unreleased" >/dev/null 2>&1; then exit 1; fi
+echo 'PASS duplicate unreleased section'
