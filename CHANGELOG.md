@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.6 - 2026-10-02
+
+- Automated patch release from main.
+
 ## 0.1.5 - 2026-09-24
 
 - Rewrite the package README and pub.dev metadata around a complete on-device
