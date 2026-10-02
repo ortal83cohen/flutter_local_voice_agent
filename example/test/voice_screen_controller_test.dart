@@ -189,6 +189,12 @@ void main() {
       expect(harness.controller.status, contains('background'));
       expect(harness.controller.operationBusy, isFalse);
 
+      // AC-012: the stale start must not set the capture flag.
+      _emit(session, _stateEvent(TurnActivity.listening));
+      await _flush();
+      expect(harness.controller.status, contains('background'));
+      expect(harness.controller.displayedActivity, TurnActivity.idle);
+
       await harness.controller.close();
     },
   );
@@ -216,6 +222,7 @@ void main() {
     expect(harness.controller.phase, ExampleSetupPhase.ready);
     expect(harness.controller.canStart, isTrue);
     expect(harness.controller.status, contains('Ready'));
+    expect(harness.controller.displayedActivity, TurnActivity.idle);
 
     await harness.controller.close();
   });
@@ -378,9 +385,441 @@ void main() {
       await harness.controller.close();
     },
   );
+
+  group('conversation activity', () {
+    const listeningSentence =
+        'Listening. Say “hello”, “what is your name?”, or “thank you”.';
+    const stoppedSentence = 'Stopped. Tap Start when you want to continue.';
+    const pausedSentence =
+        'Paused by the system. Tap Start when you want to continue.';
+    const faultSentence =
+        'The on-device speech engine reported a problem. Stop and retry.';
+
+    test('successful in-epoch start writes the listening sentence', () async {
+      final harness = _Harness();
+      final session = await _readySession(harness);
+      final statusBeforeStart = harness.controller.status;
+
+      final start = harness.controller.start();
+      await _flush();
+      // Nothing is claimed while the start call is still in flight.
+      expect(harness.controller.status, statusBeforeStart);
+      expect(harness.controller.displayedActivity, TurnActivity.idle);
+      session.startCompleter.complete();
+      await start;
+
+      expect(harness.controller.status, listeningSentence);
+      expect(harness.controller.status, isNot(statusBeforeStart));
+      expect(harness.controller.displayedActivity, TurnActivity.listening);
+      expect(harness.controller.activityPaused, isFalse);
+
+      await harness.controller.close();
+    });
+
+    test(
+      'speaking event while capturing writes the speaking sentence',
+      () async {
+        final harness = _Harness();
+        final session = await _startedSession(harness);
+
+        _emit(session, _stateEvent(TurnActivity.speaking));
+        await _flush();
+
+        expect(
+          harness.controller.status,
+          'Speaking the reply. Listening is paused.',
+        );
+        expect(harness.controller.displayedActivity, TurnActivity.speaking);
+
+        await harness.controller.close();
+      },
+    );
+
+    test('speaking event before start succeeds changes nothing', () async {
+      final harness = _Harness();
+      final session = await _readySession(harness);
+      final statusBeforeEvent = harness.controller.status;
+
+      _emit(session, _stateEvent(TurnActivity.speaking));
+      await _flush();
+
+      expect(harness.controller.status, statusBeforeEvent);
+      expect(harness.controller.displayedActivity, TurnActivity.idle);
+
+      await harness.controller.close();
+    });
+
+    test('each remaining activity writes its exact sentence', () async {
+      const expected = <TurnActivity, String>{
+        TurnActivity.recognizing: 'Hearing you.',
+        TurnActivity.thinking: 'Preparing a reply.',
+        TurnActivity.interrupting: 'Interrupting.',
+        TurnActivity.idle: 'Waiting for speech.',
+      };
+      for (final entry in expected.entries) {
+        final harness = _Harness();
+        final session = await _startedSession(harness);
+
+        _emit(session, _stateEvent(entry.key));
+        await _flush();
+
+        expect(harness.controller.status, entry.value);
+        expect(harness.controller.status, isNot(entry.key.name));
+        expect(harness.controller.displayedActivity, entry.key);
+        expect(harness.controller.activityPaused, isFalse);
+
+        await harness.controller.close();
+      }
+    });
+
+    test('suspended lifecycle pauses and ignores later events', () async {
+      final harness = _Harness();
+      final session = await _startedSession(harness);
+
+      _emit(
+        session,
+        _stateEvent(
+          TurnActivity.listening,
+          lifecycle: AgentLifecycle.suspended,
+        ),
+      );
+      await _flush();
+
+      expect(harness.controller.status, pausedSentence);
+      expect(harness.controller.displayedActivity, TurnActivity.idle);
+      expect(harness.controller.activityPaused, isTrue);
+
+      _emit(session, _stateEvent(TurnActivity.listening));
+      await _flush();
+      expect(harness.controller.status, pausedSentence);
+      expect(harness.controller.activityPaused, isTrue);
+
+      await harness.controller.close();
+    });
+
+    test('suspended lifecycle before start succeeds changes nothing', () async {
+      final harness = _Harness();
+      final session = await _readySession(harness);
+      final statusBeforeEvent = harness.controller.status;
+
+      _emit(
+        session,
+        _stateEvent(TurnActivity.idle, lifecycle: AgentLifecycle.suspended),
+      );
+      await _flush();
+
+      expect(harness.controller.status, statusBeforeEvent);
+      expect(harness.controller.activityPaused, isFalse);
+
+      await harness.controller.close();
+    });
+
+    test('events after stop leave the stopped sentence', () async {
+      final harness = _Harness();
+      final session = await _startedSession(harness);
+
+      await harness.controller.stop();
+      _emit(session, _stateEvent(TurnActivity.listening));
+      await _flush();
+
+      expect(harness.controller.status, stoppedSentence);
+      expect(harness.controller.displayedActivity, TurnActivity.idle);
+      expect(harness.controller.activityPaused, isFalse);
+
+      await harness.controller.close();
+    });
+
+    test(
+      'stop clears a paused indicator and shows the stopped sentence',
+      () async {
+        final harness = _Harness();
+        final session = await _startedSession(harness);
+        _emit(
+          session,
+          _stateEvent(
+            TurnActivity.speaking,
+            lifecycle: AgentLifecycle.suspended,
+          ),
+        );
+        await _flush();
+        expect(harness.controller.activityPaused, isTrue);
+
+        await harness.controller.stop();
+
+        expect(harness.controller.status, stoppedSentence);
+        expect(harness.controller.displayedActivity, TurnActivity.idle);
+        expect(harness.controller.activityPaused, isFalse);
+
+        await harness.controller.close();
+      },
+    );
+
+    test(
+      'fault event sets the failure state and ignores later events',
+      () async {
+        final harness = _Harness();
+        final session = await _startedSession(harness);
+        _emit(session, _stateEvent(TurnActivity.speaking));
+        await _flush();
+
+        _emit(session, _faultEvent());
+        await _flush();
+
+        expect(harness.controller.status, faultSentence);
+        expect(harness.controller.phase, ExampleSetupPhase.failed);
+        expect(harness.controller.displayedActivity, TurnActivity.idle);
+        expect(harness.controller.activityPaused, isFalse);
+
+        _emit(session, _stateEvent(TurnActivity.listening));
+        await _flush();
+        expect(harness.controller.status, faultSentence);
+
+        await harness.controller.close();
+      },
+    );
+
+    test('fault event is unconditional before start succeeds', () async {
+      final harness = _Harness();
+      final session = await _readySession(harness);
+
+      _emit(session, _faultEvent());
+      await _flush();
+
+      expect(harness.controller.status, faultSentence);
+      expect(harness.controller.phase, ExampleSetupPhase.failed);
+
+      await harness.controller.close();
+    });
+
+    test('event after setup and before start keeps the Ready status', () async {
+      final harness = _Harness();
+      final session = await _readySession(harness);
+
+      _emit(session, _stateEvent(TurnActivity.listening));
+      await _flush();
+
+      expect(harness.controller.status, contains('Ready'));
+      expect(harness.controller.status, isNot(contains('Listening')));
+      expect(harness.controller.displayedActivity, TurnActivity.idle);
+      expect(harness.controller.activityPaused, isFalse);
+
+      await harness.controller.close();
+    });
+
+    test('transcripts still update while capture is off', () async {
+      final harness = _Harness();
+      final session = await _readySession(harness);
+      final statusBeforeEvent = harness.controller.status;
+
+      _emit(
+        session,
+        _stateEvent(
+          TurnActivity.recognizing,
+          kind: AgentEventKind.partialTranscript,
+          text: 'hello',
+        ),
+      );
+      _emit(
+        session,
+        _stateEvent(
+          TurnActivity.speaking,
+          kind: AgentEventKind.replyText,
+          text: 'Hello. How are you?',
+        ),
+      );
+      await _flush();
+
+      expect(harness.controller.heard, 'hello');
+      expect(harness.controller.reply, 'Hello. How are you?');
+      expect(harness.controller.status, statusBeforeEvent);
+
+      await harness.controller.close();
+    });
+
+    test('status never joins a lifecycle name and an activity name', () async {
+      final harness = _Harness();
+      final session = await _startedSession(harness);
+
+      _emit(session, _stateEvent(TurnActivity.listening));
+      await _flush();
+
+      expect(harness.controller.status, listeningSentence);
+      expect(harness.controller.status, isNot(contains('·')));
+      for (final lifecycle in AgentLifecycle.values) {
+        for (final activity in TurnActivity.values) {
+          expect(
+            harness.controller.status,
+            isNot(contains('${lifecycle.name} · ${activity.name}')),
+          );
+        }
+      }
+
+      await harness.controller.close();
+    });
+
+    test('interrupt before start leaves the ready status', () async {
+      final harness = _Harness();
+      await _readySession(harness);
+      final statusBefore = harness.controller.status;
+
+      await harness.controller.interrupt();
+
+      expect(harness.controller.status, statusBefore);
+      expect(harness.controller.status, contains('Ready'));
+      expect(harness.controller.displayedActivity, TurnActivity.idle);
+      expect(harness.controller.activityPaused, isFalse);
+
+      await harness.controller.close();
+    });
+
+    test('interrupt writes the listening sentence and keeps capture', () async {
+      final harness = _Harness();
+      final session = await _startedSession(harness);
+      _emit(session, _stateEvent(TurnActivity.speaking));
+      await _flush();
+      expect(harness.controller.displayedActivity, TurnActivity.speaking);
+
+      await harness.controller.interrupt();
+
+      expect(harness.controller.status, listeningSentence);
+      expect(harness.controller.displayedActivity, TurnActivity.listening);
+      expect(harness.controller.activityPaused, isFalse);
+
+      // Capture must still be on: a speaking event still writes its sentence.
+      _emit(session, _stateEvent(TurnActivity.speaking));
+      await _flush();
+      expect(
+        harness.controller.status,
+        'Speaking the reply. Listening is paused.',
+      );
+      expect(harness.controller.displayedActivity, TurnActivity.speaking);
+
+      await harness.controller.close();
+    });
+
+    test('stop writes the stopped sentence and idle activity', () async {
+      final harness = _Harness();
+      await _startedSession(harness);
+      expect(harness.controller.displayedActivity, TurnActivity.listening);
+
+      await harness.controller.stop();
+
+      expect(harness.controller.status, stoppedSentence);
+      expect(harness.controller.displayedActivity, TurnActivity.idle);
+      expect(harness.controller.activityPaused, isFalse);
+
+      await harness.controller.close();
+    });
+
+    test('background clears capture and the displayed activity', () async {
+      final harness = _Harness();
+      final session = await _startedSession(harness);
+
+      harness.controller.onBackground();
+      expect(harness.controller.displayedActivity, TurnActivity.idle);
+      expect(harness.controller.activityPaused, isFalse);
+
+      _emit(session, _stateEvent(TurnActivity.speaking));
+      await _flush();
+      expect(harness.controller.status, contains('background'));
+
+      await harness.controller.close();
+    });
+
+    test('failed action clears the paused flag', () async {
+      final harness = _Harness();
+      final session = await _startedSession(harness);
+      _emit(
+        session,
+        _stateEvent(TurnActivity.idle, lifecycle: AgentLifecycle.suspended),
+      );
+      await _flush();
+      expect(harness.controller.activityPaused, isTrue);
+
+      session.failNextStop = true;
+      await harness.controller.stop();
+
+      expect(harness.controller.status, contains('action failed'));
+      expect(harness.controller.activityPaused, isFalse);
+
+      await harness.controller.close();
+    });
+
+    test('activity labels are plain words', () async {
+      final harness = _Harness();
+      final session = await _startedSession(harness);
+      expect(harness.controller.activityLabel, 'Listening');
+
+      _emit(session, _stateEvent(TurnActivity.thinking));
+      await _flush();
+      expect(harness.controller.activityLabel, 'Preparing a reply');
+
+      _emit(
+        session,
+        _stateEvent(TurnActivity.idle, lifecycle: AgentLifecycle.suspended),
+      );
+      await _flush();
+      expect(harness.controller.activityLabel, 'Paused');
+
+      await harness.controller.close();
+    });
+  });
 }
 
 Future<void> _flush() => Future<void>.delayed(Duration.zero);
+
+/// Drives setup to a ready fake session. The controller subscribes to the
+/// session's events while the session is created, so events may be added
+/// after this returns.
+Future<_FakeSession> _readySession(_Harness harness) async {
+  await harness.controller.initialize();
+  final prepare = harness.controller.downloadAndPrepare();
+  await _flush();
+  harness.preparations.single.completeReady();
+  await prepare;
+  return harness.sessions.single;
+}
+
+/// Drives a ready session through a successful in-epoch Start.
+Future<_FakeSession> _startedSession(_Harness harness) async {
+  final session = await _readySession(harness);
+  final start = harness.controller.start();
+  await _flush();
+  session.startCompleter.complete();
+  await start;
+  return session;
+}
+
+void _emit(_FakeSession session, AgentEvent event) {
+  session._events.add(event);
+}
+
+AgentEvent _stateEvent(
+  TurnActivity activity, {
+  AgentLifecycle lifecycle = AgentLifecycle.running,
+  AgentEventKind kind = AgentEventKind.state,
+  String? text,
+}) => AgentEvent(
+  sequence: 1,
+  generation: 1,
+  kind: kind,
+  lifecycle: lifecycle,
+  activity: activity,
+  text: text,
+);
+
+AgentEvent _faultEvent() => const AgentEvent(
+  sequence: 1,
+  generation: 1,
+  kind: AgentEventKind.fault,
+  lifecycle: AgentLifecycle.failed,
+  activity: TurnActivity.idle,
+  failure: AgentFailure(
+    AgentErrorCode.inferenceFailed,
+    'Synthetic failure.',
+    fatal: true,
+  ),
+);
 
 final class _Harness {
   _Harness({
@@ -552,6 +991,7 @@ final class _FakeSession implements ExampleVoiceSession {
   final List<int> setSpeakerIds = <int>[];
   int stopCalls = 0;
   int disposeCalls = 0;
+  bool failNextStop = false;
 
   @override
   Stream<AgentEvent> get events => _events.stream;
@@ -565,6 +1005,10 @@ final class _FakeSession implements ExampleVoiceSession {
   @override
   Future<void> stop() async {
     stopCalls++;
+    if (failNextStop) {
+      failNextStop = false;
+      throw StateError('Synthetic stop failure.');
+    }
   }
 
   @override

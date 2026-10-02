@@ -147,6 +147,20 @@ final class VoiceScreenController extends ChangeNotifier {
   bool operationBusy = false;
   bool allowRepairRemoval = false;
 
+  /// The activity shown by the indicator; idle unless a turn is being shown.
+  TurnActivity displayedActivity = TurnActivity.idle;
+
+  /// True only while the system has paused the session.
+  bool activityPaused = false;
+
+  /// Short indicator label for [displayedActivity] and [activityPaused].
+  String get activityLabel =>
+      activityPaused ? 'Paused' : _activityLabel(displayedActivity);
+
+  /// Whether this controller believes the session it holds is capturing.
+  /// Set only after a successful in-epoch Start.
+  bool _capturing = false;
+
   ModelPreparation? _preparation;
   Timer? _progressTimer;
   ExampleVoiceSession? _session;
@@ -333,6 +347,7 @@ final class VoiceScreenController extends ChangeNotifier {
         onError: (Object error) {
           debugPrint('FLVA example session event error $error');
           if (_disposed) return;
+          _resetActivity();
           phase = ExampleSetupPhase.failed;
           status = 'The local speech session stopped unexpectedly. Prepare the model again.';
           _notify();
@@ -475,26 +490,41 @@ final class VoiceScreenController extends ChangeNotifier {
 
   Future<void> start() => _runSession(
     (session) => session.start(),
-    success: 'Listening. Say “hello”, “what is your name?”, or “thank you”.',
+    onSuccess: () {
+      // The only place the capture flag is set: the session's own start call
+      // returned while this controller still owns the same session.
+      _capturing = true;
+      _showActivity(TurnActivity.listening);
+    },
     stopAfterStaleCompletion: true,
-    overwriteStatus: false,
   );
 
   Future<void> interrupt() => _runSession(
     (session) => session.interrupt(),
-    success: 'Interrupted. The microphone will listen for the next turn.',
+    // An interrupt returns an active turn to the microphone. Before Start,
+    // capture is still false, so the success path must not claim listening.
+    onSuccess: () {
+      if (_capturing) _showActivity(TurnActivity.listening);
+    },
   );
 
   Future<void> stop() => _runSession(
     (session) => session.stop(),
-    success: 'Stopped. Tap Start when you want to continue.',
+    onSuccess: () {
+      _capturing = false;
+      displayedActivity = TurnActivity.idle;
+      activityPaused = false;
+      status = _stoppedStatus;
+    },
   );
 
+  /// Runs one session command. The stale-completion branch comes first and
+  /// returns before any status assignment; only the in-epoch, same-session
+  /// path runs [onSuccess].
   Future<void> _runSession(
     Future<void> Function(ExampleVoiceSession session) operation, {
-    required String success,
+    required void Function() onSuccess,
     bool stopAfterStaleCompletion = false,
-    bool overwriteStatus = true,
   }) async {
     final session = _session;
     if (_disposed || operationBusy || session == null) return;
@@ -503,16 +533,14 @@ final class VoiceScreenController extends ChangeNotifier {
     _notify();
     try {
       await operation(session);
-      if ((!_current(epoch) || !identical(_session, session)) &&
-          stopAfterStaleCompletion) {
-        await session.stop();
+      if (!_current(epoch) || !identical(_session, session)) {
+        if (stopAfterStaleCompletion) await session.stop();
         return;
       }
-      if (_current(epoch) && identical(_session, session) && overwriteStatus) {
-        status = success;
-      }
+      onSuccess();
     } on Object {
       if (_current(epoch) && identical(_session, session)) {
+        activityPaused = false;
         status = 'The local speech action failed. Check microphone access and try again.';
       }
     } finally {
@@ -520,10 +548,24 @@ final class VoiceScreenController extends ChangeNotifier {
     }
   }
 
+  void _showActivity(TurnActivity activity) {
+    displayedActivity = activity;
+    activityPaused = false;
+    status = _activitySentence(activity);
+  }
+
+  /// Clears every claim that a turn is active.
+  void _resetActivity() {
+    _capturing = false;
+    displayedActivity = TurnActivity.idle;
+    activityPaused = false;
+  }
+
   void onBackground() {
     if (_disposed) return;
     _resumeRequested = false;
     ++_epoch;
+    _resetActivity();
     final hadPreparation = _preparation != null;
     final hasSession = _session != null;
     _cancelPreparation();
@@ -581,16 +623,25 @@ final class VoiceScreenController extends ChangeNotifier {
     debugPrint(
       'FLVA UI event kind=${event.kind.name} activity=${event.activity.name} textLength=${event.text?.length ?? 0}',
     );
-    status = '${event.lifecycle.name} · ${event.activity.name}';
     if (event.kind == AgentEventKind.partialTranscript ||
         event.kind == AgentEventKind.finalTranscript) {
       heard = event.text ?? '';
     }
     if (event.kind == AgentEventKind.replyText) reply = event.text ?? '';
     if (event.failure != null) {
+      // A fault is unconditional and does not consult the capture flag.
+      _resetActivity();
       phase = ExampleSetupPhase.failed;
       status =
           'The on-device speech engine reported a problem. Stop and retry.';
+    } else if (_capturing) {
+      if (event.lifecycle == AgentLifecycle.suspended) {
+        _resetActivity();
+        activityPaused = true;
+        status = _suspendedSentence;
+      } else {
+        _showActivity(event.activity);
+      }
     }
     _notify();
   }
@@ -633,6 +684,7 @@ final class VoiceScreenController extends ChangeNotifier {
   }
 
   Future<void> _disposeSession() async {
+    _resetActivity();
     final events = _events;
     final session = _session;
     _events = null;
@@ -693,6 +745,31 @@ String _preparationMessage(
     'The model could not be stored. Free device space, then retry.',
   ModelPreparationErrorCode.invalidDescriptor =>
     'This catalog entry is not supported by the installed app.',
+};
+
+const _stoppedStatus = 'Stopped. Tap Start when you want to continue.';
+const _suspendedSentence =
+    'Paused by the system. Tap Start when you want to continue.';
+
+// Exhaustive switch expressions with no default branch: a new TurnActivity
+// value makes both mappings fail analysis until it is handled.
+String _activitySentence(TurnActivity activity) => switch (activity) {
+  TurnActivity.idle => 'Waiting for speech.',
+  TurnActivity.listening =>
+    'Listening. Say “hello”, “what is your name?”, or “thank you”.',
+  TurnActivity.recognizing => 'Hearing you.',
+  TurnActivity.thinking => 'Preparing a reply.',
+  TurnActivity.speaking => 'Speaking the reply. Listening is paused.',
+  TurnActivity.interrupting => 'Interrupting.',
+};
+
+String _activityLabel(TurnActivity activity) => switch (activity) {
+  TurnActivity.idle => 'Idle',
+  TurnActivity.listening => 'Listening',
+  TurnActivity.recognizing => 'Hearing you',
+  TurnActivity.thinking => 'Preparing a reply',
+  TurnActivity.speaking => 'Speaking',
+  TurnActivity.interrupting => 'Interrupting',
 };
 
 String _formatMiB(int bytes) => '${(bytes / (1024 * 1024)).ceil()} MB';

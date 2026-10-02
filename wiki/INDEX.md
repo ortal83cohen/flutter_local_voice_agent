@@ -227,3 +227,20 @@ to this index when they are created.
 | [Example catalog product](product/example-model-catalog.md) | Understand the VCTK speaker control and integer ids on the implemented catalog. |
 | [Catalog architecture decision](adr/0003-example-model-catalog.md) | Read the earlier trusted-catalog and storage decision; it was not superseded. |
 | [Voice-selection architecture decision](adr/0004-english-vits-voice-selection.md) | Reviewing why VCTK plus integer speaker id is the English lexicon voice choice. |
+
+## Example conversation activity
+
+| Document | Read it when |
+|---|---|
+| [Research consolidation](work/0011-example-conversation-activity/00-research.md) | Deciding how the example shows listening, speaking and the other turn states. |
+| [Example UI stream](work/0011-example-conversation-activity/research/example-ui.md) | Checking which status strings and button keys the example tests lock. |
+| [Agent event stream](work/0011-example-conversation-activity/research/agent-events.md) | Checking which lifecycle and activity values the example can observe. |
+| [Product constraint stream](work/0011-example-conversation-activity/research/product-constraints.md) | Checking half-duplex, qualification and copy limits for the example. |
+| [Plan](work/0011-example-conversation-activity/01-plan.md) | Implementing the example activity sentences and indicator. |
+| [Acceptance criteria](work/0011-example-conversation-activity/02-criteria.md) | Checking activity copy, controls and preserved tests. |
+| [Tasks](work/0011-example-conversation-activity/03-tasks.md) | Ordering the example controller, screen and tests. |
+| [Work state](work/0011-example-conversation-activity/STATE.yaml) | Checking phase and recorded decisions. |
+| [Research review](work/0011-example-conversation-activity/validation/research-review-01.md) | Inspect the independent research verdict. |
+| [Plan review](work/0011-example-conversation-activity/validation/plan-review-01.md) | Inspect the independent plan verdict. |
+| [Implementation review](work/0011-example-conversation-activity/validation/impl-review-01.md) | Inspect the independent implementation verdict. |
+| [Verification](work/0011-example-conversation-activity/04-verification.md) | Inspect the pasted format, analyze, test and wiki-lint output. |

@@ -262,6 +262,13 @@ class _VoiceScreenState extends State<VoiceScreen> with WidgetsBindingObserver {
                       : null,
                   child: const Text('Stop'),
                 ),
+                _ActivityIndicator(
+                  key: const Key('activity-indicator'),
+                  icon: controller.activityPaused
+                      ? Icons.pause_circle_outline
+                      : _activityIcon(controller.displayedActivity),
+                  label: controller.activityLabel,
+                ),
               ],
             ),
             const SizedBox(height: 20),
@@ -282,6 +289,43 @@ class _VoiceScreenState extends State<VoiceScreen> with WidgetsBindingObserver {
     );
   }
 }
+
+/// Shows the conversation activity as an icon plus a word, never colour alone.
+class _ActivityIndicator extends StatelessWidget {
+  const _ActivityIndicator({
+    super.key,
+    required this.icon,
+    required this.label,
+  });
+
+  final IconData icon;
+  final String label;
+
+  @override
+  Widget build(BuildContext context) => Semantics(
+    label: label,
+    container: true,
+    excludeSemantics: true,
+    child: Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [Icon(icon, size: 20), const SizedBox(width: 6), Text(label)],
+      ),
+    ),
+  );
+}
+
+// Exhaustive switch expression with no default branch: a new TurnActivity
+// value fails analysis until it gets an icon.
+IconData _activityIcon(TurnActivity activity) => switch (activity) {
+  TurnActivity.idle => Icons.hourglass_empty,
+  TurnActivity.listening => Icons.mic,
+  TurnActivity.recognizing => Icons.hearing,
+  TurnActivity.thinking => Icons.more_horiz,
+  TurnActivity.speaking => Icons.volume_up,
+  TurnActivity.interrupting => Icons.front_hand_outlined,
+};
 
 class _DisclosureCard extends StatelessWidget {
   const _DisclosureCard();

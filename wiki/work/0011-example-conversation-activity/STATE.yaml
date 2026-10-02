@@ -1,0 +1,43 @@
+# Work item state. The only mutable file in a work item folder.
+
+id: "0011-example-conversation-activity"
+title: "Show human-readable conversation activity in the example"
+route: full
+phase: done
+round: 1
+verdict: PASS
+owner_agent: parent
+created: "2026-10-02"
+updated: "2026-10-02"
+
+blockers: []
+
+followups: []
+
+decisions:
+  - round: 1
+    verdict: CONDITIONAL
+    action: revise-research
+    reason: "Research F-001, F-002, F-003 and F-004 patched in 00-research.md. Full enums, the event-kind option, the two dropped questions, and the product catalog source are now recorded. Design is unchanged."
+  - round: 1
+    verdict: CONDITIONAL
+    action: annotate-only
+    reason: "Research F-005 is an off-by-one citation NIT. Quoted claims were confirmed true. No stream rewrite."
+  - round: 1
+    verdict: PASS
+    action: revise-plan
+    reason: "Plan F-001 patched step 9 so the wiki linter is part of the completion condition."
+  - round: 1
+    verdict: PASS
+    action: annotate-only
+    reason: "Plan F-002 and F-003 are NITs. AC-017 is already named in the plan and tasks. Exact strings live in the frozen criteria."
+  - round: 1
+    verdict: PASS
+    action: revise-implementation
+    reason: "Impl F-001 closed in the example controller. Interrupt before Start no longer writes the listening sentence. A controller test covers that path. No second review round: the frozen criteria were already met, and the example suite was re-run."
+  - round: 1
+    verdict: PASS
+    action: annotate-only
+    reason: "Impl F-002 and F-003 are NITs. A failed session command may leave the previous activity icon, and Waiting stays in the status sentence only."
+
+escalations: []
